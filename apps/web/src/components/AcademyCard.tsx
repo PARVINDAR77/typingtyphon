@@ -66,35 +66,46 @@ export const AcademyCard: React.FC<AcademyCardProps> = ({
   return (
     <div
       style={{
-        background: 'var(--bg-surface)',
+        background: 'var(--bg-card)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
         border: '1px solid var(--border-subtle)',
-        borderRadius: '1rem',
-        padding: '1.5rem 1.65rem',
+        borderRadius: '0.85rem',
+        padding: '1.15rem 1.25rem',
         display: 'flex',
         flexDirection: 'column',
-        gap: '1.15rem',
-        boxShadow: '0 4px 20px -2px rgba(0, 0, 0, 0.4)',
+        gap: '0.85rem',
+        boxShadow: 'var(--shadow-card)',
         position: 'relative',
+        overflow: 'hidden',
       }}
     >
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #38bdf8, #6366f1, transparent)' }} />
+
       {/* Top Tag & Stage Pill */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
-        <span
+        <div
           style={{
-            fontSize: '0.72rem',
-            textTransform: 'uppercase',
-            letterSpacing: '0.08em',
-            background: 'rgba(14, 165, 233, 0.15)',
-            border: '1px solid rgba(56, 189, 248, 0.28)',
-            color: '#38bdf8',
-            padding: '0.2rem 0.65rem',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.45rem',
+            background: 'rgba(14, 165, 233, 0.12)',
+            border: '1px solid rgba(14, 165, 233, 0.35)',
+            color: '#0284c7',
+            padding: '0.25rem 0.75rem',
             borderRadius: '9999px',
-            fontWeight: 700,
+            fontSize: '0.72rem',
+            fontFamily: 'var(--font-mono)',
+            fontWeight: 800,
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+            boxShadow: '0 0 12px rgba(14, 165, 233, 0.15)',
           }}
         >
-          TOUCH TYPING ACADEMY
-        </span>
-        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+          <span style={{ width: '5px', height: '5px', borderRadius: '50%', backgroundColor: '#0ea5e9', boxShadow: '0 0 6px #0ea5e9' }} />
+          <span>Touch Typing Academy</span>
+        </div>
+        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', fontWeight: 600 }}>
           Stages 1–6 • {totalLessons} Lessons
         </span>
       </div>
@@ -113,7 +124,7 @@ export const AcademyCard: React.FC<AcademyCardProps> = ({
         {/* Lessons Passed Badge */}
         <div
           style={{
-            background: 'rgba(15, 23, 42, 0.85)',
+            background: 'var(--bg-surface-subtle)',
             border: '1px solid var(--border-subtle)',
             borderRadius: '0.75rem',
             padding: '0.4rem 0.75rem',
@@ -121,7 +132,7 @@ export const AcademyCard: React.FC<AcademyCardProps> = ({
             flexShrink: 0,
           }}
         >
-          <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#38bdf8', fontFamily: 'var(--font-mono)', lineHeight: 1 }}>
+          <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0ea5e9', fontFamily: 'var(--font-mono)', lineHeight: 1 }}>
             {passedCount} / {totalLessons}
           </div>
           <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: '0.15rem', textTransform: 'uppercase' }}>
@@ -136,27 +147,27 @@ export const AcademyCard: React.FC<AcademyCardProps> = ({
       </p>
 
       {/* Key Preview Chips Row (Home Row Visual Reference) */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', flexWrap: 'wrap' }}>
         {homeRowKeys.map((k) => {
           const isTarget = targetKeysSet.has(k);
           return (
             <div
               key={k}
               style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '6px',
+                width: '28px',
+                height: '28px',
+                borderRadius: '5px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 fontFamily: 'var(--font-mono)',
                 fontWeight: 700,
-                fontSize: '0.825rem',
+                fontSize: '0.78rem',
                 textTransform: 'uppercase',
-                background: isTarget ? 'var(--brand-primary)' : 'rgba(255, 255, 255, 0.04)',
-                color: isTarget ? '#ffffff' : 'var(--text-muted)',
+                background: isTarget ? 'var(--brand-primary)' : 'var(--bg-surface-subtle)',
+                color: isTarget ? '#ffffff' : 'var(--text-secondary)',
                 border: isTarget ? '1px solid var(--brand-cyan)' : '1px solid var(--border-subtle)',
-                boxShadow: isTarget ? '0 0 10px rgba(14, 165, 233, 0.4)' : 'none',
+                boxShadow: isTarget ? '0 0 8px rgba(14, 165, 233, 0.4)' : 'none',
                 transition: 'all 0.15s ease',
               }}
             >
@@ -167,19 +178,19 @@ export const AcademyCard: React.FC<AcademyCardProps> = ({
       </div>
 
       {/* Learning Benefits Checklist */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.76rem', color: 'var(--text-secondary)' }}>
           <span style={{ color: '#10b981', fontWeight: 700 }}>✔</span>
           <span>Proper finger placement</span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.78rem', color: 'var(--text-secondary)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.76rem', color: 'var(--text-secondary)' }}>
           <span style={{ color: '#10b981', fontWeight: 700 }}>✔</span>
           <span>Build neuromuscular muscle memory</span>
         </div>
       </div>
 
       {/* Primary Action Button */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginTop: '0.25rem' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginTop: '0.15rem' }}>
         {isCurrentDrillActive ? (
           <div style={{ display: 'flex', gap: '0.5rem' }}>
             <div
@@ -188,9 +199,9 @@ export const AcademyCard: React.FC<AcademyCardProps> = ({
                 background: 'rgba(14, 165, 233, 0.15)',
                 border: '1px solid rgba(56, 189, 248, 0.35)',
                 borderRadius: '0.65rem',
-                padding: '0.65rem 1rem',
+                padding: '0.55rem 0.95rem',
                 color: '#38bdf8',
-                fontSize: '0.85rem',
+                fontSize: '0.825rem',
                 fontWeight: 600,
                 textAlign: 'center',
               }}
@@ -201,12 +212,12 @@ export const AcademyCard: React.FC<AcademyCardProps> = ({
               <button
                 onClick={onExitDrill}
                 style={{
-                  background: 'rgba(255, 255, 255, 0.05)',
+                  background: 'var(--bg-surface-subtle)',
                   border: '1px solid var(--border-subtle)',
                   borderRadius: '0.65rem',
-                  padding: '0.65rem 0.85rem',
+                  padding: '0.55rem 0.75rem',
                   color: 'var(--text-secondary)',
-                  fontSize: '0.8rem',
+                  fontSize: '0.78rem',
                   cursor: 'pointer',
                 }}
               >
@@ -218,10 +229,10 @@ export const AcademyCard: React.FC<AcademyCardProps> = ({
           <button
             onClick={handleStart}
             className="btn-primary"
-            style={{ width: '100%', padding: '0.75rem 1.25rem' }}
+            style={{ width: '100%', padding: '0.55rem 1.15rem', fontSize: '0.85rem' }}
           >
             <span>{passedCount > 0 ? 'Continue lesson' : 'Start lesson'}</span>
-            <span style={{ fontSize: '1rem' }}>→</span>
+            <span style={{ fontSize: '0.95rem' }}>→</span>
           </button>
         )}
 

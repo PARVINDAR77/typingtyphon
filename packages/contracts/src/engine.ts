@@ -2,7 +2,7 @@
  * Typing Typhon — Core Engine Types & Standardized Mathematical Formulas
  */
 
-export type TestMode = 'words' | 'sentences' | 'quotes' | 'numbers' | 'code' | 'custom';
+export type TestMode = 'words' | 'sentences' | 'quotes' | 'numbers' | 'punctuation' | 'code' | 'custom';
 export type TestDuration = 15 | 30 | 60 | 120 | number;
 export type BackspaceMode = 'standard' | 'confidence' | 'word';
 export type EngineStatus = 'idle' | 'running' | 'paused' | 'completed';

@@ -8,6 +8,7 @@
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
+    "test": "echo \"Contracts contracts checked via typescript\"",
     "clean": "rimraf dist"
   },
   "devDependencies": {

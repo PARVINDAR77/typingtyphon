@@ -438,6 +438,44 @@ export class TypingEngine {
     return this.completedResult;
   }
 
+  /**
+   * Replays the exact current set of words without re-randomizing (Undo / Reset).
+   */
+  public replayCurrentWords(): void {
+    this.status = 'idle';
+    this.activeWordIndex = 0;
+    this.activeCharIndex = 0;
+    this.elapsedSeconds = 0;
+    this.totalKeystrokes = 0;
+    this.correctKeystrokes = 0;
+    this.errorCount = 0;
+    this.completedWordsCount = 0;
+    this.lastKeystrokeTime = 0;
+    this.ikis = [];
+    this.timeSeries = [];
+    this.lastSecondSampled = 0;
+    this.errorsThisSecond = 0;
+    this.correctCharsThisSecond = 0;
+    this.keyStats.clear();
+    this.completedResult = null;
+
+    for (const w of this.words) {
+      w.isCompleted = false;
+      w.hasError = false;
+      w.chars = w.originalText.split('').map((c) => ({
+        char: c,
+        state: 'untouched',
+      }));
+    }
+  }
+
+  /**
+   * Returns list of original words in current engine session.
+   */
+  public getOriginalWords(): string[] {
+    return this.words.map((w) => w.originalText);
+  }
+
   private getCorrectCharactersCount(): number {
     let count = 0;
     for (let w = 0; w <= this.activeWordIndex && w < this.words.length; w++) {

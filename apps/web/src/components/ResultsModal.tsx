@@ -166,7 +166,8 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            background: 'rgba(15, 23, 42, 0.6)',
+            background: 'var(--bg-surface-subtle)',
+            border: '1px solid var(--border-subtle)',
             padding: '0.65rem 1rem',
             borderRadius: '0.6rem',
             fontSize: '0.8rem',
@@ -178,7 +179,7 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
             <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginLeft: '0.35rem' }}>(-1 word/error penalty)</span>
           </span>
           <span>
-            Corrected with Backspace: <strong style={{ color: '#38BDF8' }}>{correctedMistakes}</strong>
+            Corrected with Backspace: <strong style={{ color: 'var(--brand-primary)' }}>{correctedMistakes}</strong>
             <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginLeft: '0.35rem' }}>(zero Net WPM penalty)</span>
           </span>
         </div>
@@ -260,13 +261,14 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
         {/* Personalized Practice Recommendation Card */}
         <div
           style={{
-            background: 'linear-gradient(135deg, rgba(2, 132, 199, 0.12) 0%, rgba(30, 41, 59, 0.8) 100%)',
-            border: '1px solid rgba(56, 189, 248, 0.3)',
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border-medium)',
             borderRadius: '0.75rem',
             padding: '1rem 1.15rem',
             display: 'flex',
             flexDirection: 'column',
             gap: '0.5rem',
+            boxShadow: 'var(--shadow-card)',
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -276,7 +278,7 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
                 textTransform: 'uppercase',
                 letterSpacing: '0.08em',
                 fontWeight: 700,
-                color: '#38BDF8',
+                color: 'var(--brand-primary)',
               }}
             >
               Recommended Next Activity
@@ -286,7 +288,7 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
             </span>
           </div>
 
-          <div style={{ fontWeight: 700, fontSize: '0.9rem', color: '#F8FAFC' }}>
+          <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--text-primary)' }}>
             {recommendation.title}
           </div>
 
@@ -323,7 +325,7 @@ export const ResultsModal: React.FC<ResultsModalProps> = ({
         {guestSessionCount >= 3 && (
           <div
             style={{
-              background: 'rgba(255, 255, 255, 0.02)',
+              background: 'var(--bg-surface-subtle)',
               border: '1px solid var(--border-subtle)',
               borderRadius: '0.75rem',
               padding: '0.85rem 1rem',

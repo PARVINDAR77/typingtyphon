@@ -38,7 +38,7 @@ export default function AccuracyPage() {
       />
 
       {/* Header */}
-      <header style={{ width: '100%', padding: '1rem 1.5rem', borderBottom: '1px solid var(--border-subtle)', backgroundColor: 'rgba(15, 23, 42, 0.9)' }}>
+      <header style={{ width: '100%', padding: '1rem 1.5rem', borderBottom: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-surface)' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', textDecoration: 'none' }}>
             <div
@@ -56,7 +56,7 @@ export default function AccuracyPage() {
                 <path d="m13 2-2 10h6l-7 10 2-10H6l7-10z" />
               </svg>
             </div>
-            <span style={{ fontSize: '1.15rem', fontWeight: 800, color: '#F8FAFC', letterSpacing: '0.02em' }}>
+            <span style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.02em' }}>
               TYPING <span style={{ color: '#38BDF8' }}>TYPHON</span>
             </span>
           </Link>
@@ -80,8 +80,8 @@ export default function AccuracyPage() {
         <div style={{ maxWidth: '900px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
           {/* Hero Heading */}
           <div style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto' }}>
-            <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#F8FAFC', marginBottom: '0.75rem', letterSpacing: '-0.02em' }}>
-              The Science of <span style={{ color: '#38BDF8' }}>Typing Accuracy</span>
+            <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.75rem', letterSpacing: '-0.02em' }}>
+              The Science of <span style={{ color: 'var(--brand-primary)' }}>Typing Accuracy</span>
             </h1>
             <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', lineHeight: 1.6 }}>
               Most typists hit a frustrating speed plateau not because their fingers cannot move fast enough,
@@ -96,9 +96,10 @@ export default function AccuracyPage() {
               border: '1px solid var(--border-subtle)',
               borderRadius: '1rem',
               padding: '2rem',
+              boxShadow: 'var(--shadow-card)',
             }}
           >
-            <h2 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#38BDF8', marginBottom: '1rem' }}>
+            <h2 style={{ fontSize: '1.35rem', fontWeight: 700, color: 'var(--brand-primary)', marginBottom: '1rem' }}>
               The Triple Penalty of a Single Typo
             </h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '1.25rem' }}>
@@ -107,25 +108,25 @@ export default function AccuracyPage() {
             </p>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1rem' }}>
-              <div style={{ backgroundColor: '#0F172A', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid #334155' }}>
+              <div style={{ backgroundColor: 'var(--bg-card)', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid var(--border-subtle)', boxShadow: 'var(--shadow-sm)' }}>
                 <div style={{ color: '#F43F5E', fontWeight: 700, fontSize: '0.85rem', marginBottom: '0.25rem' }}>PENALTY 1</div>
-                <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#F8FAFC', marginBottom: '0.4rem' }}>The Cognitive Freeze</h3>
+                <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.4rem' }}>The Cognitive Freeze</h3>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.5 }}>
                   Your brain registers the mismatch, halting the predictive pipeline of upcoming words for 150–300 milliseconds.
                 </p>
               </div>
 
-              <div style={{ backgroundColor: '#0F172A', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid #334155' }}>
+              <div style={{ backgroundColor: 'var(--bg-card)', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid var(--border-subtle)', boxShadow: 'var(--shadow-sm)' }}>
                 <div style={{ color: '#F43F5E', fontWeight: 700, fontSize: '0.85rem', marginBottom: '0.25rem' }}>PENALTY 2</div>
-                <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#F8FAFC', marginBottom: '0.4rem' }}>The Correction Overhead</h3>
+                <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.4rem' }}>The Correction Overhead</h3>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.5 }}>
                   Your right pinky must extend to the Backspace key, reverse the cursor, and re-reach the target letter.
                 </p>
               </div>
 
-              <div style={{ backgroundColor: '#0F172A', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid #334155' }}>
+              <div style={{ backgroundColor: 'var(--bg-card)', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid var(--border-subtle)', boxShadow: 'var(--shadow-sm)' }}>
                 <div style={{ color: '#F43F5E', fontWeight: 700, fontSize: '0.85rem', marginBottom: '0.25rem' }}>PENALTY 3</div>
-                <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#F8FAFC', marginBottom: '0.4rem' }}>Net WPM Deduction</h3>
+                <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.4rem' }}>Net WPM Deduction</h3>
                 <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.5 }}>
                   Standard WPM scoring subtracts uncorrected errors directly from gross words, heavily depressing your score.
                 </p>
@@ -140,9 +141,10 @@ export default function AccuracyPage() {
               border: '1px solid var(--border-subtle)',
               borderRadius: '1rem',
               padding: '2rem',
+              boxShadow: 'var(--shadow-card)',
             }}
           >
-            <h2 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#F8FAFC', marginBottom: '1rem' }}>
+            <h2 style={{ fontSize: '1.35rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '1rem' }}>
               Why 98% is the Golden Rule
             </h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '1.5rem' }}>
@@ -151,25 +153,25 @@ export default function AccuracyPage() {
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#0F172A', padding: '1rem', borderRadius: '0.5rem', borderLeft: '4px solid #F43F5E' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: 'var(--bg-card)', padding: '1rem', borderRadius: '0.5rem', border: '1px solid var(--border-subtle)', borderLeft: '4px solid #F43F5E' }}>
                 <div>
-                  <div style={{ fontWeight: 700, color: '#F8FAFC', fontSize: '0.95rem' }}>Below 94% Accuracy — High Cognitive Friction</div>
+                  <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '0.95rem' }}>Below 94% Accuracy — High Cognitive Friction</div>
                   <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>Typist is rushing ahead of finger coordination; speeds fluctuate erratically.</div>
                 </div>
                 <span style={{ color: '#F43F5E', fontWeight: 800, fontSize: '0.9rem' }}>Slow Down</span>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#0F172A', padding: '1rem', borderRadius: '0.5rem', borderLeft: '4px solid #F59E0B' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: 'var(--bg-card)', padding: '1rem', borderRadius: '0.5rem', border: '1px solid var(--border-subtle)', borderLeft: '4px solid #F59E0B' }}>
                 <div>
-                  <div style={{ fontWeight: 700, color: '#F8FAFC', fontSize: '0.95rem' }}>95% – 97% Accuracy — Developing Muscle Memory</div>
+                  <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '0.95rem' }}>95% – 97% Accuracy — Developing Muscle Memory</div>
                   <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>Solid baseline, but weak keys (often pinky reaches or numbers) still trigger pauses.</div>
                 </div>
                 <span style={{ color: '#F59E0B', fontWeight: 800, fontSize: '0.9rem' }}>Good Rhythm</span>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: '#0F172A', padding: '1rem', borderRadius: '0.5rem', borderLeft: '4px solid #10B981' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', backgroundColor: 'var(--bg-card)', padding: '1rem', borderRadius: '0.5rem', border: '1px solid var(--border-subtle)', borderLeft: '4px solid #10B981' }}>
                 <div>
-                  <div style={{ fontWeight: 700, color: '#F8FAFC', fontSize: '0.95rem' }}>98%+ Accuracy — The Flow State</div>
+                  <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '0.95rem' }}>98%+ Accuracy — The Flow State</div>
                   <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem' }}>Rhythm is unbroken; speed increases naturally as finger transitions fluidly link.</div>
                 </div>
                 <span style={{ color: '#10B981', fontWeight: 800, fontSize: '0.9rem' }}>Optimal</span>
@@ -180,8 +182,8 @@ export default function AccuracyPage() {
           {/* Action Call to Action */}
           <div
             style={{
-              backgroundColor: '#0F172A',
-              border: '1px solid #0284C7',
+              backgroundColor: 'var(--bg-card)',
+              border: '1px solid var(--border-subtle)',
               borderRadius: '1rem',
               padding: '2rem',
               textAlign: 'center',
@@ -189,9 +191,10 @@ export default function AccuracyPage() {
               flexDirection: 'column',
               alignItems: 'center',
               gap: '1rem',
+              boxShadow: 'var(--shadow-card)',
             }}
           >
-            <h2 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#F8FAFC' }}>
+            <h2 style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--text-primary)' }}>
               Ready to Measure Your True Baseline?
             </h2>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', maxWidth: '600px', lineHeight: 1.6 }}>
@@ -202,7 +205,7 @@ export default function AccuracyPage() {
               <Link
                 href="/practice"
                 style={{
-                  backgroundColor: '#0284C7',
+                  backgroundColor: 'var(--brand-primary)',
                   color: '#FFFFFF',
                   padding: '0.8rem 1.5rem',
                   borderRadius: '0.5rem',
@@ -216,14 +219,14 @@ export default function AccuracyPage() {
               <Link
                 href="/lessons"
                 style={{
-                  backgroundColor: '#1E293B',
+                  backgroundColor: 'var(--bg-surface-subtle)',
                   color: 'var(--text-primary)',
                   padding: '0.8rem 1.5rem',
                   borderRadius: '0.5rem',
                   fontWeight: 700,
                   fontSize: '0.95rem',
                   textDecoration: 'none',
-                  border: '1px solid #334155',
+                  border: '1px solid var(--border-subtle)',
                 }}
               >
                 🎓 Practice Targeted Drills

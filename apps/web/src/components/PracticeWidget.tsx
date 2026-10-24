@@ -55,9 +55,9 @@ export const PracticeWidget: React.FC = () => {
                   fontSize: '0.825rem',
                   fontWeight: 600,
                   cursor: 'pointer',
-                  border: duration === d ? '1px solid #38BDF8' : '1px solid #334155',
-                  backgroundColor: duration === d ? 'rgba(56, 189, 248, 0.15)' : '#0F172A',
-                  color: duration === d ? '#38BDF8' : 'var(--text-secondary)',
+                  border: duration === d ? '1px solid var(--brand-primary)' : '1px solid var(--border-subtle)',
+                  backgroundColor: duration === d ? 'rgba(14, 165, 233, 0.15)' : 'var(--bg-surface-subtle)',
+                  color: duration === d ? 'var(--brand-primary)' : 'var(--text-secondary)',
                   transition: 'all 0.15s ease',
                 }}
               >
@@ -78,9 +78,9 @@ export const PracticeWidget: React.FC = () => {
               borderRadius: '0.5rem',
               fontSize: '0.825rem',
               fontWeight: 600,
-              backgroundColor: '#334155',
+              backgroundColor: 'var(--bg-surface-subtle)',
+              border: '1px solid var(--border-subtle)',
               color: 'var(--text-primary)',
-              border: 'none',
               cursor: 'pointer',
             }}
           >
@@ -104,7 +104,7 @@ export const PracticeWidget: React.FC = () => {
         <div
           style={{
             backgroundColor: 'var(--bg-surface)',
-            border: '1px solid #0284C7',
+            border: '1px solid var(--brand-primary)',
             borderRadius: '0.75rem',
             padding: '1.25rem 1.5rem',
             display: 'flex',
@@ -112,15 +112,15 @@ export const PracticeWidget: React.FC = () => {
             justifyContent: 'space-between',
             flexWrap: 'wrap',
             gap: '1rem',
-            boxShadow: '0 0 20px rgba(56, 189, 248, 0.15)',
+            boxShadow: 'var(--shadow-card)',
           }}
         >
           <div>
-            <div style={{ fontSize: '0.85rem', color: '#38BDF8', fontWeight: 600, textTransform: 'uppercase' }}>
+            <div style={{ fontSize: '0.85rem', color: 'var(--brand-primary)', fontWeight: 600, textTransform: 'uppercase' }}>
               Test Completed
             </div>
-            <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#F8FAFC' }}>
-              Speed: <span style={{ color: '#38BDF8' }}>{lastResult.netWpm} WPM</span> • Accuracy:{' '}
+            <div style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+              Speed: <span style={{ color: 'var(--brand-primary)' }}>{lastResult.netWpm} WPM</span> • Accuracy:{' '}
               <span style={{ color: '#10B981' }}>{lastResult.accuracyPct}%</span> • Errors:{' '}
               <span style={{ color: lastResult.errorCount > 0 ? '#F43F5E' : '#10B981' }}>
                 {lastResult.errorCount}
@@ -131,7 +131,7 @@ export const PracticeWidget: React.FC = () => {
             <button
               onClick={handleRestart}
               style={{
-                backgroundColor: '#0284C7',
+                backgroundColor: 'var(--brand-primary)',
                 color: '#FFFFFF',
                 padding: '0.5rem 1rem',
                 borderRadius: '0.5rem',
@@ -146,7 +146,8 @@ export const PracticeWidget: React.FC = () => {
             <Link
               href="/accuracy"
               style={{
-                backgroundColor: '#334155',
+                backgroundColor: 'var(--bg-surface-subtle)',
+                border: '1px solid var(--border-subtle)',
                 color: 'var(--text-primary)',
                 padding: '0.5rem 1rem',
                 borderRadius: '0.5rem',

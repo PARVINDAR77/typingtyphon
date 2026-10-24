@@ -12,6 +12,7 @@
     "test": "vitest run"
   },
   "dependencies": {
+    "@react-oauth/google": "^0.13.5",
     "@typingtyphon/contracts": "*",
     "lucide-react": "^0.475.0",
     "next": "^15.1.7",

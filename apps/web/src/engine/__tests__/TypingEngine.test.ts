@@ -599,6 +599,26 @@ describe('TypingEngine Unit Tests', () => {
       // 'p' had clean 180ms delta
       expect(metrics['p'].averageLatencyMs).toBe(180);
     });
+
+    it('replayCurrentWords resets status, caret, and untouched states while preserving identical words', () => {
+      const eng = new TypingEngine(['react', 'next'], { durationSeconds: 60, mode: 'words' });
+      eng.handleKeypress('r');
+      eng.handleKeypress('x'); // error
+      expect(eng.getState().status).toBe('running');
+      expect(eng.getState().totalKeystrokes).toBe(2);
+      expect(eng.getState().errorCount).toBe(1);
+
+      eng.replayCurrentWords();
+
+      const resetState = eng.getState();
+      expect(resetState.status).toBe('idle');
+      expect(resetState.totalKeystrokes).toBe(0);
+      expect(resetState.errorCount).toBe(0);
+      expect(resetState.activeWordIndex).toBe(0);
+      expect(resetState.activeCharIndex).toBe(0);
+      expect(eng.getOriginalWords()).toEqual(['react', 'next']);
+      expect(resetState.words[0].chars.every((c) => c.state === 'untouched')).toBe(true);
+    });
   });
 });
 

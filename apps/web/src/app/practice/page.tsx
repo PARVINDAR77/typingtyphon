@@ -67,7 +67,7 @@ export default function PracticePage() {
       />
 
       {/* Navigation Header */}
-      <header style={{ width: '100%', padding: '1rem 1.5rem', borderBottom: '1px solid var(--border-subtle)', backgroundColor: 'rgba(15, 23, 42, 0.9)' }}>
+      <header style={{ width: '100%', padding: '1rem 1.5rem', borderBottom: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-surface)' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', textDecoration: 'none' }}>
             <div
@@ -85,7 +85,7 @@ export default function PracticePage() {
                 <path d="m13 2-2 10h6l-7 10 2-10H6l7-10z" />
               </svg>
             </div>
-            <span style={{ fontSize: '1.15rem', fontWeight: 800, color: '#F8FAFC', letterSpacing: '0.02em' }}>
+            <span style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.02em' }}>
               TYPING <span style={{ color: '#38BDF8' }}>TYPHON</span>
             </span>
           </Link>
@@ -109,8 +109,8 @@ export default function PracticePage() {
         <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '2.5rem', width: '100%', overflowX: 'hidden' }}>
           {/* Hero Heading */}
           <div style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto' }}>
-            <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#F8FAFC', marginBottom: '0.75rem', letterSpacing: '-0.02em' }}>
-              Free Online <span style={{ color: '#38BDF8' }}>Typing Speed Test</span>
+            <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.75rem', letterSpacing: '-0.02em' }}>
+              Free Online <span style={{ color: 'var(--brand-primary)' }}>Typing Speed Test</span>
             </h1>
             <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', lineHeight: 1.6 }}>
               Benchmark your words-per-minute (WPM) and typing accuracy with our instant, privacy-conscious typing engine.
@@ -128,27 +128,28 @@ export default function PracticePage() {
             {/* Speed Standards Card */}
             <div
               style={{
-                backgroundColor: 'var(--bg-surface)',
+                backgroundColor: 'var(--bg-card)',
                 border: '1px solid var(--border-subtle)',
                 borderRadius: '0.85rem',
                 padding: '1.75rem',
+                boxShadow: 'var(--shadow-card)',
               }}
             >
-              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#38BDF8', marginBottom: '1rem' }}>
+              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--brand-primary)', marginBottom: '1rem' }}>
                 Typing Speed Benchmarks
               </h2>
               <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.9rem' }}>
-                <li style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #334155', paddingBottom: '0.4rem' }}>
+                <li style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.4rem' }}>
                   <span style={{ color: 'var(--text-secondary)' }}>Beginner Typist:</span>
-                  <span style={{ fontWeight: 600, color: '#F8FAFC' }}>20 – 35 WPM</span>
+                  <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>20 – 35 WPM</span>
                 </li>
-                <li style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #334155', paddingBottom: '0.4rem' }}>
+                <li style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.4rem' }}>
                   <span style={{ color: 'var(--text-secondary)' }}>Intermediate / Everyday:</span>
-                  <span style={{ fontWeight: 600, color: '#F8FAFC' }}>40 – 55 WPM</span>
+                  <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>40 – 55 WPM</span>
                 </li>
-                <li style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #334155', paddingBottom: '0.4rem' }}>
+                <li style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.4rem' }}>
                   <span style={{ color: 'var(--text-secondary)' }}>Advanced Touch Typist:</span>
-                  <span style={{ fontWeight: 600, color: '#38BDF8' }}>60 – 80 WPM</span>
+                  <span style={{ fontWeight: 600, color: 'var(--brand-primary)' }}>60 – 80 WPM</span>
                 </li>
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--text-secondary)' }}>Professional / Competitive:</span>
@@ -160,13 +161,14 @@ export default function PracticePage() {
             {/* Mechanics Card */}
             <div
               style={{
-                backgroundColor: 'var(--bg-surface)',
+                backgroundColor: 'var(--bg-card)',
                 border: '1px solid var(--border-subtle)',
                 borderRadius: '0.85rem',
                 padding: '1.75rem',
+                boxShadow: 'var(--shadow-card)',
               }}
             >
-              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#38BDF8', marginBottom: '1rem' }}>
+              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--brand-primary)', marginBottom: '1rem' }}>
                 How WPM is Computed
               </h2>
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.6, marginBottom: '0.75rem' }}>
@@ -175,13 +177,13 @@ export default function PracticePage() {
               </p>
               <div
                 style={{
-                  backgroundColor: '#0F172A',
+                  backgroundColor: 'var(--bg-surface-subtle)',
                   padding: '0.75rem 1rem',
                   borderRadius: '0.5rem',
                   fontFamily: 'var(--font-mono)',
                   fontSize: '0.85rem',
-                  color: '#38BDF8',
-                  border: '1px solid #334155',
+                  color: 'var(--brand-primary)',
+                  border: '1px solid var(--border-subtle)',
                 }}
               >
                 Net WPM = ((Chars / 5) - Errors) / Minutes

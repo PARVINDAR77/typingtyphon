@@ -6,6 +6,7 @@ export interface UserProfileDto {
   username: string;
   fullName?: string;
   avatarUrl?: string;
+  oauthProvider?: string;
   role: UserRole;
   isEmailVerified: boolean;
   createdAt: string;
@@ -21,6 +22,11 @@ export interface RegisterDto {
 export interface LoginDto {
   email: string;
   password: string;
+}
+
+export interface SocialAuthDto {
+  token: string;
+  provider: 'google' | 'facebook';
 }
 
 export interface AuthResponseDto {

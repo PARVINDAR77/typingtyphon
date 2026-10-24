@@ -23,73 +23,73 @@ export const FINGER_DATA: Record<FingerId, FingerInfo> = {
     id: 'left-pinky',
     name: 'Left Pinky',
     hand: 'left',
-    color: '#c084fc', // Violet/Purple
-    badgeBg: 'rgba(192, 132, 252, 0.15)',
-    badgeBorder: 'rgba(192, 132, 252, 0.4)',
+    color: '#ec4899', // Vivid Rose/Pink
+    badgeBg: 'rgba(236, 72, 153, 0.16)',
+    badgeBorder: 'rgba(236, 72, 153, 0.45)',
   },
   'left-ring': {
     id: 'left-ring',
     name: 'Left Ring',
     hand: 'left',
-    color: '#60a5fa', // Blue
-    badgeBg: 'rgba(96, 165, 250, 0.15)',
-    badgeBorder: 'rgba(96, 165, 250, 0.4)',
+    color: '#3b82f6', // Vivid Royal Blue
+    badgeBg: 'rgba(59, 130, 246, 0.16)',
+    badgeBorder: 'rgba(59, 130, 246, 0.45)',
   },
   'left-middle': {
     id: 'left-middle',
     name: 'Left Middle',
     hand: 'left',
-    color: '#2dd4bf', // Teal/Cyan
-    badgeBg: 'rgba(45, 212, 191, 0.15)',
-    badgeBorder: 'rgba(45, 212, 191, 0.4)',
+    color: '#06b6d4', // Vivid Cyan
+    badgeBg: 'rgba(6, 182, 212, 0.16)',
+    badgeBorder: 'rgba(6, 182, 212, 0.45)',
   },
   'left-index': {
     id: 'left-index',
     name: 'Left Index',
     hand: 'left',
-    color: '#34d399', // Emerald/Green
-    badgeBg: 'rgba(52, 211, 153, 0.15)',
-    badgeBorder: 'rgba(52, 211, 153, 0.4)',
+    color: '#10b981', // Vivid Emerald Green
+    badgeBg: 'rgba(16, 185, 129, 0.16)',
+    badgeBorder: 'rgba(16, 185, 129, 0.45)',
   },
   thumb: {
     id: 'thumb',
     name: 'Thumb',
     hand: 'left', // Shared by both thumbs
-    color: '#38bdf8', // Sky Cyan
-    badgeBg: 'rgba(56, 189, 248, 0.15)',
-    badgeBorder: 'rgba(56, 189, 248, 0.4)',
+    color: '#8b5cf6', // Vivid Purple/Violet
+    badgeBg: 'rgba(139, 92, 246, 0.16)',
+    badgeBorder: 'rgba(139, 92, 246, 0.45)',
   },
   'right-index': {
     id: 'right-index',
     name: 'Right Index',
     hand: 'right',
-    color: '#34d399', // Emerald/Green
-    badgeBg: 'rgba(52, 211, 153, 0.15)',
-    badgeBorder: 'rgba(52, 211, 153, 0.4)',
+    color: '#f59e0b', // Radiant Amber / Warm Gold
+    badgeBg: 'rgba(245, 158, 11, 0.16)',
+    badgeBorder: 'rgba(245, 158, 11, 0.45)',
   },
   'right-middle': {
     id: 'right-middle',
     name: 'Right Middle',
     hand: 'right',
-    color: '#2dd4bf', // Teal/Cyan
-    badgeBg: 'rgba(45, 212, 191, 0.15)',
-    badgeBorder: 'rgba(45, 212, 191, 0.4)',
+    color: '#06b6d4', // Vivid Cyan
+    badgeBg: 'rgba(6, 182, 212, 0.16)',
+    badgeBorder: 'rgba(6, 182, 212, 0.45)',
   },
   'right-ring': {
     id: 'right-ring',
     name: 'Right Ring',
     hand: 'right',
-    color: '#60a5fa', // Blue
-    badgeBg: 'rgba(96, 165, 250, 0.15)',
-    badgeBorder: 'rgba(96, 165, 250, 0.4)',
+    color: '#3b82f6', // Vivid Royal Blue
+    badgeBg: 'rgba(59, 130, 246, 0.16)',
+    badgeBorder: 'rgba(59, 130, 246, 0.45)',
   },
   'right-pinky': {
     id: 'right-pinky',
     name: 'Right Pinky',
     hand: 'right',
-    color: '#c084fc', // Violet/Purple
-    badgeBg: 'rgba(192, 132, 252, 0.15)',
-    badgeBorder: 'rgba(192, 132, 252, 0.4)',
+    color: '#ec4899', // Vivid Rose/Pink
+    badgeBg: 'rgba(236, 72, 153, 0.16)',
+    badgeBorder: 'rgba(236, 72, 153, 0.45)',
   },
 };
 
@@ -283,15 +283,122 @@ export const KEYBOARD_LAYOUT_ROWS: KeyLayoutItem[][] = [
     { key: '/', display: '/', finger: 'right-pinky' },
     { key: 'ShiftRight', display: 'Shift', finger: 'right-pinky', width: 2.3 },
   ],
-  // Space row
+  // Space row (sum of weights = 14.5 to perfectly align with rows 1-4)
   [
-    { key: 'Ctrl', display: 'Ctrl', finger: 'left-pinky', width: 1.3 },
-    { key: 'Alt', display: 'Alt', finger: 'thumb', width: 1.2 },
-    { key: ' ', display: 'Spacebar', finger: 'thumb', width: 6.2 },
-    { key: 'AltRight', display: 'Alt', finger: 'thumb', width: 1.2 },
-    { key: 'CtrlRight', display: 'Ctrl', finger: 'right-pinky', width: 1.3 },
+    { key: 'Ctrl', display: 'Ctrl', finger: 'left-pinky', width: 1.75 },
+    { key: 'Alt', display: 'Alt', finger: 'thumb', width: 1.75 },
+    { key: ' ', display: 'Spacebar', finger: 'thumb', width: 7.5 },
+    { key: 'AltRight', display: 'Alt', finger: 'thumb', width: 1.75 },
+    { key: 'CtrlRight', display: 'Ctrl', finger: 'right-pinky', width: 1.75 },
   ],
 ];
+
+export interface FingerReachOffset {
+  fingerId: FingerId;
+  dx: number; // offset on 1024x1024 hand coordinates
+  dy: number;
+  row: 'number' | 'top' | 'home' | 'bottom' | 'space';
+  label: string;
+}
+
+export const KEY_REACH_DATA: Record<string, FingerReachOffset> = {
+  // Left Pinky (Home anchor: A)
+  '`': { fingerId: 'left-pinky', dx: -140, dy: -230, row: 'number', label: '`' },
+  '~': { fingerId: 'left-pinky', dx: -140, dy: -230, row: 'number', label: '~' },
+  '1': { fingerId: 'left-pinky', dx: -30, dy: -230, row: 'number', label: '1' },
+  '!': { fingerId: 'left-pinky', dx: -30, dy: -230, row: 'number', label: '1' },
+  tab: { fingerId: 'left-pinky', dx: -140, dy: -115, row: 'top', label: 'Tab' },
+  q: { fingerId: 'left-pinky', dx: -30, dy: -115, row: 'top', label: 'Q' },
+  caps: { fingerId: 'left-pinky', dx: -130, dy: 0, row: 'home', label: 'Caps' },
+  a: { fingerId: 'left-pinky', dx: 0, dy: 0, row: 'home', label: 'A' },
+  shift: { fingerId: 'left-pinky', dx: -140, dy: 115, row: 'bottom', label: 'Shift' },
+  shiftleft: { fingerId: 'left-pinky', dx: -140, dy: 115, row: 'bottom', label: 'Shift' },
+  z: { fingerId: 'left-pinky', dx: 25, dy: 115, row: 'bottom', label: 'Z' },
+  ctrl: { fingerId: 'left-pinky', dx: -140, dy: 230, row: 'space', label: 'Ctrl' },
+
+  // Left Ring (Home anchor: S)
+  '2': { fingerId: 'left-ring', dx: -30, dy: -230, row: 'number', label: '2' },
+  '@': { fingerId: 'left-ring', dx: -30, dy: -230, row: 'number', label: '2' },
+  w: { fingerId: 'left-ring', dx: -25, dy: -115, row: 'top', label: 'W' },
+  s: { fingerId: 'left-ring', dx: 0, dy: 0, row: 'home', label: 'S' },
+  x: { fingerId: 'left-ring', dx: 25, dy: 115, row: 'bottom', label: 'X' },
+
+  // Left Middle (Home anchor: D)
+  '3': { fingerId: 'left-middle', dx: -30, dy: -230, row: 'number', label: '3' },
+  '#': { fingerId: 'left-middle', dx: -30, dy: -230, row: 'number', label: '3' },
+  e: { fingerId: 'left-middle', dx: -25, dy: -115, row: 'top', label: 'E' },
+  d: { fingerId: 'left-middle', dx: 0, dy: 0, row: 'home', label: 'D' },
+  c: { fingerId: 'left-middle', dx: 25, dy: 115, row: 'bottom', label: 'C' },
+
+  // Left Index (Home anchor: F)
+  '4': { fingerId: 'left-index', dx: -30, dy: -230, row: 'number', label: '4' },
+  $: { fingerId: 'left-index', dx: -30, dy: -230, row: 'number', label: '4' },
+  '5': { fingerId: 'left-index', dx: 85, dy: -230, row: 'number', label: '5' },
+  '%': { fingerId: 'left-index', dx: 85, dy: -230, row: 'number', label: '5' },
+  r: { fingerId: 'left-index', dx: -30, dy: -115, row: 'top', label: 'R' },
+  t: { fingerId: 'left-index', dx: 85, dy: -115, row: 'top', label: 'T' },
+  f: { fingerId: 'left-index', dx: 0, dy: 0, row: 'home', label: 'F' },
+  g: { fingerId: 'left-index', dx: 115, dy: 0, row: 'home', label: 'G' },
+  v: { fingerId: 'left-index', dx: -25, dy: 115, row: 'bottom', label: 'V' },
+  b: { fingerId: 'left-index', dx: 90, dy: 115, row: 'bottom', label: 'B' },
+
+  // Thumbs (Home anchor: Spacebar)
+  ' ': { fingerId: 'thumb', dx: 0, dy: 15, row: 'space', label: 'SPACE' },
+  alt: { fingerId: 'thumb', dx: -90, dy: 15, row: 'space', label: 'Alt' },
+  altright: { fingerId: 'thumb', dx: 90, dy: 15, row: 'space', label: 'Alt' },
+
+  // Right Index (Home anchor: J)
+  '6': { fingerId: 'right-index', dx: -140, dy: -230, row: 'number', label: '6' },
+  '^': { fingerId: 'right-index', dx: -140, dy: -230, row: 'number', label: '6' },
+  '7': { fingerId: 'right-index', dx: -25, dy: -230, row: 'number', label: '7' },
+  '&': { fingerId: 'right-index', dx: -25, dy: -230, row: 'number', label: '7' },
+  y: { fingerId: 'right-index', dx: -140, dy: -115, row: 'top', label: 'Y' },
+  u: { fingerId: 'right-index', dx: -25, dy: -115, row: 'top', label: 'U' },
+  h: { fingerId: 'right-index', dx: -115, dy: 0, row: 'home', label: 'H' },
+  j: { fingerId: 'right-index', dx: 0, dy: 0, row: 'home', label: 'J' },
+  n: { fingerId: 'right-index', dx: -90, dy: 115, row: 'bottom', label: 'N' },
+  m: { fingerId: 'right-index', dx: 25, dy: 115, row: 'bottom', label: 'M' },
+
+  // Right Middle (Home anchor: K)
+  '8': { fingerId: 'right-middle', dx: -25, dy: -230, row: 'number', label: '8' },
+  '*': { fingerId: 'right-middle', dx: -25, dy: -230, row: 'number', label: '8' },
+  i: { fingerId: 'right-middle', dx: -25, dy: -115, row: 'top', label: 'I' },
+  k: { fingerId: 'right-middle', dx: 0, dy: 0, row: 'home', label: 'K' },
+  ',': { fingerId: 'right-middle', dx: 25, dy: 115, row: 'bottom', label: ',' },
+  '<': { fingerId: 'right-middle', dx: 25, dy: 115, row: 'bottom', label: '<' },
+
+  // Right Ring (Home anchor: L)
+  '9': { fingerId: 'right-ring', dx: -25, dy: -230, row: 'number', label: '9' },
+  '(': { fingerId: 'right-ring', dx: -25, dy: -230, row: 'number', label: '9' },
+  o: { fingerId: 'right-ring', dx: -25, dy: -115, row: 'top', label: 'O' },
+  l: { fingerId: 'right-ring', dx: 0, dy: 0, row: 'home', label: 'L' },
+  '.': { fingerId: 'right-ring', dx: 25, dy: 115, row: 'bottom', label: '.' },
+  '>': { fingerId: 'right-ring', dx: 25, dy: 115, row: 'bottom', label: '>' },
+
+  // Right Pinky (Home anchor: ;)
+  '0': { fingerId: 'right-pinky', dx: -25, dy: -230, row: 'number', label: '0' },
+  ')': { fingerId: 'right-pinky', dx: -25, dy: -230, row: 'number', label: '0' },
+  '-': { fingerId: 'right-pinky', dx: 85, dy: -230, row: 'number', label: '-' },
+  _: { fingerId: 'right-pinky', dx: 85, dy: -230, row: 'number', label: '_' },
+  '=': { fingerId: 'right-pinky', dx: 195, dy: -230, row: 'number', label: '=' },
+  '+': { fingerId: 'right-pinky', dx: 195, dy: -230, row: 'number', label: '+' },
+  bksp: { fingerId: 'right-pinky', dx: 310, dy: -230, row: 'number', label: '⌫' },
+  p: { fingerId: 'right-pinky', dx: -25, dy: -115, row: 'top', label: 'P' },
+  '[': { fingerId: 'right-pinky', dx: 85, dy: -115, row: 'top', label: '[' },
+  '{': { fingerId: 'right-pinky', dx: 85, dy: -115, row: 'top', label: '{' },
+  ']': { fingerId: 'right-pinky', dx: 195, dy: -115, row: 'top', label: ']' },
+  '}': { fingerId: 'right-pinky', dx: 195, dy: -115, row: 'top', label: '}' },
+  '\\': { fingerId: 'right-pinky', dx: 300, dy: -115, row: 'top', label: '\\' },
+  ';': { fingerId: 'right-pinky', dx: 0, dy: 0, row: 'home', label: ';' },
+  ':': { fingerId: 'right-pinky', dx: 0, dy: 0, row: 'home', label: ':' },
+  "'": { fingerId: 'right-pinky', dx: 115, dy: 0, row: 'home', label: "'" },
+  '"': { fingerId: 'right-pinky', dx: 115, dy: 0, row: 'home', label: '"' },
+  enter: { fingerId: 'right-pinky', dx: 220, dy: 0, row: 'home', label: 'Enter' },
+  '/': { fingerId: 'right-pinky', dx: 25, dy: 115, row: 'bottom', label: '/' },
+  '?': { fingerId: 'right-pinky', dx: 25, dy: 115, row: 'bottom', label: '?' },
+  shiftright: { fingerId: 'right-pinky', dx: 190, dy: 115, row: 'bottom', label: 'Shift' },
+  ctrlright: { fingerId: 'right-pinky', dx: 220, dy: 230, row: 'space', label: 'Ctrl' },
+};
 
 export function getFingerForKey(char: string): FingerInfo | null {
   if (!char) return null;
@@ -299,4 +406,10 @@ export function getFingerForKey(char: string): FingerInfo | null {
   const fingerId = CHAR_TO_FINGER_MAP[char] || CHAR_TO_FINGER_MAP[normalized];
   if (!fingerId) return null;
   return FINGER_DATA[fingerId] || null;
+}
+
+export function getKeyReach(char: string): FingerReachOffset | null {
+  if (!char) return null;
+  const normalized = char.length === 1 ? char.toLowerCase() : char.toLowerCase();
+  return KEY_REACH_DATA[char] || KEY_REACH_DATA[normalized] || null;
 }

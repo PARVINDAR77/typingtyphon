@@ -24,10 +24,18 @@ export const ENGLISH_COMMON_WORDS = [
   'until', 'mile', 'river', 'car', 'feet', 'care', 'second', 'book', 'carry', 'took', 'science'
 ];
 
+export const NUMBERS_POOL = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '25', '50', '99', '100', '2026', '365', '42'];
+
+export const PUNCTUATION_MARKS = ['.', ',', '!', '?', ';', ':', '-', '"'];
+
 /**
  * Generate a list of words for a test session (supports deterministic seed to avoid SSR hydration mismatch).
  */
-export function generateTestWords(count = 100, seed?: number): string[] {
+export function generateTestWords(
+  count = 100,
+  seed?: number,
+  mode: 'words' | 'punctuation' | 'numbers' | 'quotes' = 'words'
+): string[] {
   const words: string[] = [];
   const pool = ENGLISH_COMMON_WORDS;
   let currentSeed = seed;
@@ -40,7 +48,25 @@ export function generateTestWords(count = 100, seed?: number): string[] {
     } else {
       index = Math.floor(Math.random() * pool.length);
     }
-    words.push(pool[index]);
+
+    let word = pool[index];
+
+    if (mode === 'punctuation') {
+      // Capitalize ~20% of words or append punctuation
+      if (i % 6 === 0) {
+        word = word.charAt(0).toUpperCase() + word.slice(1);
+      }
+      if (i % 5 === 0) {
+        const punc = PUNCTUATION_MARKS[i % PUNCTUATION_MARKS.length];
+        word = `${word}${punc}`;
+      }
+    } else if (mode === 'numbers') {
+      if (i % 4 === 0) {
+        word = NUMBERS_POOL[(i * 3) % NUMBERS_POOL.length];
+      }
+    }
+
+    words.push(word);
   }
   return words;
 }

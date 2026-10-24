@@ -88,7 +88,7 @@ export default function LessonsPage() {
       />
 
       {/* Header */}
-      <header style={{ width: '100%', padding: '1rem 1.5rem', borderBottom: '1px solid var(--border-subtle)', backgroundColor: 'rgba(15, 23, 42, 0.9)' }}>
+      <header style={{ width: '100%', padding: '1rem 1.5rem', borderBottom: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-surface)' }}>
         <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', textDecoration: 'none' }}>
             <div
@@ -106,17 +106,19 @@ export default function LessonsPage() {
                 <path d="m13 2-2 10h6l-7 10 2-10H6l7-10z" />
               </svg>
             </div>
-            <span style={{ fontSize: '1.15rem', fontWeight: 800, color: '#F8FAFC', letterSpacing: '0.02em' }}>
+            <span style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.02em' }}>
               TYPING <span style={{ color: '#38BDF8' }}>TYPHON</span>
             </span>
           </Link>
-
           <nav aria-label="Main Navigation" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
             <Link href="/" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500 }}>
               Home
             </Link>
             <Link href="/practice" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500 }}>
               Speed Test
+            </Link>
+            <Link href="/academy" style={{ color: '#38BDF8', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 700 }}>
+              🎓 Academy
             </Link>
             <Link href="/accuracy" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500 }}>
               Accuracy Guide
@@ -130,8 +132,8 @@ export default function LessonsPage() {
         <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
           {/* Header Title */}
           <div style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto' }}>
-            <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#F8FAFC', marginBottom: '0.75rem', letterSpacing: '-0.02em' }}>
-              Structured <span style={{ color: '#38BDF8' }}>Touch Typing Curriculum</span>
+            <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.75rem', letterSpacing: '-0.02em' }}>
+              Structured <span style={{ color: 'var(--brand-primary)' }}>Touch Typing Curriculum</span>
             </h1>
             <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', lineHeight: 1.6 }}>
               Learning to touch type means training your fingers to navigate the keyboard purely by muscle memory.
@@ -142,7 +144,7 @@ export default function LessonsPage() {
           {/* Primary Action Button */}
           <div style={{ textAlign: 'center' }}>
             <Link
-              href="/#learn"
+              href="/academy"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -179,29 +181,29 @@ export default function LessonsPage() {
             </p>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
-              <div style={{ backgroundColor: '#0F172A', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid #334155' }}>
-                <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#F8FAFC', marginBottom: '0.65rem' }}>
+              <div style={{ backgroundColor: 'var(--bg-card)', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid var(--border-subtle)', boxShadow: 'var(--shadow-card)' }}>
+                <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.65rem' }}>
                   Left Hand Responsibilities
                 </h3>
                 <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                  <li><strong style={{ color: '#38BDF8' }}>Pinky:</strong> 1, Q, A (Home), Z, Left Shift, Tab</li>
-                  <li><strong style={{ color: '#38BDF8' }}>Ring:</strong> 2, W, S (Home), X</li>
-                  <li><strong style={{ color: '#38BDF8' }}>Middle:</strong> 3, E, D (Home), C</li>
-                  <li><strong style={{ color: '#38BDF8' }}>Index:</strong> 4, 5, R, T, F (Home Anchor), G, V, B</li>
-                  <li><strong style={{ color: '#38BDF8' }}>Thumb:</strong> Spacebar</li>
+                  <li><strong style={{ color: 'var(--brand-primary)' }}>Pinky:</strong> 1, Q, A (Home), Z, Left Shift, Tab</li>
+                  <li><strong style={{ color: 'var(--brand-primary)' }}>Ring:</strong> 2, W, S (Home), X</li>
+                  <li><strong style={{ color: 'var(--brand-primary)' }}>Middle:</strong> 3, E, D (Home), C</li>
+                  <li><strong style={{ color: 'var(--brand-primary)' }}>Index:</strong> 4, 5, R, T, F (Home Anchor), G, V, B</li>
+                  <li><strong style={{ color: 'var(--brand-primary)' }}>Thumb:</strong> Spacebar</li>
                 </ul>
               </div>
 
-              <div style={{ backgroundColor: '#0F172A', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid #334155' }}>
-                <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: '#F8FAFC', marginBottom: '0.65rem' }}>
+              <div style={{ backgroundColor: 'var(--bg-card)', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid var(--border-subtle)', boxShadow: 'var(--shadow-card)' }}>
+                <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.65rem' }}>
                   Right Hand Responsibilities
                 </h3>
                 <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                  <li><strong style={{ color: '#38BDF8' }}>Index:</strong> 6, 7, Y, U, J (Home Anchor), H, N, M</li>
-                  <li><strong style={{ color: '#38BDF8' }}>Middle:</strong> 8, I, K (Home), , (Comma)</li>
-                  <li><strong style={{ color: '#38BDF8' }}>Ring:</strong> 9, O, L (Home), . (Period)</li>
-                  <li><strong style={{ color: '#38BDF8' }}>Pinky:</strong> 0, P, ; (Home), /, Enter, Right Shift</li>
-                  <li><strong style={{ color: '#38BDF8' }}>Thumb:</strong> Spacebar</li>
+                  <li><strong style={{ color: 'var(--brand-primary)' }}>Index:</strong> 6, 7, Y, U, J (Home Anchor), H, N, M</li>
+                  <li><strong style={{ color: 'var(--brand-primary)' }}>Middle:</strong> 8, I, K (Home), , (Comma)</li>
+                  <li><strong style={{ color: 'var(--brand-primary)' }}>Ring:</strong> 9, O, L (Home), . (Period)</li>
+                  <li><strong style={{ color: 'var(--brand-primary)' }}>Pinky:</strong> 0, P, ; (Home), /, Enter, Right Shift</li>
+                  <li><strong style={{ color: 'var(--brand-primary)' }}>Thumb:</strong> Spacebar</li>
                 </ul>
               </div>
             </div>
@@ -209,7 +211,7 @@ export default function LessonsPage() {
 
           {/* Curriculum Stages Grid */}
           <section>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#F8FAFC', marginBottom: '1.25rem' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '1.25rem' }}>
               The 6 Curriculum Stages
             </h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(290px, 1fr))', gap: '1.25rem' }}>
@@ -217,25 +219,26 @@ export default function LessonsPage() {
                 <div
                   key={stg.stage}
                   style={{
-                    backgroundColor: 'var(--bg-surface)',
+                    backgroundColor: 'var(--bg-card)',
                     border: '1px solid var(--border-subtle)',
                     borderRadius: '0.85rem',
                     padding: '1.5rem',
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '0.75rem',
+                    boxShadow: 'var(--shadow-card)',
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#38BDF8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--brand-primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                       Stage {stg.stage}
                     </span>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', backgroundColor: '#0F172A', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', backgroundColor: 'var(--bg-surface-subtle)', border: '1px solid var(--border-subtle)', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>
                       {stg.lessonsCount} Lessons
                     </span>
                   </div>
 
-                  <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: '#F8FAFC' }}>
+                  <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)' }}>
                     {stg.title}
                   </h3>
 
@@ -243,11 +246,11 @@ export default function LessonsPage() {
                     style={{
                       fontFamily: 'var(--font-mono)',
                       fontSize: '0.825rem',
-                      color: '#38BDF8',
-                      backgroundColor: '#0F172A',
+                      color: 'var(--brand-primary)',
+                      backgroundColor: 'var(--bg-surface-subtle)',
                       padding: '0.4rem 0.65rem',
                       borderRadius: '0.4rem',
-                      border: '1px solid #334155',
+                      border: '1px solid var(--border-subtle)',
                     }}
                   >
                     Target: {stg.keys}

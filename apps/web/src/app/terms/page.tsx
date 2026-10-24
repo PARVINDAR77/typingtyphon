@@ -18,7 +18,7 @@ export default function TermsOfServicePage() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
       {/* Navigation Bar */}
-      <header style={{ width: '100%', padding: '1rem 1.5rem', borderBottom: '1px solid var(--border-subtle)', backgroundColor: 'rgba(15, 23, 42, 0.9)' }}>
+      <header style={{ width: '100%', padding: '1rem 1.5rem', borderBottom: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-surface)' }}>
         <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', textDecoration: 'none' }}>
             <div
@@ -36,7 +36,7 @@ export default function TermsOfServicePage() {
                 <path d="m13 2-2 10h6l-7 10 2-10H6l7-10z" />
               </svg>
             </div>
-            <span style={{ fontSize: '1.15rem', fontWeight: 800, color: '#F8FAFC', letterSpacing: '0.02em' }}>
+            <span style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.02em' }}>
               TYPING <span style={{ color: '#38BDF8' }}>TYPHON</span>
             </span>
           </Link>
@@ -60,9 +60,10 @@ export default function TermsOfServicePage() {
             padding: '2.5rem 2rem',
             color: 'var(--text-primary)',
             lineHeight: 1.7,
+            boxShadow: 'var(--shadow-card)',
           }}
         >
-          <h1 style={{ fontSize: '2.25rem', fontWeight: 800, marginBottom: '0.5rem', color: '#F8FAFC' }}>
+          <h1 style={{ fontSize: '2.25rem', fontWeight: 800, marginBottom: '0.5rem', color: 'var(--text-primary)' }}>
             Terms of Service
           </h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', marginBottom: '2rem' }}>
@@ -151,7 +152,7 @@ export default function TermsOfServicePage() {
             </h2>
             <p style={{ color: 'var(--text-secondary)' }}>
               If you have any questions regarding these Terms of Service, please contact us at
-              <code style={{ color: '#38BDF8', background: '#0F172A', padding: '0.2rem 0.4rem', borderRadius: '4px', marginLeft: '0.4rem' }}>
+              <code style={{ color: 'var(--brand-primary)', background: 'var(--bg-surface-subtle)', border: '1px solid var(--border-subtle)', padding: '0.2rem 0.4rem', borderRadius: '4px', marginLeft: '0.4rem' }}>
                 terms@typingtyphon.internal
               </code>.
             </p>

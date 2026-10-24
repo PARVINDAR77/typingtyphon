@@ -21,6 +21,8 @@ model User {
   username        String          @unique
   fullName        String?
   avatarUrl       String?
+  oauthProvider   String?
+  oauthId         String?
   role            Role            @default(USER)
   isEmailVerified Boolean         @default(false)
   createdAt       DateTime        @default(now())
@@ -28,6 +30,7 @@ model User {
   sessions        TypingSession[]
   certificates    Certificate[]
 
+  @@index([oauthProvider, oauthId])
   @@map("users")
 }
 

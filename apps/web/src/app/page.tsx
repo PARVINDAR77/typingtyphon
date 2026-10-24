@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   EngineResult,
   GuestSessionMigrationItem,
@@ -27,20 +28,26 @@ import {
   clearGuestSessions,
   getGuestCurriculumProgress,
   saveGuestLessonAttempt,
+  saveLastSessionWords,
+  getLastSessionWords,
   LessonProgress,
 } from '../lib/storage';
 
 export default function HomePage() {
-  const [activeTab, setActiveTab] = useState<'speed' | 'curriculum' | 'results'>('speed');
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState<'speed' | 'curriculum' | 'results' | 'multiplayer' | 'profile'>('speed');
   const [duration, setDuration] = useState<number>(60);
+  const [testMode, setTestMode] = useState<'words' | 'punctuation' | 'numbers'>('words');
   const [restartCounter, setRestartCounter] = useState<number>(0);
   const [activeResult, setActiveResult] = useState<EngineResult | null>(null);
   const [guestSessions, setGuestSessions] = useState<GuestSessionMigrationItem[]>([]);
   const [curriculumProgress, setCurriculumProgress] = useState<Record<string, LessonProgress>>({});
   const [currentUser, setCurrentUser] = useState<UserProfileDto | null>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
+  const [authModalTab, setAuthModalTab] = useState<'register' | 'login'>('login');
   const [activeTargetChar, setActiveTargetChar] = useState<string>('f');
-  const [showFingerGuide, setShowFingerGuide] = useState<boolean>(true);
+  const [showFingerGuide, setShowFingerGuide] = useState<boolean>(false);
+  const [sessionWords, setSessionWords] = useState<string[]>([]);
 
   const [activeDrill, setActiveDrill] = useState<{
     stage: CurriculumStage;
@@ -71,6 +78,43 @@ export default function HomePage() {
   useEffect(() => {
     refreshGuestData();
     checkCurrentUser();
+    const storedWords = getLastSessionWords();
+    if (storedWords && storedWords.length > 0) {
+      setSessionWords(storedWords);
+    }
+
+    if (typeof window !== 'undefined') {
+      const hash = window.location.hash.toLowerCase();
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get('tab')?.toLowerCase();
+      if (
+        hash === '#curriculum' ||
+        hash === '#academy' ||
+        hash === '#learn' ||
+        hash === '#lessons' ||
+        tabParam === 'curriculum' ||
+        tabParam === 'academy'
+      ) {
+        setActiveTab('curriculum');
+      } else if (
+        hash === '#results' ||
+        hash === '#heatmap' ||
+        hash === '#speed' && tabParam === 'results' ||
+        tabParam === 'results' ||
+        tabParam === 'heatmap'
+      ) {
+        setActiveTab('results');
+      }
+
+      const authParam = params.get('auth')?.toLowerCase();
+      if (authParam === 'login' || authParam === 'signin') {
+        setAuthModalTab('login');
+        setIsAuthModalOpen(true);
+      } else if (authParam === 'register' || authParam === 'signup') {
+        setAuthModalTab('register');
+        setIsAuthModalOpen(true);
+      }
+    }
   }, []);
 
   const checkCurrentUser = async () => {
@@ -115,8 +159,15 @@ export default function HomePage() {
     setCurriculumProgress(currProg);
   };
 
-  const handleTestComplete = (result: EngineResult) => {
+  const handleTestComplete = (result: EngineResult, words?: string[]) => {
     setActiveResult(result);
+    if (words && words.length > 0) {
+      setSessionWords(words);
+      saveLastSessionWords(words);
+    } else if (activeDrill?.words) {
+      setSessionWords(activeDrill.words);
+      saveLastSessionWords(activeDrill.words);
+    }
 
     if (activeDrill) {
       const isPass =
@@ -143,6 +194,31 @@ export default function HomePage() {
     setActiveTab('results');
   };
 
+  const effectiveResult: EngineResult | null = useMemo(() => {
+    if (activeResult) return activeResult;
+    if (guestSessions.length > 0) {
+      const s = guestSessions[0];
+      return {
+        durationSeconds: s.durationSeconds,
+        elapsedSeconds: s.durationSeconds,
+        netWpm: s.netWpm,
+        grossWpm: s.grossWpm,
+        penalizedWpm: s.netWpm,
+        accuracyPct: s.accuracyPct,
+        consistencyPct: 88,
+        totalKeystrokes: s.totalKeystrokes,
+        correctKeystrokes: s.correctKeystrokes,
+        errorCount: s.errorCount,
+        uncorrectedErrors: 0,
+        completedWordsCount: Math.round(s.correctKeystrokes / 5),
+        timeSeries: s.timeSeries || [],
+        rawIkiArray: [],
+        completedAt: s.clientTimestamp,
+      };
+    }
+    return null;
+  }, [activeResult, guestSessions]);
+
   const handleRestart = () => {
     setActiveResult(null);
     setActiveLessonResult(null);
@@ -152,6 +228,14 @@ export default function HomePage() {
 
   const handleDurationChange = (newDuration: number) => {
     setDuration(newDuration);
+    setActiveResult(null);
+    setActiveLessonResult(null);
+    setRestartCounter((prev) => prev + 1);
+    setActiveTab('speed');
+  };
+
+  const handleModeChange = (newMode: 'words' | 'punctuation' | 'numbers') => {
+    setTestMode(newMode);
     setActiveResult(null);
     setActiveLessonResult(null);
     setRestartCounter((prev) => prev + 1);
@@ -281,119 +365,173 @@ export default function HomePage() {
         guestTestCount={guestSessions.length}
         onRestart={handleRestart}
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={(tab) => {
+          if (tab === 'profile') {
+            router.push('/profile');
+          } else {
+            setActiveTab(tab);
+          }
+        }}
         currentUser={currentUser}
-        onOpenAuth={() => setIsAuthModalOpen(true)}
-        hasResult={!!activeResult}
+        onOpenAuth={(mode) => {
+          setAuthModalTab(mode === 'register' ? 'register' : 'login');
+          setIsAuthModalOpen(true);
+        }}
+        hasResult={!!activeResult || guestSessions.length > 0}
       />
 
       <main style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
-        {/* Speed Test Main View */}
+        {/* Speed Test Main View (Centered Hero Workspace) */}
         {activeTab === 'speed' && (
           <div
             ref={canvasRef}
             style={{
-              maxWidth: '1380px',
+              maxWidth: '1060px',
               width: '100%',
-              padding: '2rem 1.5rem 3rem 1.5rem',
+              padding: '1.25rem 1.25rem 2.5rem 1.25rem',
               display: 'flex',
               flexDirection: 'column',
-              gap: '1.75rem',
+              gap: '1.25rem',
+              margin: '0 auto',
             }}
           >
-            {/* Title & Action Strip */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1rem' }}>
-              <div>
-                <h1
-                  style={{
-                    fontSize: 'clamp(1.75rem, 4vw, 2.5rem)',
-                    fontWeight: 800,
-                    color: 'var(--text-primary)',
-                    letterSpacing: '-0.02em',
-                    margin: 0,
-                    lineHeight: 1.2,
-                  }}
-                >
-                  Build your typing <span style={{ color: '#38bdf8' }}>flow</span>
-                </h1>
-                <p
-                  style={{
-                    fontSize: 'clamp(0.875rem, 2vw, 1rem)',
-                    color: 'var(--text-secondary)',
-                    marginTop: '0.35rem',
-                    lineHeight: 1.4,
-                  }}
-                >
-                  Type naturally. Get faster. Build real touch typing skills from 0 to Hero.
-                </p>
-              </div>
-
-              {/* Toggle Finger & Hands Guide Button */}
-              <button
-                onClick={() => setShowFingerGuide((prev) => !prev)}
+            {/* Title Section (Compact, Sleek Cyber Branding) */}
+            <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div
                 style={{
-                  background: showFingerGuide ? 'rgba(56, 189, 248, 0.15)' : 'rgba(255, 255, 255, 0.04)',
-                  border: showFingerGuide ? '1px solid rgba(56, 189, 248, 0.4)' : '1px solid var(--border-subtle)',
-                  color: showFingerGuide ? '#38bdf8' : 'var(--text-secondary)',
-                  padding: '0.45rem 0.95rem',
-                  borderRadius: '9999px',
-                  fontSize: '0.8rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  display: 'flex',
+                  display: 'inline-flex',
                   alignItems: 'center',
                   gap: '0.45rem',
-                  transition: 'all 0.15s ease',
+                  padding: '0.22rem 0.75rem',
+                  borderRadius: '9999px',
+                  background: 'rgba(14, 165, 233, 0.1)',
+                  border: '1px solid rgba(14, 165, 233, 0.3)',
+                  fontSize: '0.7rem',
+                  fontFamily: 'var(--font-mono)',
+                  fontWeight: 700,
+                  letterSpacing: '0.08em',
+                  textTransform: 'uppercase',
+                  color: 'var(--brand-primary)',
+                  marginBottom: '0.45rem',
+                  boxShadow: 'var(--shadow-sm)',
                 }}
               >
-                <span>✋</span>
-                <span>{showFingerGuide ? 'Hide Finger Guide' : 'Show Finger Guide & Hands'}</span>
-              </button>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--brand-primary)', boxShadow: '0 0 8px var(--brand-primary)' }} />
+                <span>Next-Gen Touch Typing • Real-Time Telemetry</span>
+              </div>
+
+              <h1
+                style={{
+                  fontSize: 'clamp(1.65rem, 3.2vw, 2.25rem)',
+                  fontWeight: 900,
+                  color: 'var(--text-primary)',
+                  letterSpacing: '-0.03em',
+                  margin: 0,
+                  lineHeight: 1.2,
+                }}
+              >
+                Build Your Typing{' '}
+                <span
+                  style={{
+                    background: 'linear-gradient(135deg, #0284c7 0%, #6366f1 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                  }}
+                >
+                  Velocity & Flow
+                </span>
+              </h1>
+              <p
+                style={{
+                  fontSize: '0.9rem',
+                  color: 'var(--text-secondary)',
+                  marginTop: '0.35rem',
+                  maxWidth: '540px',
+                  lineHeight: 1.5,
+                }}
+              >
+                Zero latency touch-typing engine. Algorithmic finger diagnostics. Build lifelong touch-typing mastery from 0 to Hero.
+              </p>
             </div>
 
-            {/* Responsive Main Layout: 2-column on desktop, stacked on mobile */}
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 650px), 1fr))',
-                gap: '1.75rem',
-                alignItems: 'start',
-              }}
-            >
-              {/* Left Column: Main Typing Workspace */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', minWidth: 0 }}>
-                <TypingCanvas
-                  durationSeconds={duration}
-                  onComplete={handleTestComplete}
-                  restartTrigger={restartCounter}
-                  onRestart={handleRestart}
-                  customWords={activeDrill ? activeDrill.words : undefined}
-                  previousSession={previousSession}
-                  onActiveCharChange={setActiveTargetChar}
-                  drillBadge={
-                    activeDrill
-                      ? {
-                          stageTitle: `Stage ${activeDrill.stage.stageNumber}: ${activeDrill.stage.title}`,
-                          lessonTitle: `${activeDrill.lesson.title} (${activeDrill.drillType.toUpperCase()})`,
-                          targetKeys: activeDrill.lesson.targetKeys,
-                          passGoal: `≥ ${activeDrill.lesson.passThreshold.minAccuracyPct}% Acc & ${activeDrill.lesson.passThreshold.minWpm} WPM`,
-                        }
-                      : null
-                  }
-                />
+            {/* Hero Typing Workspace (Full Width, Centered) */}
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <TypingCanvas
+                durationSeconds={duration}
+                onDurationChange={handleDurationChange}
+                mode={testMode}
+                onModeChange={handleModeChange}
+                onComplete={handleTestComplete}
+                restartTrigger={restartCounter}
+                onRestart={handleRestart}
+                customWords={activeDrill ? activeDrill.words : undefined}
+                previousSession={previousSession}
+                onActiveCharChange={setActiveTargetChar}
+                drillBadge={
+                  activeDrill
+                    ? {
+                        stageTitle: `Stage ${activeDrill.stage.stageNumber}: ${activeDrill.stage.title}`,
+                        lessonTitle: `${activeDrill.lesson.title} (${activeDrill.drillType.toUpperCase()})`,
+                        targetKeys: activeDrill.lesson.targetKeys,
+                        passGoal: `≥ ${activeDrill.lesson.passThreshold.minAccuracyPct}% Acc & ${activeDrill.lesson.passThreshold.minWpm} WPM`,
+                      }
+                    : null
+                }
+              />
+
+              {/* Collapsible Virtual Keyboard & Hands Guide Button & Panel */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', marginTop: '0.15rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <button
+                    type="button"
+                    onClick={() => setShowFingerGuide((prev) => !prev)}
+                    style={{
+                      background: showFingerGuide ? 'rgba(14, 165, 233, 0.12)' : 'var(--bg-surface)',
+                      border: showFingerGuide ? '1px solid var(--brand-primary)' : '1px solid var(--border-subtle)',
+                      color: showFingerGuide ? 'var(--brand-primary)' : 'var(--text-secondary)',
+                      padding: '0.32rem 0.95rem',
+                      borderRadius: '9999px',
+                      fontSize: '0.78rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.45rem',
+                      transition: 'all 0.15s ease',
+                      boxShadow: 'var(--shadow-sm)',
+                    }}
+                  >
+                    <span>✋</span>
+                    <span>{showFingerGuide ? 'Hide Virtual Hands & Keyboard' : 'Show Virtual Hands & Keyboard Guide'}</span>
+                    <span style={{ fontSize: '0.68rem', opacity: 0.7 }}>{showFingerGuide ? '▲' : '▼'}</span>
+                  </button>
+                </div>
 
                 {/* Real-time Interactive Finger & Hands Guide */}
                 {showFingerGuide && (
-                  <FingerGuide
-                    activeChar={activeTargetChar}
-                    isDrill={!!activeDrill}
-                    onSelectKeyToPractice={(k) => handlePracticeSpecificKeys([k])}
-                  />
+                  <div style={{ width: '100%', animation: 'fadeIn 0.2s ease-in-out' }}>
+                    <FingerGuide
+                      activeChar={activeTargetChar}
+                      isDrill={!!activeDrill}
+                      onSelectKeyToPractice={(k) => handlePracticeSpecificKeys([k])}
+                    />
+                  </div>
                 )}
               </div>
+            </div>
 
-              {/* Right Column: Learning Panel (Touch Typing Academy) */}
-              <div style={{ maxWidth: '440px', width: '100%', justifySelf: 'stretch' }}>
+            {/* Auxiliary 2-Card Row: Touch Typing Academy & Guest History */}
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 460px), 1fr))',
+                gap: '1rem',
+                alignItems: 'stretch',
+                marginTop: '0.5rem',
+              }}
+            >
+              {/* Card 1: Touch Typing Academy */}
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <AcademyCard
                   progressMap={curriculumProgress}
                   onSelectDrill={handleSelectDrill}
@@ -402,15 +540,15 @@ export default function HomePage() {
                   onOpenFullAcademy={() => setActiveTab('curriculum')}
                 />
               </div>
-            </div>
 
-            {/* Collapsible Guest History & Progress Drawer */}
-            <div style={{ marginTop: '0.5rem' }}>
-              <GuestHistory
-                sessions={guestSessions}
-                stats={guestStats}
-                onClearHistory={handleClearHistory}
-              />
+              {/* Card 2: Guest History & Stats */}
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <GuestHistory
+                  sessions={guestSessions}
+                  stats={guestStats}
+                  onClearHistory={handleClearHistory}
+                />
+              </div>
             </div>
           </div>
         )}
@@ -427,9 +565,10 @@ export default function HomePage() {
         )}
 
         {/* Dedicated Keybr Post-Test Results & Speed Keyboard Heatmap View (Tab) */}
-        {activeTab === 'results' && activeResult && (
+        {activeTab === 'results' && effectiveResult && (
           <KeybrResults
-            result={activeResult}
+            result={effectiveResult}
+            sessionWords={sessionWords}
             onRestart={handleRestart}
             guestSessionCount={guestSessions.length}
             onOpenAuth={() => setIsAuthModalOpen(true)}
@@ -447,6 +586,7 @@ export default function HomePage() {
       {/* Auth Modal */}
       <AuthModal
         isOpen={isAuthModalOpen}
+        initialTab={authModalTab}
         onClose={() => setIsAuthModalOpen(false)}
         currentUser={currentUser}
         onAuthSuccess={(user) => {

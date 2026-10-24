@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, Res, Req, UseGuards, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Get, Body, Res, Req, UseGuards, HttpCode, HttpStatus, UnauthorizedException } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
@@ -8,6 +8,42 @@ import { LoginDto } from './dto/login.dto';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Post('google')
+  @HttpCode(HttpStatus.OK)
+  async googleAuth(
+    @Body() body: { idToken?: string; credential?: string; token?: string },
+    @Res({ passthrough: true }) res: Response
+  ) {
+    const token = body.idToken || body.credential || body.token;
+    if (!token) {
+      throw new UnauthorizedException('Google ID token or credential is required.');
+    }
+    const result = await this.authService.socialLoginGoogle(token);
+    this.setAuthCookies(res, result.accessToken, result.refreshToken);
+    return {
+      success: true,
+      user: result.user,
+    };
+  }
+
+  @Post('facebook')
+  @HttpCode(HttpStatus.OK)
+  async facebookAuth(
+    @Body() body: { accessToken?: string; token?: string },
+    @Res({ passthrough: true }) res: Response
+  ) {
+    const token = body.accessToken || body.token;
+    if (!token) {
+      throw new UnauthorizedException('Facebook access token is required.');
+    }
+    const result = await this.authService.socialLoginFacebook(token);
+    this.setAuthCookies(res, result.accessToken, result.refreshToken);
+    return {
+      success: true,
+      user: result.user,
+    };
+  }
 
   @Post('register')
   async register(@Body() dto: RegisterDto, @Res({ passthrough: true }) res: Response) {

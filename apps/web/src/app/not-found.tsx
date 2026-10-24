@@ -16,7 +16,7 @@ export default function NotFound() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
       {/* Header */}
-      <header style={{ width: '100%', padding: '1rem 1.5rem', borderBottom: '1px solid var(--border-subtle)', backgroundColor: 'rgba(15, 23, 42, 0.9)' }}>
+      <header style={{ width: '100%', padding: '1rem 1.5rem', borderBottom: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-surface)' }}>
         <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', textDecoration: 'none' }}>
             <div
@@ -34,7 +34,7 @@ export default function NotFound() {
                 <path d="m13 2-2 10h6l-7 10 2-10H6l7-10z" />
               </svg>
             </div>
-            <span style={{ fontSize: '1.15rem', fontWeight: 800, color: '#F8FAFC', letterSpacing: '0.02em' }}>
+            <span style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.02em' }}>
               TYPING <span style={{ color: '#38BDF8' }}>TYPHON</span>
             </span>
           </Link>
@@ -55,14 +55,14 @@ export default function NotFound() {
             border: '1px solid var(--border-subtle)',
             borderRadius: '1.25rem',
             padding: '3rem 2rem',
-            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.4)',
+            boxShadow: 'var(--shadow-card)',
           }}
         >
           <div
             style={{
               fontSize: '5rem',
               fontWeight: 900,
-              color: '#38BDF8',
+              color: 'var(--brand-primary)',
               lineHeight: 1,
               marginBottom: '1rem',
               fontFamily: 'var(--font-mono)',
@@ -70,7 +70,7 @@ export default function NotFound() {
           >
             404
           </div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: '#F8FAFC', marginBottom: '0.75rem' }}>
+          <h1 style={{ fontSize: '1.75rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.75rem' }}>
             Page Not Found
           </h1>
           <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', lineHeight: 1.6, marginBottom: '2rem' }}>

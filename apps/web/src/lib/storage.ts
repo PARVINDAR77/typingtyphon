@@ -7,10 +7,38 @@ import {
 } from '@typingtyphon/contracts';
 
 const GUEST_STORAGE_KEY = 'typingtyphon_guest_sessions_v1';
+const LAST_WORDS_STORAGE_KEY = 'typingtyphon_last_session_words';
 const DB_NAME = 'typingtyphon_guest_db';
 const DB_VERSION = 1;
 const STORE_NAME = 'sessions';
 const MAX_GUEST_SESSIONS = 50;
+
+/**
+ * Persist the words list from the most recent completed typing test session.
+ */
+export function saveLastSessionWords(words: string[]): void {
+  if (typeof window === 'undefined' || !words || words.length === 0) return;
+  try {
+    localStorage.setItem(LAST_WORDS_STORAGE_KEY, JSON.stringify(words));
+  } catch (err) {
+    console.error('Failed to save last session words:', err);
+  }
+}
+
+/**
+ * Retrieve the words list from the most recent completed typing test session.
+ */
+export function getLastSessionWords(): string[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const raw = localStorage.getItem(LAST_WORDS_STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
 
 /**
  * Deterministic hash generator for deduplication during cloud migration.
@@ -244,6 +272,35 @@ export async function markGuestSessionsMigrated(migratedIds: string[]): Promise<
   }
 }
 
+/**
+ * Loads a batch of sessions directly into storage (both LocalStorage and IndexedDB).
+ */
+export async function seedGuestSessions(
+  sessions: GuestSessionMigrationItem[],
+  keyMetrics?: Record<string, KeyMetricAggregate>
+): Promise<void> {
+  if (typeof window === 'undefined') return;
+
+  localStorage.setItem(GUEST_STORAGE_KEY, JSON.stringify(sessions));
+  if (keyMetrics) {
+    localStorage.setItem(GUEST_KEY_ANALYTICS_KEY, JSON.stringify(keyMetrics));
+  }
+
+  const db = await openIndexedDb();
+  if (db) {
+    try {
+      const tx = db.transaction(STORE_NAME, 'readwrite');
+      const store = tx.objectStore(STORE_NAME);
+      store.clear();
+      for (const item of sessions) {
+        store.put(item);
+      }
+      tx.oncomplete = () => db.close();
+    } catch (e) {
+      console.warn('Failed to seed IndexedDB:', e);
+    }
+  }
+}
 
 /**
  * Computes aggregate summary statistics from local history.

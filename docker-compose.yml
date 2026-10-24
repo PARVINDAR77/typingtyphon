@@ -8,11 +8,11 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-typhon_password_local_dev}
       POSTGRES_DB: ${POSTGRES_DB:-typingtyphon_dev}
     ports:
-      - "127.0.0.1:5433:5432"
+      - "127.0.0.1:${POSTGRES_PORT:-5433}:5432"
     volumes:
       - typingtyphon_postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U typhon_user -d typingtyphon_dev"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-typhon_user} -d ${POSTGRES_DB:-typingtyphon_dev}"]
       interval: 3s
       timeout: 3s
       retries: 10
@@ -24,14 +24,14 @@ services:
     container_name: typingtyphon-api
     restart: unless-stopped
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
       PORT: 4001
-      DATABASE_URL: postgresql://typhon_user:typhon_password_local_dev@postgres:5432/typingtyphon_dev?schema=public
-      CORS_ORIGIN: http://localhost:3000
-      JWT_ACCESS_SECRET: 9f8e7d6c5b4a3928170f1e2d3c4b5a69788796a5b4c3d2e1f0a9b8c7d6e5f4a3
-      JWT_REFRESH_SECRET: 1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b
+      DATABASE_URL: postgresql://${POSTGRES_USER:-typhon_user}:${POSTGRES_PASSWORD:-typhon_password_local_dev}@postgres:5432/${POSTGRES_DB:-typingtyphon_dev}?schema=public
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3100}
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-9f8e7d6c5b4a3928170f1e2d3c4b5a69788796a5b4c3d2e1f0a9b8c7d6e5f4a3}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-1a2b3c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b}
     ports:
-      - "4001:4001"
+      - "${API_PORT:-4001}:4001"
     depends_on:
       postgres:
         condition: service_healthy
@@ -41,18 +41,18 @@ services:
       context: .
       dockerfile: Dockerfile.web
       args:
-        NEXT_PUBLIC_SITE_URL: http://localhost:3000
-        NEXT_PUBLIC_API_URL: http://localhost:4001
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3100}
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4001}
     container_name: typingtyphon-web
     restart: unless-stopped
     environment:
       NODE_ENV: production
       PORT: 3000
       HOSTNAME: "0.0.0.0"
-      NEXT_PUBLIC_SITE_URL: http://localhost:3000
-      NEXT_PUBLIC_API_URL: http://localhost:4001
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://localhost:3100}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4001}
     ports:
-      - "3000:3000"
+      - "${WEB_PORT:-3100}:3000"
     depends_on:
       - api
 

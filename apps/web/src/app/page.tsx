@@ -21,6 +21,7 @@ import { FingerGuide } from '../components/FingerGuide';
 import { KeybrResults } from '../components/KeybrResults';
 import { AuthModal } from '../components/AuthModal';
 import { Footer } from '../components/Footer';
+import { getApiBaseUrl } from '../lib/apiConfig';
 import {
   getGuestSessions,
   getGuestStats,
@@ -119,7 +120,7 @@ export default function HomePage() {
 
   const checkCurrentUser = async () => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001/api/v1';
+      const apiUrl = getApiBaseUrl();
       const res = await fetch(`${apiUrl}/auth/me`, {
         credentials: 'include',
         headers: { 'X-Requested-With': 'XMLHttpRequest' },
@@ -137,7 +138,7 @@ export default function HomePage() {
 
   const handleLogout = async () => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4001/api/v1';
+      const apiUrl = getApiBaseUrl();
       await fetch(`${apiUrl}/auth/logout`, {
         method: 'POST',
         credentials: 'include',

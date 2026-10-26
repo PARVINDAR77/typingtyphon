@@ -9,18 +9,44 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
-  const allowedOrigins = process.env.CORS_ORIGIN
-    ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim())
-    : ['http://localhost:3000'];
+  const explicitOrigins = process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(',').map((o) => o.trim().replace(/\/+$/, ''))
+    : [];
+
+  const defaultOrigins = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'http://localhost:3100',
+    'http://127.0.0.1:3100',
+  ];
+
+  const allowedOrigins = Array.from(new Set([...defaultOrigins, ...explicitOrigins]));
 
   app.enableCors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (such as mobile apps or curl) or matched origins
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error(`Origin '${origin}' not permitted by CORS policy.`));
+      // Allow requests with no origin (mobile apps, server-to-server, curl)
+      if (!origin) {
+        return callback(null, true);
       }
+
+      const normalizedOrigin = origin.replace(/\/+$/, '');
+
+      // Direct match in allowed list
+      if (allowedOrigins.includes(normalizedOrigin)) {
+        return callback(null, true);
+      }
+
+      // Allow frontend running on ports 3000 or 3100 on any IP or domain
+      if (/^https?:\/\/.*:(3000|3100)$/.test(normalizedOrigin)) {
+        return callback(null, true);
+      }
+
+      // If in non-production, be permissive
+      if (process.env.NODE_ENV !== 'production') {
+        return callback(null, true);
+      }
+
+      callback(new Error(`Origin '${origin}' not permitted by CORS policy.`));
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],

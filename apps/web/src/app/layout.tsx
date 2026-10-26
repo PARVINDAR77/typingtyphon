@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import './globals.css';
 import { getSiteBaseUrl, isIndexingRestricted, SITE_NAME, DEFAULT_TITLE, DEFAULT_DESCRIPTION } from '@/lib/siteConfig';
 
@@ -57,7 +58,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        <Script src="https://accounts.google.com/gsi/client" strategy="lazyOnload" />
+      </body>
     </html>
   );
 }

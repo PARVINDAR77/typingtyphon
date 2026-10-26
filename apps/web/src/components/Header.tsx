@@ -415,90 +415,51 @@ export const Header: React.FC<HeaderProps> = ({
               <span>{currentUser.fullName || currentUser.username}</span>
             </Link>
           ) : (
-            <>
-              {/* Log In Button */}
-              <button
-                type="button"
-                id="header-login-btn"
-                onClick={() => {
-                  if (onOpenAuth) {
-                    onOpenAuth('login');
-                  } else if (typeof window !== 'undefined') {
-                    window.location.href = '/?auth=login';
-                  }
-                }}
-                title="Log In to your account"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.35rem',
-                  padding: '0.32rem 0.75rem',
-                  borderRadius: '8px',
-                  background: 'var(--bg-surface-subtle)',
-                  border: '1px solid var(--border-subtle)',
-                  color: 'var(--text-primary)',
-                  fontSize: '0.78rem',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  transition: 'all 0.15s ease',
-                  whiteSpace: 'nowrap',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--brand-primary)';
-                  e.currentTarget.style.color = 'var(--brand-primary)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--border-subtle)';
-                  e.currentTarget.style.color = 'var(--text-primary)';
-                }}
-              >
-                <span>Log In</span>
-              </button>
-
-              {/* Sign In Button */}
-              <button
-                type="button"
-                id="header-signin-btn"
-                onClick={() => {
-                  if (onOpenAuth) {
-                    onOpenAuth('register');
-                  } else if (typeof window !== 'undefined') {
-                    window.location.href = '/?auth=register';
-                  }
-                }}
-                title="Sign In / Register an account"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.35rem',
-                  padding: '0.32rem 0.75rem',
-                  borderRadius: '8px',
-                  background: 'linear-gradient(135deg, #0284c7 0%, #38bdf8 100%)',
-                  border: 'none',
-                  color: '#ffffff',
-                  fontSize: '0.78rem',
-                  fontWeight: 700,
-                  cursor: 'pointer',
-                  boxShadow: '0 2px 8px rgba(2, 132, 199, 0.25)',
-                  transition: 'all 0.15s ease',
-                  whiteSpace: 'nowrap',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.opacity = '0.9';
-                  e.currentTarget.style.transform = 'translateY(-1px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.opacity = '1';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }}
-              >
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                  <circle cx="12" cy="7" r="4" />
-                </svg>
-                <span>Sign In</span>
-              </button>
-            </>
+            /* Single Unified Sign In Button */
+            <button
+              type="button"
+              id="header-signin-btn"
+              onClick={() => {
+                if (onOpenAuth) {
+                  onOpenAuth('register');
+                } else if (typeof window !== 'undefined') {
+                  window.location.href = '/?auth=register';
+                }
+              }}
+              title="Sign In / Register an account"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                padding: '0.36rem 0.85rem',
+                borderRadius: '8px',
+                background: 'linear-gradient(135deg, #0284c7 0%, #38bdf8 100%)',
+                border: 'none',
+                color: '#ffffff',
+                fontSize: '0.8rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(2, 132, 199, 0.25)',
+                transition: 'all 0.15s ease',
+                whiteSpace: 'nowrap',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.opacity = '0.92';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(2, 132, 199, 0.35)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.opacity = '1';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 2px 8px rgba(2, 132, 199, 0.25)';
+              }}
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                <circle cx="12" cy="7" r="4" />
+              </svg>
+              <span>Sign In</span>
+            </button>
           )}
         </div>
       </div>

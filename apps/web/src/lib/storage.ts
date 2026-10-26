@@ -4,6 +4,7 @@ import {
   UserProgressSummaryDto,
   KeyMetricAggregate,
   ConfidenceLevel,
+  UserProfileDto,
 } from '@typingtyphon/contracts';
 
 const GUEST_STORAGE_KEY = 'typingtyphon_guest_sessions_v1';
@@ -561,4 +562,45 @@ export function getKeyPerformanceBreakdown(analytics?: Record<string, KeyMetricA
     confidentKeysCount: confident.length,
   };
 }
+
+const USER_PROFILE_STORAGE_KEY = 'typingtyphon_active_user_profile';
+
+/**
+ * Persist the authenticated user profile to local storage for instant client-side retrieval.
+ */
+export function saveUserProfile(user: UserProfileDto): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(USER_PROFILE_STORAGE_KEY, JSON.stringify(user));
+  } catch (err) {
+    console.error('Failed to save user profile:', err);
+  }
+}
+
+/**
+ * Retrieve the cached authenticated user profile from local storage.
+ */
+export function getUserProfile(): UserProfileDto | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(USER_PROFILE_STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw) as UserProfileDto;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Remove cached user profile from local storage upon logout.
+ */
+export function clearUserProfile(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.removeItem(USER_PROFILE_STORAGE_KEY);
+  } catch {
+    // Ignore error on clearing
+  }
+}
+
 

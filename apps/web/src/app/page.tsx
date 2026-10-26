@@ -32,6 +32,8 @@ import {
   saveLastSessionWords,
   getLastSessionWords,
   LessonProgress,
+  getUserProfile,
+  clearUserProfile,
 } from '../lib/storage';
 
 export default function HomePage() {
@@ -77,6 +79,10 @@ export default function HomePage() {
 
   // Load guest history, curriculum progress, and check optional auth session on mount
   useEffect(() => {
+    const cachedUser = getUserProfile();
+    if (cachedUser) {
+      setCurrentUser(cachedUser);
+    }
     refreshGuestData();
     checkCurrentUser();
     const storedWords = getLastSessionWords();
@@ -137,6 +143,7 @@ export default function HomePage() {
   };
 
   const handleLogout = async () => {
+    clearUserProfile();
     try {
       const apiUrl = getApiBaseUrl();
       await fetch(`${apiUrl}/auth/logout`, {

@@ -23,6 +23,8 @@ import {
   getAggregateKeyAnalytics,
   clearGuestSessions,
   seedGuestSessions,
+  getUserProfile,
+  clearUserProfile,
 } from '../../lib/storage';
 import {
   computeAllTimeAndTodayStats,
@@ -60,6 +62,10 @@ export default function ProfilePage() {
   }, []);
 
   useEffect(() => {
+    const cachedUser = getUserProfile();
+    if (cachedUser) {
+      setCurrentUser(cachedUser);
+    }
     refreshData();
   }, [refreshData]);
 
@@ -356,7 +362,10 @@ export default function ProfilePage() {
           setCurrentUser(user);
           setIsAuthModalOpen(false);
         }}
-        onLogout={() => setCurrentUser(null)}
+        onLogout={() => {
+          clearUserProfile();
+          setCurrentUser(null);
+        }}
         guestSessions={sessions}
         onRefreshGuestData={refreshData}
       />

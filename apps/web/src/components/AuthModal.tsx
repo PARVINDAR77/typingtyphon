@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { UserProfileDto, GuestSessionMigrationItem } from '@typingtyphon/contracts';
 import { markGuestSessionsMigrated, saveUserProfile, clearUserProfile } from '../lib/storage';
 import { getApiBaseUrl } from '../lib/apiConfig';
@@ -29,6 +29,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [tab, setTab] = useState<'register' | 'login'>(initialTab);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [loadingGoogle, setLoadingGoogle] = useState<boolean>(false);
+  const [googleClientId, setGoogleClientId] = useState<string>('');
+  const [customClientIdInput, setCustomClientIdInput] = useState<string>('');
+  const [showClientIdSetup, setShowClientIdSetup] = useState<boolean>(false);
+
+  const googleBtnContainerRef = useRef<HTMLDivElement>(null);
 
   // Migration status
   const [migrationStatus, setMigrationStatus] = useState<{
@@ -37,108 +42,191 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     error?: string;
   } | null>(null);
 
+  // Load configured Google Client ID from environment or local storage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const envId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID?.trim() || '';
+      const savedId = localStorage.getItem('typingtyphon_google_client_id')?.trim() || '';
+      const resolved = envId && !envId.includes('your-google') ? envId : savedId;
+      setGoogleClientId(resolved);
+      setCustomClientIdInput(resolved);
+    }
+  }, [isOpen]);
+
   useEffect(() => {
     if (initialTab) {
       setTab(initialTab);
     }
   }, [initialTab, isOpen]);
 
+  // Render Google Identity Services official button when Client ID is available
+  useEffect(() => {
+    if (!isOpen || !googleClientId || currentUser) return;
+
+    const renderOfficialGoogleButton = () => {
+      if (typeof window !== 'undefined' && (window as any).google?.accounts?.id && googleBtnContainerRef.current) {
+        try {
+          (window as any).google.accounts.id.initialize({
+            client_id: googleClientId,
+            callback: async (response: any) => {
+              if (response.credential) {
+                await verifyTokenWithBackend(response.credential);
+              }
+            },
+            auto_select: false,
+          });
+
+          googleBtnContainerRef.current.innerHTML = '';
+          (window as any).google.accounts.id.renderButton(googleBtnContainerRef.current, {
+            theme: 'filled_blue',
+            size: 'large',
+            text: tab === 'register' ? 'signup_with' : 'signin_with',
+            shape: 'rectangular',
+            width: 320,
+            logo_alignment: 'left',
+          });
+        } catch (err) {
+          console.error('Failed to render official Google button:', err);
+        }
+      }
+    };
+
+    renderOfficialGoogleButton();
+    const timer = setTimeout(renderOfficialGoogleButton, 500);
+    return () => clearTimeout(timer);
+  }, [isOpen, googleClientId, tab, currentUser]);
+
   if (!isOpen) return null;
 
   const apiUrl = getApiBaseUrl();
   const unmigrated = guestSessions.filter((s) => !s.isMigrated);
 
-  const handleGoogleAuth = async () => {
-    setErrorMessage(null);
+  const verifyTokenWithBackend = async (token: string) => {
     setLoadingGoogle(true);
-
+    setErrorMessage(null);
     try {
-      let tokenPayload: { idToken?: string; credential?: string; token?: string } = {};
-      const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-      const isClientConfigured =
-        googleClientId &&
-        !googleClientId.includes('your-google') &&
-        googleClientId.trim().length > 10;
+      const endpoint = `${apiUrl}/auth/google`;
+      const res = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        credentials: 'include',
+        body: JSON.stringify({ token, credential: token, idToken: token }),
+      });
 
-      // 1. If real Google Identity Services client is loaded in window and configured
-      if (isClientConfigured && typeof window !== 'undefined' && (window as any).google?.accounts?.id) {
-        try {
-          const credential = await new Promise<string>((resolve, reject) => {
-            (window as any).google.accounts.id.initialize({
-              client_id: googleClientId,
-              callback: (response: any) => {
-                if (response.credential) resolve(response.credential);
-                else reject(new Error('Google sign-in was cancelled.'));
-              },
-              auto_select: false,
-            });
-            (window as any).google.accounts.id.prompt((notification: any) => {
-              if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-                resolve(`demo_google_token_typist_${Date.now()}@gmail.com`);
-              }
-            });
-          });
-          tokenPayload = { credential };
-        } catch {
-          tokenPayload = { idToken: `demo_google_token_typist_${Date.now()}@gmail.com` };
-        }
-      } else {
-        // Seamless fallback for local development or before Google Cloud ID is added
-        tokenPayload = { idToken: `demo_google_token_typist_${Date.now()}@gmail.com` };
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || 'Google account verification failed. Please try again.');
       }
 
-      // 2. Prepare client user profile immediately for instant UI responsiveness
-      const defaultUser: UserProfileDto = {
-        id: `google_user_${Date.now().toString(36)}`,
-        email: 'parvindar77@gmail.com',
-        username: 'Parvindar',
-        fullName: 'Parvindar',
-        avatarUrl: 'https://lh3.googleusercontent.com/a/default-user',
-        oauthProvider: 'google',
-        role: 'user',
-        isEmailVerified: true,
-        createdAt: new Date().toISOString(),
-      };
-
-      // 3. Attempt server verification
-      try {
-        const endpoint = `${apiUrl}/auth/google`;
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest',
-          },
-          credentials: 'include',
-          body: JSON.stringify(tokenPayload),
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          if (data.user) {
-            saveUserProfile(data.user);
-            onAuthSuccess(data.user);
-            if (unmigrated.length === 0) {
-              onClose();
-            }
-            return;
-          }
+      if (data.user) {
+        saveUserProfile(data.user);
+        onAuthSuccess(data.user);
+        if (unmigrated.length === 0) {
+          onClose();
         }
-      } catch (networkErr) {
-        console.warn('Backend API currently unreachable, persisting session locally:', networkErr);
-      }
-
-      // If backend was offline (e.g. testing local frontend only), persist locally so user is never blocked
-      saveUserProfile(defaultUser);
-      onAuthSuccess(defaultUser);
-      if (unmigrated.length === 0) {
-        onClose();
       }
     } catch (err: any) {
-      setErrorMessage(err.message || 'Unable to authenticate with Google. Please try again.');
+      setErrorMessage(err.message || 'Unable to connect to Google account. Please verify credentials.');
     } finally {
       setLoadingGoogle(false);
     }
+  };
+
+  const handleGoogleAuthClick = async () => {
+    setErrorMessage(null);
+
+    // If no client ID is set, prompt user to enter their Google Client ID
+    if (!googleClientId) {
+      setShowClientIdSetup(true);
+      return;
+    }
+
+    setLoadingGoogle(true);
+
+    try {
+      // 1. Try Google Identity Services OAuth 2.0 Popup Client (Standard authentic Google account chooser)
+      if (typeof window !== 'undefined' && (window as any).google?.accounts?.oauth2) {
+        const client = (window as any).google.accounts.oauth2.initTokenClient({
+          client_id: googleClientId,
+          scope: 'openid email profile',
+          callback: async (tokenResponse: any) => {
+            if (tokenResponse?.error) {
+              setLoadingGoogle(false);
+              setErrorMessage(`Google sign-in cancelled: ${tokenResponse.error}`);
+              return;
+            }
+            if (tokenResponse?.access_token) {
+              await verifyTokenWithBackend(tokenResponse.access_token);
+            } else {
+              setLoadingGoogle(false);
+              setErrorMessage('No authentication token returned by Google.');
+            }
+          },
+        });
+        client.requestAccessToken();
+        return;
+      }
+
+      // 2. Direct Google OAuth 2.0 Popup Window (Universal fallback for all environments)
+      const redirectUri = typeof window !== 'undefined' ? `${window.location.origin}/` : 'http://localhost:3000/';
+      const googleOAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(
+        googleClientId
+      )}&redirect_uri=${encodeURIComponent(
+        redirectUri
+      )}&response_type=token%20id_token&scope=openid%20email%20profile&nonce=${Date.now()}`;
+
+      const popup = window.open(
+        googleOAuthUrl,
+        'GoogleSignIn',
+        'width=500,height=600,menubar=no,toolbar=no,status=no,resizable=yes,scrollbars=yes'
+      );
+
+      if (!popup) {
+        throw new Error('Popup was blocked by your browser. Please allow popups for this site.');
+      }
+
+      // Poll popup to catch response
+      const checkPopup = setInterval(() => {
+        try {
+          if (!popup || popup.closed) {
+            clearInterval(checkPopup);
+            setLoadingGoogle(false);
+            return;
+          }
+          const hash = popup.location.hash;
+          if (hash && hash.includes('access_token')) {
+            clearInterval(checkPopup);
+            popup.close();
+            const params = new URLSearchParams(hash.substring(1));
+            const token = params.get('id_token') || params.get('access_token');
+            if (token) {
+              verifyTokenWithBackend(token);
+            }
+          }
+        } catch {
+          // Cross-origin access while navigating accounts.google.com is expected
+        }
+      }, 500);
+    } catch (err: any) {
+      setErrorMessage(err.message || 'Unable to open Google login. Please verify Google Client ID.');
+      setLoadingGoogle(false);
+    }
+  };
+
+  const handleSaveClientId = (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanId = customClientIdInput.trim();
+    if (!cleanId) {
+      setErrorMessage('Please enter a valid Google Client ID.');
+      return;
+    }
+    localStorage.setItem('typingtyphon_google_client_id', cleanId);
+    setGoogleClientId(cleanId);
+    setShowClientIdSetup(false);
+    setErrorMessage(null);
   };
 
   const handleMigrate = async () => {
@@ -242,7 +330,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           ✕
         </button>
 
-        {/* If user is logged in: show account details & cloud history migration */}
+        {/* If user is logged in: show real verified account details */}
         {currentUser ? (
           <div>
             <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
@@ -260,6 +348,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   color: '#FFFFFF',
                   fontWeight: 700,
                   boxShadow: '0 0 20px rgba(56, 189, 248, 0.35)',
+                  overflow: 'hidden',
                 }}
               >
                 {currentUser.avatarUrl ? (
@@ -436,8 +525,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               </h3>
               <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.5rem', lineHeight: 1.45 }}>
                 {tab === 'register'
-                  ? 'Sign up with Google in 1-click to track your typing speed, save certificates, and join live multiplayer races.'
-                  : 'Welcome back! Sign in with your Google account to access your personal dashboard and high scores.'}
+                  ? 'Sign up with your personal Google account to track speed, earn certificates, and race live.'
+                  : 'Welcome back! Sign in with your real Google account to access your personal dashboard.'}
               </p>
             </div>
 
@@ -459,13 +548,108 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               </div>
             )}
 
-            {/* ONLY Google Action Button */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', margin: '1rem 0' }}>
+            {/* Client ID Configuration Prompt if not yet configured */}
+            {(!googleClientId || showClientIdSetup) ? (
+              <div
+                style={{
+                  background: 'var(--bg-surface-subtle)',
+                  border: '1px dashed #38BDF8',
+                  borderRadius: '0.85rem',
+                  padding: '1.25rem',
+                  marginBottom: '1.25rem',
+                }}
+              >
+                <div style={{ fontWeight: 700, color: '#38BDF8', fontSize: '0.88rem', marginBottom: '0.4rem' }}>
+                  🔑 Google Cloud Client ID Setup
+                </div>
+                <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', marginBottom: '0.85rem', lineHeight: 1.4 }}>
+                  To open your authentic Google login popup, enter the <strong>client_id</strong> from your downloaded Google Cloud credentials JSON bundle file:
+                </p>
+                <form onSubmit={handleSaveClientId} style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                  <input
+                    type="text"
+                    required
+                    value={customClientIdInput}
+                    onChange={(e) => setCustomClientIdInput(e.target.value)}
+                    placeholder="xxxx-xxxx.apps.googleusercontent.com"
+                    style={{
+                      width: '100%',
+                      padding: '0.65rem 0.8rem',
+                      borderRadius: '0.5rem',
+                      border: '1px solid var(--border-subtle)',
+                      background: 'var(--bg-surface)',
+                      color: 'var(--text-primary)',
+                      fontSize: '0.82rem',
+                      outline: 'none',
+                    }}
+                  />
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <button
+                      type="submit"
+                      style={{
+                        flex: 1,
+                        background: 'linear-gradient(135deg, #0284C7 0%, #38BDF8 100%)',
+                        color: '#FFFFFF',
+                        border: 'none',
+                        borderRadius: '0.5rem',
+                        padding: '0.6rem',
+                        fontSize: '0.825rem',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                      }}
+                    >
+                      Save &amp; Connect Google
+                    </button>
+                    {googleClientId && (
+                      <button
+                        type="button"
+                        onClick={() => setShowClientIdSetup(false)}
+                        style={{
+                          background: 'transparent',
+                          color: 'var(--text-secondary)',
+                          border: '1px solid var(--border-subtle)',
+                          borderRadius: '0.5rem',
+                          padding: '0.6rem 0.8rem',
+                          fontSize: '0.825rem',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        Cancel
+                      </button>
+                    )}
+                  </div>
+                </form>
+              </div>
+            ) : null}
+
+            {/* Official Google Identity Services Button Container */}
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.85rem',
+                margin: '1.25rem 0',
+              }}
+            >
+              {/* If Google script rendered official button */}
+              <div
+                ref={googleBtnContainerRef}
+                style={{
+                  minHeight: '44px',
+                  display: googleClientId ? 'flex' : 'none',
+                  justifyContent: 'center',
+                  width: '100%',
+                }}
+              />
+
+              {/* Custom Google Trigger Button */}
               <button
                 type="button"
                 id="btn-login-google"
                 disabled={loadingGoogle}
-                onClick={handleGoogleAuth}
+                onClick={handleGoogleAuthClick}
                 style={{
                   width: '100%',
                   background: '#FFFFFF',
@@ -482,7 +666,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   gap: '0.75rem',
                   boxShadow: '0 4px 14px rgba(0, 0, 0, 0.1)',
                   transition: 'all 0.15s ease',
-                  transform: 'translateY(0)',
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.16)';
@@ -520,13 +703,33 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     : 'Sign in with Google'}
                 </span>
               </button>
+
+              {/* Configure or Change Client ID Link */}
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+                {googleClientId ? (
+                  <button
+                    type="button"
+                    onClick={() => setShowClientIdSetup(!showClientIdSetup)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: 'var(--text-muted)',
+                      textDecoration: 'underline',
+                      cursor: 'pointer',
+                      fontSize: '0.72rem',
+                    }}
+                  >
+                    Change Google Client ID
+                  </button>
+                ) : null}
+              </div>
             </div>
 
             {/* Privacy & Reassurance Banner */}
-            <div style={{ textAlign: 'center', marginTop: '1.25rem', marginBottom: '1.5rem' }}>
+            <div style={{ textAlign: 'center', marginTop: '1rem', marginBottom: '1.25rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                 <span>🔒</span>
-                <span>Protected by Google • Zero passwords required</span>
+                <span>Protected by Google OAuth 2.0 • 100% Genuine Account</span>
               </div>
             </div>
 

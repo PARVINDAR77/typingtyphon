@@ -190,9 +190,9 @@ export class AuthService {
   }
 
   /**
-   * Google OAuth 2.0 Token Verification & Auto-Registration / Login
+   * Real Google OAuth 2.0 Token Verification & Auto-Registration / Login
    */
-  async socialLoginGoogle(idToken: string): Promise<{ user: UserProfileDto; accessToken: string; refreshToken: string }> {
+  async socialLoginGoogle(token: string): Promise<{ user: UserProfileDto; accessToken: string; refreshToken: string }> {
     let email: string;
     let name: string | undefined;
     let picture: string | undefined;
@@ -200,27 +200,69 @@ export class AuthService {
 
     const googleClientId = process.env.GOOGLE_CLIENT_ID;
 
-    if (idToken.startsWith('demo_google_token_') || !googleClientId || googleClientId.includes('your-google')) {
-      const mockEmail = idToken.includes('@') ? idToken.replace('demo_google_token_', '') : 'google.typer@example.com';
-      email = mockEmail.toLowerCase().trim();
-      name = 'Google Typist';
-      picture = 'https://lh3.googleusercontent.com/a/default-user';
-      sub = `google_sub_${Buffer.from(email).toString('hex').slice(0, 16)}`;
-    } else {
+    // 1. If it's a Google OAuth 2.0 Access Token (starts with ya29 or returned from initTokenClient)
+    if (token.startsWith('ya29.')) {
+      try {
+        const userinfoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (userinfoRes.ok) {
+          const profile = await userinfoRes.json();
+          if (profile.email) {
+            email = profile.email.toLowerCase().trim();
+            name = profile.name || profile.given_name;
+            picture = profile.picture;
+            sub = profile.sub;
+            return this.upsertSocialUser({
+              email,
+              fullName: name,
+              avatarUrl: picture,
+              oauthProvider: 'google',
+              oauthId: sub,
+            });
+          }
+        }
+      } catch (e) {
+        console.warn('Google userinfo fetch failed:', e);
+      }
+    }
+
+    // 2. Try Google ID Token verification via Google Auth Library
+    try {
       const { OAuth2Client } = await import('google-auth-library');
-      const client = new OAuth2Client(googleClientId);
+      const client = new OAuth2Client(googleClientId || undefined);
       const ticket = await client.verifyIdToken({
-        idToken,
-        audience: googleClientId,
+        idToken: token,
+        audience: googleClientId || undefined,
       });
       const payload = ticket.getPayload();
       if (!payload || !payload.email) {
-        throw new UnauthorizedException('Invalid Google token: email address not present in token.');
+        throw new UnauthorizedException('Invalid Google ID token: email address not present in Google profile.');
       }
       email = payload.email.toLowerCase().trim();
       name = payload.name;
       picture = payload.picture;
       sub = payload.sub;
+    } catch (idTokenErr) {
+      // 3. Fallback: verify via Google's official tokeninfo endpoint
+      try {
+        const tokenInfoRes = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(token)}`);
+        if (tokenInfoRes.ok) {
+          const tokenInfo = await tokenInfoRes.json();
+          if (tokenInfo.email) {
+            email = tokenInfo.email.toLowerCase().trim();
+            name = tokenInfo.name;
+            picture = tokenInfo.picture;
+            sub = tokenInfo.sub;
+          } else {
+            throw new UnauthorizedException('Google token could not be verified by Google.');
+          }
+        } else {
+          throw new UnauthorizedException('Google rejected the credential. Please select your Google account again.');
+        }
+      } catch {
+        throw new UnauthorizedException('Invalid or expired Google authentication token. Please sign in again.');
+      }
     }
 
     return this.upsertSocialUser({

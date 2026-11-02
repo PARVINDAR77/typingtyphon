@@ -1,12 +1,17 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { EngineResult } from '@typingtyphon/contracts';
 import { TypingCanvas } from './TypingCanvas';
+import { getPreferredDuration, savePreferredDuration } from '../lib/storage';
 import Link from 'next/link';
 
 export const PracticeWidget: React.FC = () => {
-  const [duration, setDuration] = useState<number>(60);
+  const [duration, setDuration] = useState<number>(15);
+
+  useEffect(() => {
+    setDuration(getPreferredDuration());
+  }, []);
   const [restartTrigger, setRestartTrigger] = useState<number>(0);
   const [lastResult, setLastResult] = useState<EngineResult | null>(null);
 

@@ -24,6 +24,7 @@ model User {
   oauthProvider   String?
   oauthId         String?
   role            Role            @default(USER)
+  status          String          @default("ACTIVE")
   isEmailVerified Boolean         @default(false)
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
@@ -75,3 +76,20 @@ model Certificate {
   @@index([certificateCode])
   @@map("certificates")
 }
+
+model AuditLog {
+  id           String   @id @default(uuid())
+  actorUserId  String
+  actorName    String
+  actionType   String
+  targetEntity String
+  targetId     String
+  diffJson     String?
+  ipAddress    String?
+  timestamp    DateTime @default(now())
+
+  @@index([actorUserId, timestamp(sort: Desc)])
+  @@index([targetEntity, targetId])
+  @@map("audit_logs")
+}
+

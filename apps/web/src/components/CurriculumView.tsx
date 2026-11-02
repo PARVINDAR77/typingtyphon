@@ -103,28 +103,33 @@ export const CurriculumView: React.FC<CurriculumViewProps> = ({
       {/* Academy Header Banner */}
       <div
         style={{
-          background: 'var(--bg-surface-subtle)',
-          border: '1px solid var(--border-subtle)',
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border-medium)',
           borderRadius: '0.85rem',
-          padding: '1.15rem 1.35rem',
+          padding: '1.25rem 1.45rem',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
           flexWrap: 'wrap',
           gap: '1rem',
+          position: 'relative',
+          overflow: 'hidden',
+          boxShadow: 'var(--shadow-card)',
         }}
       >
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(90deg, #8057E8, #168BFF)' }} />
+
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
             <span
               style={{
-                fontSize: '0.7rem',
+                fontSize: '0.72rem',
                 textTransform: 'uppercase',
-                letterSpacing: '0.08em',
-                background: 'rgba(14, 165, 233, 0.15)',
-                border: '1px solid rgba(56, 189, 248, 0.3)',
-                color: '#0284c7',
-                padding: '0.15rem 0.55rem',
+                letterSpacing: '0.06em',
+                background: 'var(--academy-purple-bg)',
+                border: '1px solid rgba(128, 87, 232, 0.3)',
+                color: 'var(--academy-purple)',
+                padding: '0.2rem 0.65rem',
                 borderRadius: '9999px',
                 fontWeight: 700,
                 fontFamily: 'var(--font-mono)',
@@ -136,10 +141,10 @@ export const CurriculumView: React.FC<CurriculumViewProps> = ({
               Stages 1–6 (Free &amp; Guest Accessible)
             </span>
           </div>
-          <h2 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', margin: 0, letterSpacing: '-0.02em' }}>
-            Systematic Alphabet Mastery
+          <h2 style={{ fontSize: '1.45rem', fontWeight: 900, color: 'var(--text-primary)', margin: 0, letterSpacing: '-0.02em' }}>
+            Systematic Curriculum Mastery
           </h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.825rem', marginTop: '0.25rem', maxWidth: '580px', lineHeight: 1.45 }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', marginTop: '0.3rem', maxWidth: '620px', lineHeight: 1.5 }}>
             Touch typing is neuromuscular motor memory. Master finger reaches systematically from home row anchors through top row, bottom row, numbers, and bilateral shift coordination.
           </p>
         </div>
@@ -147,45 +152,46 @@ export const CurriculumView: React.FC<CurriculumViewProps> = ({
         {/* Global Progress Pill */}
         <div
           style={{
-            background: 'var(--bg-card)',
-            border: '1px solid var(--border-subtle)',
-            borderRadius: '0.75rem',
-            padding: '0.65rem 1.15rem',
+            background: 'var(--brand-pale-blue)',
+            border: '1px solid var(--brand-blue-border)',
+            borderRadius: '0.85rem',
+            padding: '0.75rem 1.25rem',
             textAlign: 'center',
-            minWidth: '130px',
+            minWidth: '135px',
             boxShadow: 'var(--shadow-sm)',
           }}
         >
-          <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', fontFamily: 'var(--font-mono)' }}>
+          <div style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', fontFamily: 'var(--font-mono)', fontWeight: 700 }}>
             Progress
           </div>
-          <div style={{ fontSize: '1.5rem', fontWeight: 800, fontFamily: 'var(--font-mono)', color: 'var(--brand-primary)', margin: '0.1rem 0' }}>
+          <div style={{ fontSize: '1.65rem', fontWeight: 900, fontFamily: 'var(--font-mono)', color: 'var(--brand-primary)', margin: '0.1rem 0' }}>
             {passedLessonsCount} / {totalLessons}
           </div>
-          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
-            Lessons Passed
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-secondary)', fontWeight: 600 }}>
+            Lessons Mastered
           </div>
         </div>
       </div>
 
       {/* Academy Navigation Mode Switcher: Stages vs Analytics */}
-      <div style={{ display: 'flex', gap: '0.35rem', background: 'var(--bg-surface-subtle)', padding: '0.2rem', borderRadius: '9999px', border: '1px solid var(--border-subtle)', alignSelf: 'flex-start' }}>
+      <div style={{ display: 'flex', gap: '0.35rem', background: 'var(--bg-surface-subtle)', padding: '0.25rem', borderRadius: '9999px', border: '1px solid var(--border-subtle)', alignSelf: 'flex-start' }}>
         <button
           id="btn-tab-curriculum-stages"
           onClick={() => setViewMode('stages')}
           style={{
             background: viewMode === 'stages' ? 'var(--brand-primary)' : 'transparent',
-            border: viewMode === 'stages' ? '1px solid var(--brand-cyan)' : '1px solid transparent',
+            border: viewMode === 'stages' ? '1px solid var(--brand-primary)' : '1px solid transparent',
             color: viewMode === 'stages' ? '#ffffff' : 'var(--text-secondary)',
-            padding: '0.28rem 0.85rem',
+            padding: '0.32rem 0.95rem',
             borderRadius: '9999px',
-            fontSize: '0.78rem',
-            fontWeight: 600,
+            fontSize: '0.8rem',
+            fontWeight: 700,
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
-            gap: '0.35rem',
+            gap: '0.4rem',
             transition: 'all 0.15s ease',
+            boxShadow: viewMode === 'stages' ? '0 2px 8px rgba(22, 139, 255, 0.3)' : 'none',
           }}
         >
           <span>📚</span>
@@ -196,23 +202,24 @@ export const CurriculumView: React.FC<CurriculumViewProps> = ({
           id="btn-tab-curriculum-analytics"
           onClick={() => setViewMode('analytics')}
           style={{
-            background: viewMode === 'analytics' ? 'rgba(56, 189, 248, 0.15)' : 'transparent',
-            border: viewMode === 'analytics' ? '1px solid #38BDF8' : '1px solid transparent',
+            background: viewMode === 'analytics' ? 'var(--brand-pale-blue)' : 'transparent',
+            border: viewMode === 'analytics' ? '1px solid var(--brand-primary)' : '1px solid transparent',
             color: viewMode === 'analytics' ? 'var(--brand-primary)' : 'var(--text-secondary)',
-            padding: '0.28rem 0.85rem',
+            padding: '0.32rem 0.95rem',
             borderRadius: '9999px',
-            fontSize: '0.78rem',
+            fontSize: '0.8rem',
             fontWeight: 700,
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
-            gap: '0.35rem',
+            gap: '0.4rem',
+            transition: 'all 0.15s ease',
           }}
         >
           <span>📊</span>
           Personalized Key Analytics
           {breakdown.weakKeys.length > 0 && (
-            <span style={{ background: '#F59E0B', color: '#0F172A', padding: '0.1rem 0.35rem', borderRadius: '9999px', fontSize: '0.68rem', fontWeight: 800 }}>
+            <span style={{ background: '#F59E0B', color: '#0F172A', padding: '0.1rem 0.4rem', borderRadius: '9999px', fontSize: '0.7rem', fontWeight: 800 }}>
               {breakdown.weakKeys.length}
             </span>
           )}
@@ -258,11 +265,11 @@ export const CurriculumView: React.FC<CurriculumViewProps> = ({
                   }}
                   style={{
                     background: isSelected
-                      ? 'rgba(14, 165, 233, 0.12)'
+                      ? 'var(--brand-pale-blue)'
                       : 'var(--bg-card)',
                     border: isSelected ? '1.5px solid var(--brand-primary)' : '1px solid var(--border-subtle)',
-                    borderRadius: '0.75rem',
-                    padding: '0.6rem 0.75rem',
+                    borderRadius: '0.85rem',
+                    padding: '0.65rem 0.85rem',
                     cursor: 'pointer',
                     display: 'flex',
                     flexDirection: 'column',
@@ -276,17 +283,17 @@ export const CurriculumView: React.FC<CurriculumViewProps> = ({
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-                    <span style={{ fontSize: '0.8rem', fontWeight: 800, color: isSelected ? 'var(--brand-primary)' : 'var(--text-primary)', letterSpacing: '-0.01em' }}>
+                    <span style={{ fontSize: '0.82rem', fontWeight: 800, color: isSelected ? 'var(--brand-primary)' : 'var(--text-primary)', letterSpacing: '-0.01em' }}>
                       Stage {stage.stageNumber}
                     </span>
                     <span
                       style={{
                         fontSize: '0.68rem',
-                        fontWeight: 700,
-                        padding: '0.1rem 0.4rem',
+                        fontWeight: 800,
+                        padding: '0.12rem 0.45rem',
                         borderRadius: '9999px',
                         background: isAllPassed
-                          ? 'rgba(16, 185, 129, 0.2)'
+                          ? 'var(--success-bg)'
                           : isSelected
                           ? 'var(--brand-primary)'
                           : 'var(--bg-surface-subtle)',

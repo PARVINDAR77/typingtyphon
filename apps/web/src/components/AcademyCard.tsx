@@ -80,7 +80,7 @@ export const AcademyCard: React.FC<AcademyCardProps> = ({
         overflow: 'hidden',
       }}
     >
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #38bdf8, #6366f1, transparent)' }} />
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(90deg, #8057E8, #168BFF)' }} />
 
       {/* Top Tag & Stage Pill */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem' }}>
@@ -89,20 +89,19 @@ export const AcademyCard: React.FC<AcademyCardProps> = ({
             display: 'inline-flex',
             alignItems: 'center',
             gap: '0.45rem',
-            background: 'rgba(14, 165, 233, 0.12)',
-            border: '1px solid rgba(14, 165, 233, 0.35)',
-            color: '#0284c7',
+            background: 'var(--academy-purple-bg)',
+            border: '1px solid rgba(128, 87, 232, 0.35)',
+            color: 'var(--academy-purple)',
             padding: '0.25rem 0.75rem',
             borderRadius: '9999px',
             fontSize: '0.72rem',
             fontFamily: 'var(--font-mono)',
             fontWeight: 800,
-            letterSpacing: '0.08em',
+            letterSpacing: '0.06em',
             textTransform: 'uppercase',
-            boxShadow: '0 0 12px rgba(14, 165, 233, 0.15)',
           }}
         >
-          <span style={{ width: '5px', height: '5px', borderRadius: '50%', backgroundColor: '#0ea5e9', boxShadow: '0 0 6px #0ea5e9' }} />
+          <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--academy-purple)' }} />
           <span>Touch Typing Academy</span>
         </div>
         <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', fontWeight: 600 }}>
@@ -124,19 +123,19 @@ export const AcademyCard: React.FC<AcademyCardProps> = ({
         {/* Lessons Passed Badge */}
         <div
           style={{
-            background: 'var(--bg-surface-subtle)',
-            border: '1px solid var(--border-subtle)',
+            background: 'var(--brand-pale-blue)',
+            border: '1px solid var(--brand-blue-border)',
             borderRadius: '0.75rem',
-            padding: '0.4rem 0.75rem',
+            padding: '0.45rem 0.85rem',
             textAlign: 'center',
             flexShrink: 0,
           }}
         >
-          <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#0ea5e9', fontFamily: 'var(--font-mono)', lineHeight: 1 }}>
+          <div style={{ fontSize: '1.2rem', fontWeight: 900, color: 'var(--brand-primary)', fontFamily: 'var(--font-mono)', lineHeight: 1 }}>
             {passedCount} / {totalLessons}
           </div>
-          <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: '0.15rem', textTransform: 'uppercase' }}>
-            Passed
+          <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', marginTop: '0.15rem', textTransform: 'uppercase', fontWeight: 700 }}>
+            Mastered
           </div>
         </div>
       </div>

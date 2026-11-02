@@ -36,7 +36,7 @@ export const GuestHistory: React.FC<GuestHistoryProps> = ({
           overflow: 'hidden',
         }}
       >
-        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #10b981, #38bdf8, transparent)' }} />
+        <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(90deg, #10B981, #168BFF)' }} />
 
         <div>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
@@ -45,26 +45,25 @@ export const GuestHistory: React.FC<GuestHistoryProps> = ({
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.45rem',
-                background: 'rgba(16, 185, 129, 0.12)',
+                background: 'var(--success-bg)',
                 border: '1px solid rgba(16, 185, 129, 0.35)',
-                color: '#059669',
+                color: '#10B981',
                 padding: '0.22rem 0.7rem',
                 borderRadius: '9999px',
                 fontSize: '0.72rem',
                 fontFamily: 'var(--font-mono)',
                 fontWeight: 800,
-                letterSpacing: '0.08em',
+                letterSpacing: '0.06em',
                 textTransform: 'uppercase',
-                boxShadow: '0 0 10px rgba(16, 185, 129, 0.15)',
               }}
             >
-              <span style={{ width: '5px', height: '5px', borderRadius: '50%', backgroundColor: '#10b981', boxShadow: '0 0 6px #10b981' }} />
-              <span>Telemetry History</span>
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#10B981' }} />
+              <span>Practice Telemetry</span>
             </div>
             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', fontWeight: 600 }}>0 Tests Recorded</span>
           </div>
-          <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 0.35rem 0', letterSpacing: '-0.01em' }}>
-            Personal Bests & Trends
+          <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 0.35rem 0', letterSpacing: '-0.01em' }}>
+            Personal Bests & Progress
           </h3>
           <p style={{ fontSize: '0.825rem', color: 'var(--text-secondary)', lineHeight: 1.5, margin: 0 }}>
             Your practice tests and speed metrics are saved automatically to your browser. Complete your first test above to unlock rolling stats.

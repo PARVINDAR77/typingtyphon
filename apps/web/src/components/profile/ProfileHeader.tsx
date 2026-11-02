@@ -83,18 +83,18 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
           {/* Avatar Icon */}
           <div
             style={{
-              width: '52px',
-              height: '52px',
+              width: '54px',
+              height: '54px',
               borderRadius: '50%',
-              background: 'linear-gradient(135deg, #0284c7 0%, #38bdf8 100%)',
+              background: 'var(--brand-gradient)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               fontSize: '1.25rem',
               fontWeight: 800,
               color: '#ffffff',
-              boxShadow: '0 0 16px rgba(14, 165, 233, 0.4)',
-              border: '2px solid rgba(255, 255, 255, 0.2)',
+              boxShadow: '0 2px 12px rgba(22, 139, 255, 0.35)',
+              border: '2px solid rgba(255, 255, 255, 0.25)',
               flexShrink: 0,
             }}
           >
@@ -233,15 +233,21 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
               gap: '0.45rem',
               padding: '0.55rem 1.25rem',
               borderRadius: '0.75rem',
-              background: 'linear-gradient(135deg, #0284c7 0%, #38bdf8 100%)',
+              background: 'var(--brand-primary)',
               border: 'none',
               color: '#ffffff',
               fontSize: '0.85rem',
               fontWeight: 700,
               textDecoration: 'none',
               cursor: 'pointer',
-              boxShadow: '0 4px 14px rgba(14, 165, 233, 0.4)',
+              boxShadow: '0 4px 14px rgba(22, 139, 255, 0.35)',
               transition: 'all 0.15s ease',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'var(--brand-primary-hover)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'var(--brand-primary)';
             }}
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">

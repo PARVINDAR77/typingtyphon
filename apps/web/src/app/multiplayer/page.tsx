@@ -208,7 +208,7 @@ export default function MultiplayerPage() {
       {/* Top Navigation Bar with 'Multiplayer' active */}
       <Header
         activeTab="multiplayer"
-        duration={60}
+        duration={15}
         onDurationChange={() => {}}
         guestTestCount={0}
         onRestart={() => initRace()}

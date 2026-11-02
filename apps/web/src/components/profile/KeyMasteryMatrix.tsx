@@ -329,8 +329,8 @@ export const KeyMasteryMatrix: React.FC<KeyMasteryMatrixProps> = ({
                   </td>
 
                   {/* Attempts */}
-                  <td style={{ padding: '0.5rem 1rem', color: 'var(--text-secondary)', fontSize: '0.825rem' }}>
-                    {row.totalAttempts.toLocaleString()}
+                  <td suppressHydrationWarning style={{ padding: '0.5rem 1rem', color: 'var(--text-secondary)', fontSize: '0.825rem' }}>
+                    {row.totalAttempts.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                   </td>
 
                   {/* Progression Blocks (Keybr Style Matrix) */}

@@ -149,18 +149,19 @@ export const ProfileStatsGrid: React.FC<ProfileStatsGridProps> = ({ stats }) => 
             <span
               style={{
                 fontSize: '0.72rem',
-                padding: '0.12rem 0.5rem',
+                padding: '0.12rem 0.55rem',
                 borderRadius: '9999px',
-                backgroundColor: 'rgba(56, 189, 248, 0.12)',
-                color: '#38bdf8',
-                fontWeight: 600,
+                backgroundColor: 'var(--brand-pale-blue)',
+                color: 'var(--brand-primary)',
+                border: '1px solid var(--brand-blue-border)',
+                fontWeight: 700,
               }}
             >
               Lifetime Career
             </span>
           </div>
-          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-            Total keystrokes: {allTime.totalKeystrokes.toLocaleString()}
+          <span suppressHydrationWarning style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+            Total keystrokes: {allTime.totalKeystrokes.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
           </span>
         </div>
 
@@ -177,7 +178,7 @@ export const ProfileStatsGrid: React.FC<ProfileStatsGridProps> = ({ stats }) => 
             '',
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
             <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{Math.round(allTime.totalPracticeTimeSeconds / 60)} minutes total practice</span>,
-            '#38bdf8'
+            '#168BFF'
           )}
 
           {renderMetricCard(
@@ -186,7 +187,7 @@ export const ProfileStatsGrid: React.FC<ProfileStatsGridProps> = ({ stats }) => 
             'runs',
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>,
             <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>{allTime.totalErrors} errors logged</span>,
-            '#818cf8'
+            '#8057E8'
           )}
 
           {renderMetricCard(
@@ -194,8 +195,8 @@ export const ProfileStatsGrid: React.FC<ProfileStatsGridProps> = ({ stats }) => 
             allTime.bestNetWpm,
             'WPM',
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m13 2-2 10h6l-7 10 2-10H6l7-10z"/></svg>,
-            <span style={{ fontSize: '0.72rem', color: '#38bdf8', fontWeight: 600 }}>Personal Record</span>,
-            '#0ea5e9'
+            <span style={{ fontSize: '0.72rem', color: '#168BFF', fontWeight: 700 }}>Personal Record</span>,
+            '#168BFF'
           )}
 
           {renderMetricCard(
@@ -204,7 +205,7 @@ export const ProfileStatsGrid: React.FC<ProfileStatsGridProps> = ({ stats }) => 
             'WPM',
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>,
             <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>Net typing pace</span>,
-            '#38bdf8'
+            '#168BFF'
           )}
 
           {renderMetricCard(

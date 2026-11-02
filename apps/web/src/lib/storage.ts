@@ -564,6 +564,34 @@ export function getKeyPerformanceBreakdown(analytics?: Record<string, KeyMetricA
 }
 
 const USER_PROFILE_STORAGE_KEY = 'typingtyphon_active_user_profile';
+const DURATION_STORAGE_KEY = 'typingtyphon_preferred_duration';
+
+/**
+ * Save user's preferred typing test duration to local storage.
+ */
+export function savePreferredDuration(duration: number): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(DURATION_STORAGE_KEY, String(duration));
+  } catch (err) {
+    console.error('Failed to save preferred duration:', err);
+  }
+}
+
+/**
+ * Retrieve the user's preferred typing test duration from local storage (default: 15s).
+ */
+export function getPreferredDuration(): number {
+  if (typeof window === 'undefined') return 15;
+  try {
+    const raw = localStorage.getItem(DURATION_STORAGE_KEY);
+    if (!raw) return 15;
+    const parsed = parseInt(raw, 10);
+    return [15, 30, 60, 120].includes(parsed) ? parsed : 15;
+  } catch {
+    return 15;
+  }
+}
 
 /**
  * Persist the authenticated user profile to local storage for instant client-side retrieval.

@@ -43,19 +43,19 @@ export const RaceTrack: React.FC<RaceTrackProps> = ({ racers, mode, userWpm = 0 
             style={{
               position: 'relative',
               width: '100%',
-              height: '38px',
+              height: '40px',
               background: racer.isUser
-                ? 'rgba(14, 165, 233, 0.12)'
+                ? 'var(--brand-pale-blue)'
                 : 'var(--bg-surface-subtle)',
               border: racer.isUser
-                ? '1px solid rgba(56, 189, 248, 0.45)'
+                ? '1.5px solid var(--brand-primary)'
                 : '1px solid var(--border-subtle)',
               borderRadius: '8px',
               display: 'flex',
               alignItems: 'center',
-              padding: '0 0.55rem',
+              padding: '0 0.65rem',
               gap: '0.65rem',
-              boxShadow: racer.isUser ? '0 0 14px rgba(14, 165, 233, 0.18)' : 'none',
+              boxShadow: racer.isUser ? '0 2px 8px rgba(22, 139, 255, 0.16)' : 'none',
               transition: 'all 0.15s ease',
             }}
           >
@@ -75,16 +75,16 @@ export const RaceTrack: React.FC<RaceTrackProps> = ({ racers, mode, userWpm = 0 
             >
               <div
                 style={{
-                  width: '24px',
-                  height: '24px',
-                  borderRadius: '5px',
-                  background: `linear-gradient(135deg, ${racer.avatarColor}, #0f172a)`,
+                  width: '26px',
+                  height: '26px',
+                  borderRadius: '6px',
+                  background: racer.isUser ? 'var(--brand-gradient)' : `linear-gradient(135deg, ${racer.avatarColor}, #15213A)`,
                   border: '1px solid rgba(255, 255, 255, 0.25)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontWeight: 800,
-                  fontSize: '0.65rem',
+                  fontSize: '0.7rem',
                   color: '#ffffff',
                   fontFamily: 'var(--font-mono)',
                   flexShrink: 0,
@@ -95,9 +95,9 @@ export const RaceTrack: React.FC<RaceTrackProps> = ({ racers, mode, userWpm = 0 
               <span
                 title={racer.name}
                 style={{
-                  fontWeight: racer.isUser ? 700 : 500,
-                  color: racer.isUser ? '#38bdf8' : 'var(--text-primary)',
-                  fontSize: '0.8rem',
+                  fontWeight: racer.isUser ? 800 : 600,
+                  color: racer.isUser ? 'var(--brand-primary)' : 'var(--text-primary)',
+                  fontSize: '0.82rem',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                 }}
@@ -108,11 +108,11 @@ export const RaceTrack: React.FC<RaceTrackProps> = ({ racers, mode, userWpm = 0 
                 <span
                   style={{
                     fontSize: '0.62rem',
-                    padding: '0.08rem 0.35rem',
+                    padding: '0.1rem 0.4rem',
                     borderRadius: '9999px',
-                    background: 'rgba(56, 189, 248, 0.25)',
-                    color: '#38bdf8',
-                    fontWeight: 700,
+                    background: 'var(--brand-primary)',
+                    color: '#ffffff',
+                    fontWeight: 800,
                     flexShrink: 0,
                   }}
                 >

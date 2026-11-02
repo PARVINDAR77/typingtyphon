@@ -506,24 +506,24 @@ export const TypingCanvas: React.FC<TypingCanvasProps> = ({
           {/* Mode Selector (When not in specialized curriculum drill) */}
           {!drillBadge && (
             <>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.15rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
                 {(['words', 'punctuation', 'numbers'] as const).map((m) => (
                   <button
                     key={m}
                     type="button"
                     onClick={() => onModeChange?.(m)}
                     style={{
-                      background: mode === m ? 'linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%)' : 'transparent',
-                      border: mode === m ? '1px solid #0ea5e9' : '1px solid transparent',
+                      background: mode === m ? 'var(--brand-primary)' : 'transparent',
+                      border: mode === m ? '1px solid var(--brand-primary)' : '1px solid transparent',
                       color: mode === m ? '#ffffff' : 'var(--text-secondary)',
                       borderRadius: '9999px',
-                      padding: '0.18rem 0.55rem',
-                      fontSize: '0.74rem',
+                      padding: '0.2rem 0.65rem',
+                      fontSize: '0.75rem',
                       fontWeight: 700,
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
                       textTransform: 'capitalize',
-                      boxShadow: mode === m ? '0 2px 8px rgba(14, 165, 233, 0.35)' : 'none',
+                      boxShadow: mode === m ? '0 2px 8px rgba(22, 139, 255, 0.3)' : 'none',
                     }}
                   >
                     {m}
@@ -531,27 +531,27 @@ export const TypingCanvas: React.FC<TypingCanvasProps> = ({
                 ))}
               </div>
 
-              <span style={{ color: 'var(--border-subtle)', margin: '0 0.1rem', fontSize: '0.75rem', userSelect: 'none' }}>|</span>
+              <span style={{ color: 'var(--border-subtle)', margin: '0 0.15rem', fontSize: '0.75rem', userSelect: 'none' }}>|</span>
 
               {/* Duration Selector */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.15rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
                 {[15, 30, 60, 120].map((d) => (
                   <button
                     key={d}
                     type="button"
                     onClick={() => onDurationChange?.(d)}
                     style={{
-                      background: durationSeconds === d ? 'linear-gradient(135deg, #0284c7 0%, #38bdf8 100%)' : 'transparent',
-                      border: durationSeconds === d ? '1px solid #0284c7' : '1px solid transparent',
+                      background: durationSeconds === d ? 'var(--brand-primary)' : 'transparent',
+                      border: durationSeconds === d ? '1px solid var(--brand-primary)' : '1px solid transparent',
                       color: durationSeconds === d ? '#ffffff' : 'var(--text-secondary)',
                       borderRadius: '9999px',
-                      padding: '0.18rem 0.5rem',
-                      fontSize: '0.74rem',
+                      padding: '0.2rem 0.6rem',
+                      fontSize: '0.75rem',
                       fontWeight: 700,
                       fontFamily: 'var(--font-mono)',
                       cursor: 'pointer',
                       transition: 'all 0.15s ease',
-                      boxShadow: durationSeconds === d ? '0 2px 8px rgba(14, 165, 233, 0.35)' : 'none',
+                      boxShadow: durationSeconds === d ? '0 2px 8px rgba(22, 139, 255, 0.3)' : 'none',
                     }}
                   >
                     {d}s
@@ -559,7 +559,7 @@ export const TypingCanvas: React.FC<TypingCanvasProps> = ({
                 ))}
               </div>
 
-              <span style={{ color: 'var(--border-subtle)', margin: '0 0.1rem', fontSize: '0.75rem', userSelect: 'none' }}>|</span>
+              <span style={{ color: 'var(--border-subtle)', margin: '0 0.15rem', fontSize: '0.75rem', userSelect: 'none' }}>|</span>
             </>
           )}
 
@@ -760,46 +760,63 @@ export const TypingCanvas: React.FC<TypingCanvasProps> = ({
         </div>
       </div>
 
-      {/* Modern High-Contrast Live Cyber HUD Pods */}
+      {/* Modern High-Contrast Aligned Performance Metric Pods */}
       <div
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 180px), 1fr))',
-          gap: '0.65rem',
+          gap: '0.85rem',
           alignItems: 'stretch',
         }}
       >
-        {/* 1. Speed (WPM) Pod */}
+        {/* 1. Net Speed (WPM) Pod — Vivid Blue */}
         <div
           style={{
             position: 'relative',
             background: 'var(--bg-card)',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
-            border: '1px solid var(--border-subtle)',
-            borderRadius: '0.75rem',
-            padding: '0.65rem 0.95rem',
+            border: '1px solid var(--border-medium)',
+            borderRadius: '1rem',
+            padding: '0.85rem 1.15rem',
             boxShadow: 'var(--shadow-card)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
             overflow: 'hidden',
+            transition: 'all 0.2s ease',
           }}
         >
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #0ea5e9, #38bdf8)' }} />
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3.5px', background: 'var(--brand-gradient)' }} />
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: '0.7rem', color: '#0ea5e9', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 800 }}>
-              Net Speed
-            </span>
-            <span style={{ fontSize: '0.65rem', fontWeight: 700, padding: '0.1rem 0.45rem', borderRadius: '9999px', background: 'rgba(14, 165, 233, 0.12)', color: '#0ea5e9' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
+              <div
+                style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '8px',
+                  background: 'var(--brand-pale-blue)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#168BFF',
+                }}
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m13 2-2 10h6l-7 10 2-10H6l7-10z" />
+                </svg>
+              </div>
+              <span style={{ fontSize: '0.76rem', color: '#168BFF', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 800 }}>
+                Net Speed
+              </span>
+            </div>
+            <span style={{ fontSize: '0.68rem', fontWeight: 700, padding: '0.15rem 0.55rem', borderRadius: '9999px', background: 'var(--brand-pale-blue)', color: '#168BFF' }}>
               WPM
             </span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.4rem', marginTop: '0.35rem' }}>
-            <span id="hud-wpm-value" className="tabular-nums" style={{ fontSize: '1.85rem', fontWeight: 900, fontFamily: 'var(--font-mono)', color: 'var(--text-primary)', lineHeight: 1 }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.4rem', marginTop: '0.5rem' }}>
+            <span id="hud-wpm-value" className="tabular-nums" style={{ fontSize: '2.2rem', fontWeight: 900, fontFamily: 'var(--font-mono)', color: 'var(--text-primary)', lineHeight: 1 }}>
               {netWpm}
             </span>
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', fontWeight: 600 }}>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', fontWeight: 600 }}>
               WPM
             </span>
             {hasPrev && (
@@ -808,7 +825,7 @@ export const TypingCanvas: React.FC<TypingCanvasProps> = ({
                   fontSize: '0.72rem',
                   fontWeight: 700,
                   fontFamily: 'var(--font-mono)',
-                  color: wpmDelta >= 0 ? 'var(--brand-emerald)' : 'var(--brand-rose)',
+                  color: wpmDelta >= 0 ? '#10B981' : '#F04462',
                   marginLeft: 'auto',
                 }}
               >
@@ -818,34 +835,52 @@ export const TypingCanvas: React.FC<TypingCanvasProps> = ({
           </div>
         </div>
 
-        {/* 2. Accuracy Pod */}
+        {/* 2. Accuracy Pod — Semantic Green */}
         <div
           style={{
             position: 'relative',
             background: 'var(--bg-card)',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
             border: '1px solid var(--border-subtle)',
-            borderRadius: '0.75rem',
-            padding: '0.65rem 0.95rem',
+            borderRadius: '1rem',
+            padding: '0.85rem 1.15rem',
             boxShadow: 'var(--shadow-card)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
             overflow: 'hidden',
+            transition: 'all 0.2s ease',
           }}
         >
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #059669, #10b981)' }} />
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3.5px', background: 'linear-gradient(90deg, #10B981, #059669)' }} />
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: '0.7rem', color: '#059669', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 800 }}>
-              Accuracy
-            </span>
-            <span style={{ fontSize: '0.65rem', fontWeight: 700, padding: '0.1rem 0.45rem', borderRadius: '9999px', background: 'rgba(16, 185, 129, 0.12)', color: '#059669' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
+              <div
+                style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '8px',
+                  background: 'var(--success-bg)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#10B981',
+                }}
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="m9 12 2 2 4-4" />
+                </svg>
+              </div>
+              <span style={{ fontSize: '0.76rem', color: '#10B981', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 800 }}>
+                Accuracy
+              </span>
+            </div>
+            <span style={{ fontSize: '0.68rem', fontWeight: 700, padding: '0.15rem 0.55rem', borderRadius: '9999px', background: 'var(--success-bg)', color: '#10B981' }}>
               ≥ 95%
             </span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.4rem', marginTop: '0.35rem' }}>
-            <span id="hud-accuracy-value" className="tabular-nums" style={{ fontSize: '1.85rem', fontWeight: 900, fontFamily: 'var(--font-mono)', color: accuracyPct >= 95 ? '#059669' : '#d97706', lineHeight: 1 }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.4rem', marginTop: '0.5rem' }}>
+            <span id="hud-accuracy-value" className="tabular-nums" style={{ fontSize: '2.2rem', fontWeight: 900, fontFamily: 'var(--font-mono)', color: accuracyPct >= 95 ? '#10B981' : '#F59E0B', lineHeight: 1 }}>
               {accuracyPct}%
             </span>
             {hasPrev && (
@@ -854,7 +889,7 @@ export const TypingCanvas: React.FC<TypingCanvasProps> = ({
                   fontSize: '0.72rem',
                   fontWeight: 700,
                   fontFamily: 'var(--font-mono)',
-                  color: accDelta >= 0 ? 'var(--brand-emerald)' : 'var(--brand-rose)',
+                  color: accDelta >= 0 ? '#10B981' : '#F04462',
                   marginLeft: 'auto',
                 }}
               >
@@ -864,34 +899,53 @@ export const TypingCanvas: React.FC<TypingCanvasProps> = ({
           </div>
         </div>
 
-        {/* 3. Errors Pod */}
+        {/* 3. Errors Pod — Semantic Coral */}
         <div
           style={{
             position: 'relative',
             background: 'var(--bg-card)',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
             border: '1px solid var(--border-subtle)',
-            borderRadius: '0.75rem',
-            padding: '0.65rem 0.95rem',
+            borderRadius: '1rem',
+            padding: '0.85rem 1.15rem',
             boxShadow: 'var(--shadow-card)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
             overflow: 'hidden',
+            transition: 'all 0.2s ease',
           }}
         >
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #e11d48, #f43f5e)' }} />
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3.5px', background: 'linear-gradient(90deg, #F04462, #E11D48)' }} />
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: '0.7rem', color: '#e11d48', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 800 }}>
-              Errors
-            </span>
-            <span style={{ fontSize: '0.65rem', fontWeight: 700, padding: '0.1rem 0.45rem', borderRadius: '9999px', background: 'rgba(244, 63, 94, 0.12)', color: '#e11d48' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
+              <div
+                style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '8px',
+                  background: 'var(--error-bg)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#F04462',
+                }}
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <line x1="15" y1="9" x2="9" y2="15" />
+                  <line x1="9" y1="9" x2="15" y2="15" />
+                </svg>
+              </div>
+              <span style={{ fontSize: '0.76rem', color: '#F04462', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 800 }}>
+                Errors
+              </span>
+            </div>
+            <span style={{ fontSize: '0.68rem', fontWeight: 700, padding: '0.15rem 0.55rem', borderRadius: '9999px', background: 'var(--error-bg)', color: '#F04462' }}>
               Mistakes
             </span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.4rem', marginTop: '0.35rem' }}>
-            <span id="hud-error-value" className="tabular-nums" style={{ fontSize: '1.85rem', fontWeight: 900, fontFamily: 'var(--font-mono)', color: errorCount > 0 ? '#e11d48' : 'var(--text-muted)', lineHeight: 1 }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.4rem', marginTop: '0.5rem' }}>
+            <span id="hud-error-value" className="tabular-nums" style={{ fontSize: '2.2rem', fontWeight: 900, fontFamily: 'var(--font-mono)', color: errorCount > 0 ? '#F04462' : 'var(--text-muted)', lineHeight: 1 }}>
               {errorCount}
             </span>
             {hasPrev && (
@@ -900,7 +954,7 @@ export const TypingCanvas: React.FC<TypingCanvasProps> = ({
                   fontSize: '0.72rem',
                   fontWeight: 700,
                   fontFamily: 'var(--font-mono)',
-                  color: errDelta <= 0 ? 'var(--brand-emerald)' : 'var(--brand-rose)',
+                  color: errDelta <= 0 ? '#10B981' : '#F04462',
                   marginLeft: 'auto',
                 }}
               >
@@ -910,47 +964,65 @@ export const TypingCanvas: React.FC<TypingCanvasProps> = ({
           </div>
         </div>
 
-        {/* 4. Time Remaining Pod */}
+        {/* 4. Time Remaining Pod — Academy Purple */}
         <div
           style={{
             position: 'relative',
             background: 'var(--bg-card)',
-            backdropFilter: 'blur(16px)',
-            WebkitBackdropFilter: 'blur(16px)',
             border: '1px solid var(--border-subtle)',
-            borderRadius: '0.75rem',
-            padding: '0.65rem 0.95rem',
+            borderRadius: '1rem',
+            padding: '0.85rem 1.15rem',
             boxShadow: 'var(--shadow-card)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
             overflow: 'hidden',
+            transition: 'all 0.2s ease',
           }}
         >
-          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, #4f46e5, #6366f1)' }} />
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3.5px', background: 'linear-gradient(90deg, #8057E8, #5B5FEF)' }} />
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: '0.7rem', color: '#4f46e5', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 800 }}>
-              Time Left
-            </span>
-            <span style={{ fontSize: '0.65rem', fontWeight: 700, padding: '0.1rem 0.45rem', borderRadius: '9999px', background: 'rgba(99, 102, 241, 0.12)', color: '#4f46e5' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem' }}>
+              <div
+                style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '8px',
+                  background: 'var(--academy-purple-bg)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: '#8057E8',
+                }}
+              >
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+              </div>
+              <span style={{ fontSize: '0.76rem', color: '#8057E8', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 800 }}>
+                Time Left
+              </span>
+            </div>
+            <span style={{ fontSize: '0.68rem', fontWeight: 700, padding: '0.15rem 0.55rem', borderRadius: '9999px', background: 'var(--academy-purple-bg)', color: '#8057E8' }}>
               {durationSeconds}s
             </span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.35rem', marginTop: '0.35rem' }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.35rem', marginTop: '0.5rem' }}>
             <span
               id="hud-timer-value"
               className="tabular-nums"
               style={{
-                fontSize: '1.85rem',
+                fontSize: '2.2rem',
                 fontWeight: 900,
                 fontFamily: 'var(--font-mono)',
-                color: remainingSeconds <= 10 ? '#e11d48' : 'var(--text-primary)',
+                color: remainingSeconds <= 10 ? '#F04462' : 'var(--text-primary)',
                 lineHeight: 1,
               }}
             >
               {formattedTime}
             </span>
-            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', fontWeight: 600 }}>
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', fontWeight: 600 }}>
               s
             </span>
           </div>
@@ -994,6 +1066,61 @@ export const TypingCanvas: React.FC<TypingCanvasProps> = ({
           ['--canvas-height' as any]: zoomConfig.height,
         }}
       >
+        {/* Sleek Canvas Header Strip with Live Focus & Mode Status */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '0.45rem 0.85rem',
+            marginBottom: '0.65rem',
+            background: 'var(--bg-surface-subtle)',
+            borderRadius: '8px',
+            border: '1px solid var(--border-subtle)',
+            fontSize: '0.74rem',
+            color: 'var(--text-secondary)',
+            userSelect: 'none',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+            <span
+              style={{
+                width: '7px',
+                height: '7px',
+                borderRadius: '50%',
+                backgroundColor: engine.getStatus() === 'running' ? '#10B981' : '#168BFF',
+                boxShadow: engine.getStatus() === 'running' ? '0 0 6px #10B981' : '0 0 6px #168BFF',
+                animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              }}
+            />
+            <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
+              {engine.getStatus() === 'running'
+                ? 'Test in progress — keep typing...'
+                : 'Ready to type — click anywhere to focus'}
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+            <span
+              style={{
+                padding: '0.12rem 0.45rem',
+                borderRadius: '4px',
+                background: 'var(--brand-pale-blue)',
+                border: '1px solid var(--brand-blue-border)',
+                color: 'var(--brand-primary)',
+                fontSize: '0.68rem',
+                fontWeight: 700,
+                textTransform: 'capitalize',
+              }}
+            >
+              {mode} • {durationSeconds}s
+            </span>
+            <span style={{ color: 'var(--text-muted)', fontSize: '0.7rem' }}>
+              <kbd style={{ padding: '0.1rem 0.35rem', borderRadius: '3px', background: 'var(--bg-surface)', border: '1px solid var(--border-subtle)', fontFamily: 'var(--font-mono)', fontSize: '0.68rem' }}>Tab</kbd> restart
+            </span>
+          </div>
+        </div>
+
         {/* Hidden input to capture physical keystrokes */}
         <input
           id="canvas-hidden-input"

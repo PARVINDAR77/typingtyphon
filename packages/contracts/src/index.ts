@@ -5,4 +5,5 @@ export * from './certificate';
 export * from './analytics';
 export * from './curriculum';
 export * from './curriculumData';
+export * from './admin';
 

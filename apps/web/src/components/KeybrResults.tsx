@@ -124,10 +124,10 @@ export const KeybrResults: React.FC<KeybrResultsProps> = ({
     if (metric.errorCount > 0 && metric.accuracyPct < 88) {
       return {
         status: 'weak' as const,
-        color: 'rgba(244, 63, 94, 0.22)',
-        borderColor: '#f43f5e',
-        textColor: '#fda4af',
-        glow: '0 0 14px rgba(244, 63, 94, 0.4)',
+        color: 'var(--error-bg)',
+        borderColor: '#F04462',
+        textColor: '#F04462',
+        glow: '0 0 10px rgba(240, 68, 98, 0.3)',
         metric,
         finger,
       };
@@ -135,20 +135,20 @@ export const KeybrResults: React.FC<KeybrResultsProps> = ({
     if (metric.accuracyPct < 95 || metric.errorCount > 0) {
       return {
         status: 'moderate' as const,
-        color: 'rgba(245, 158, 11, 0.22)',
-        borderColor: '#f59e0b',
-        textColor: '#fbbf24',
-        glow: '0 0 12px rgba(245, 158, 11, 0.35)',
+        color: 'var(--warning-bg)',
+        borderColor: '#F59E0B',
+        textColor: '#D97706',
+        glow: '0 0 10px rgba(245, 158, 11, 0.25)',
         metric,
         finger,
       };
     }
     return {
       status: 'mastered' as const,
-      color: 'rgba(16, 185, 129, 0.2)',
-      borderColor: '#10b981',
-      textColor: '#34d399',
-      glow: '0 0 14px rgba(16, 185, 129, 0.35)',
+      color: 'var(--success-bg)',
+      borderColor: '#10B981',
+      textColor: '#059669',
+      glow: '0 0 10px rgba(16, 185, 129, 0.25)',
       metric,
       finger,
     };
@@ -269,20 +269,20 @@ export const KeybrResults: React.FC<KeybrResultsProps> = ({
         }}
       >
         <div>
-          {/* Cyber Status Pill */}
+          {/* Status Pill */}
           <div
             style={{
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.6rem',
-              background: 'rgba(56, 189, 248, 0.08)',
-              border: '1px solid rgba(56, 189, 248, 0.25)',
+              background: 'var(--brand-pale-blue)',
+              border: '1px solid var(--brand-blue-border)',
               borderRadius: '9999px',
               padding: '0.3rem 0.85rem',
               fontSize: '0.75rem',
-              fontWeight: 700,
-              letterSpacing: '0.08em',
-              color: '#38bdf8',
+              fontWeight: 800,
+              letterSpacing: '0.06em',
+              color: 'var(--brand-primary)',
               marginBottom: '0.5rem',
             }}
           >
@@ -291,8 +291,7 @@ export const KeybrResults: React.FC<KeybrResultsProps> = ({
                 width: '7px',
                 height: '7px',
                 borderRadius: '50%',
-                background: '#38bdf8',
-                boxShadow: '0 0 8px #38bdf8',
+                background: 'var(--brand-primary)',
                 display: 'inline-block',
               }}
             />

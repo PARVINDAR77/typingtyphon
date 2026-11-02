@@ -8,6 +8,7 @@ import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { ProgressModule } from './progress/progress.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { ProgressModule } from './progress/progress.module';
     PrismaModule,
     AuthModule,
     ProgressModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [

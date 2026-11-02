@@ -17,7 +17,7 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({
-  duration = 60,
+  duration = 15,
   onDurationChange = () => {},
   guestTestCount = 0,
   onRestart = () => {},
@@ -28,12 +28,21 @@ export const Header: React.FC<HeaderProps> = ({
   hasResult = false,
 }) => {
   const [theme, setTheme] = React.useState<'light' | 'dark'>('light');
+  const [mobileMenuOpen, setMobileMenuOpen] = React.useState<boolean>(false);
 
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
-      const savedTheme = (localStorage.getItem('typingtyphon_theme') as 'light' | 'dark') || 'light';
+      const savedTheme =
+        (localStorage.getItem('typingtyphon_theme') as 'light' | 'dark') ||
+        (localStorage.getItem('tt_theme') as 'light' | 'dark') ||
+        'light';
       setTheme(savedTheme);
       document.documentElement.setAttribute('data-theme', savedTheme);
+      if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
     }
   }, []);
 
@@ -42,8 +51,35 @@ export const Header: React.FC<HeaderProps> = ({
     setTheme(nextTheme);
     if (typeof window !== 'undefined') {
       localStorage.setItem('typingtyphon_theme', nextTheme);
+      localStorage.setItem('tt_theme', nextTheme);
       document.documentElement.setAttribute('data-theme', nextTheme);
+      if (nextTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
     }
+  };
+
+  const getNavStyle = (tab: string) => {
+    const isActive = activeTab === tab;
+    return {
+      background: isActive ? 'var(--brand-pale-blue)' : 'transparent',
+      border: isActive ? '1px solid var(--brand-blue-border)' : '1px solid transparent',
+      color: isActive ? 'var(--brand-primary)' : 'var(--text-secondary)',
+      borderRadius: '8px',
+      padding: '0.4rem 0.85rem',
+      fontSize: '0.82rem',
+      fontWeight: isActive ? 700 : 600,
+      cursor: 'pointer',
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '0.4rem',
+      boxShadow: isActive ? '0 1px 3px rgba(22, 139, 255, 0.12)' : 'none',
+      transition: 'all 0.15s ease',
+      whiteSpace: 'nowrap' as const,
+      textDecoration: 'none',
+    };
   };
 
   return (
@@ -63,19 +99,18 @@ export const Header: React.FC<HeaderProps> = ({
     >
       <div
         style={{
-          maxWidth: '1380px',
+          maxWidth: '1440px',
           margin: '0 auto',
-          padding: '0 1rem',
-          minHeight: '60px',
+          padding: '0 1.25rem',
+          minHeight: '62px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: '0.5rem',
+          gap: '0.75rem',
         }}
       >
         {/* Brand Logo & Navigation */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
           {/* Logo */}
           <Link
             href="/"
@@ -90,7 +125,7 @@ export const Header: React.FC<HeaderProps> = ({
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '0.6rem',
+              gap: '0.65rem',
               textDecoration: 'none',
               cursor: 'pointer',
               userSelect: 'none',
@@ -98,24 +133,24 @@ export const Header: React.FC<HeaderProps> = ({
           >
             <div
               style={{
-                width: '30px',
-                height: '30px',
+                width: '32px',
+                height: '32px',
                 borderRadius: '8px',
-                background: 'linear-gradient(135deg, #0ea5e9 0%, #4f46e5 100%)',
+                background: 'var(--brand-gradient)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 2px 8px rgba(14, 165, 233, 0.3)',
+                boxShadow: '0 2px 10px rgba(22, 139, 255, 0.35)',
                 flexShrink: 0,
               }}
             >
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#ffffff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="m13 2-2 10h6l-7 10 2-10H6l7-10z" />
               </svg>
             </div>
             <span
               style={{
-                fontSize: '1.05rem',
+                fontSize: '1.1rem',
                 fontWeight: 900,
                 letterSpacing: '-0.02em',
                 color: 'var(--text-primary)',
@@ -128,7 +163,7 @@ export const Header: React.FC<HeaderProps> = ({
               <span>TYPING</span>
               <span
                 style={{
-                  background: 'linear-gradient(135deg, #0284c7 0%, #6366f1 100%)',
+                  background: 'var(--brand-gradient)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                 }}
@@ -138,20 +173,18 @@ export const Header: React.FC<HeaderProps> = ({
             </span>
           </Link>
 
-          {/* Unified Desktop Navigation Tabs */}
+          {/* Desktop Navigation Tabs */}
           <nav
             aria-label="Main Navigation"
+            className="desktop-nav"
             style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '0.2rem',
+              gap: '0.25rem',
               background: 'var(--bg-surface-subtle)',
-              padding: '3px',
-              borderRadius: '8px',
+              padding: '4px',
+              borderRadius: '10px',
               border: '1px solid var(--border-subtle)',
-              overflowX: 'auto',
-              maxWidth: '100%',
-              scrollbarWidth: 'none',
             }}
           >
             {/* 1. Speed Test */}
@@ -159,48 +192,16 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 type="button"
                 onClick={() => onTabChange('speed')}
-                style={{
-                  background: activeTab === 'speed' ? 'var(--bg-surface)' : 'transparent',
-                  border: 'none',
-                  color: activeTab === 'speed' ? 'var(--brand-primary)' : 'var(--text-secondary)',
-                  borderRadius: '6px',
-                  padding: '0.35rem 0.75rem',
-                  fontSize: '0.8rem',
-                  fontWeight: activeTab === 'speed' ? 700 : 600,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.35rem',
-                  boxShadow: activeTab === 'speed' ? 'var(--shadow-sm)' : 'none',
-                  transition: 'all 0.15s ease',
-                  whiteSpace: 'nowrap',
-                }}
+                style={getNavStyle('speed')}
               >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="m13 2-2 10h6l-7 10 2-10H6l7-10z" />
                 </svg>
                 <span>Speed Test</span>
               </button>
             ) : (
-              <Link
-                href="/"
-                style={{
-                  background: activeTab === 'speed' ? 'var(--bg-surface)' : 'transparent',
-                  color: activeTab === 'speed' ? 'var(--brand-primary)' : 'var(--text-secondary)',
-                  borderRadius: '6px',
-                  padding: '0.35rem 0.75rem',
-                  fontSize: '0.8rem',
-                  fontWeight: activeTab === 'speed' ? 700 : 600,
-                  textDecoration: 'none',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.35rem',
-                  boxShadow: activeTab === 'speed' ? 'var(--shadow-sm)' : 'none',
-                  transition: 'all 0.15s ease',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <Link href="/" style={getNavStyle('speed')}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="m13 2-2 10h6l-7 10 2-10H6l7-10z" />
                 </svg>
                 <span>Speed Test</span>
@@ -212,49 +213,17 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 type="button"
                 onClick={() => onTabChange('curriculum')}
-                style={{
-                  background: activeTab === 'curriculum' ? 'var(--bg-surface)' : 'transparent',
-                  border: 'none',
-                  color: activeTab === 'curriculum' ? 'var(--brand-primary)' : 'var(--text-secondary)',
-                  borderRadius: '6px',
-                  padding: '0.35rem 0.75rem',
-                  fontSize: '0.8rem',
-                  fontWeight: activeTab === 'curriculum' ? 700 : 600,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.35rem',
-                  boxShadow: activeTab === 'curriculum' ? 'var(--shadow-sm)' : 'none',
-                  transition: 'all 0.15s ease',
-                  whiteSpace: 'nowrap',
-                }}
+                style={getNavStyle('curriculum')}
               >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
                   <path d="M6 12v5c3 3 9 3 12 0v-5" />
                 </svg>
                 <span>Academy</span>
               </button>
             ) : (
-              <Link
-                href="/academy"
-                style={{
-                  background: activeTab === 'curriculum' ? 'var(--bg-surface)' : 'transparent',
-                  color: activeTab === 'curriculum' ? 'var(--brand-primary)' : 'var(--text-secondary)',
-                  borderRadius: '6px',
-                  padding: '0.35rem 0.75rem',
-                  fontSize: '0.8rem',
-                  fontWeight: activeTab === 'curriculum' ? 700 : 600,
-                  textDecoration: 'none',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.35rem',
-                  boxShadow: activeTab === 'curriculum' ? 'var(--shadow-sm)' : 'none',
-                  transition: 'all 0.15s ease',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <Link href="/academy" style={getNavStyle('curriculum')}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
                   <path d="M6 12v5c3 3 9 3 12 0v-5" />
                 </svg>
@@ -263,25 +232,8 @@ export const Header: React.FC<HeaderProps> = ({
             )}
 
             {/* 3. Multiplayer */}
-            <Link
-              href="/multiplayer"
-              style={{
-                background: activeTab === 'multiplayer' ? 'var(--bg-surface)' : 'transparent',
-                color: activeTab === 'multiplayer' ? 'var(--brand-primary)' : 'var(--text-secondary)',
-                borderRadius: '6px',
-                padding: '0.35rem 0.75rem',
-                fontSize: '0.8rem',
-                fontWeight: activeTab === 'multiplayer' ? 700 : 600,
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.35rem',
-                boxShadow: activeTab === 'multiplayer' ? 'var(--shadow-sm)' : 'none',
-                transition: 'all 0.15s ease',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <Link href="/multiplayer" style={getNavStyle('multiplayer')}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
                 <line x1="4" y1="22" x2="4" y2="15" />
               </svg>
@@ -289,25 +241,8 @@ export const Header: React.FC<HeaderProps> = ({
             </Link>
 
             {/* 4. Profile */}
-            <Link
-              href="/profile"
-              style={{
-                background: activeTab === 'profile' ? 'var(--bg-surface)' : 'transparent',
-                color: activeTab === 'profile' ? 'var(--brand-primary)' : 'var(--text-secondary)',
-                borderRadius: '6px',
-                padding: '0.35rem 0.75rem',
-                fontSize: '0.8rem',
-                fontWeight: activeTab === 'profile' ? 700 : 600,
-                textDecoration: 'none',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.35rem',
-                boxShadow: activeTab === 'profile' ? 'var(--shadow-sm)' : 'none',
-                transition: 'all 0.15s ease',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <Link href="/profile" style={getNavStyle('profile')}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
               </svg>
@@ -319,24 +254,9 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 type="button"
                 onClick={() => onTabChange ? onTabChange('results') : (window.location.href = '/#results')}
-                style={{
-                  background: activeTab === 'results' ? 'var(--bg-surface)' : 'transparent',
-                  border: 'none',
-                  color: activeTab === 'results' ? 'var(--brand-primary)' : 'var(--text-secondary)',
-                  borderRadius: '6px',
-                  padding: '0.35rem 0.75rem',
-                  fontSize: '0.8rem',
-                  fontWeight: activeTab === 'results' ? 700 : 600,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.35rem',
-                  boxShadow: activeTab === 'results' ? 'var(--shadow-sm)' : 'none',
-                  transition: 'all 0.15s ease',
-                  whiteSpace: 'nowrap',
-                }}
+                style={getNavStyle('results')}
               >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="2" y="3" width="20" height="14" rx="2" />
                   <line x1="8" y1="21" x2="16" y2="21" />
                   <line x1="12" y1="17" x2="12" y2="21" />
@@ -348,25 +268,26 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Right Section: Light/Dark Theme Switcher & Authentication */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', flexWrap: 'nowrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.55rem', flexWrap: 'nowrap' }}>
           {/* Theme Switcher Toggle (Light/Dark Mode) */}
           <button
             onClick={toggleTheme}
             type="button"
             title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Bright Mode'}
             id="header-theme-toggle"
+            aria-label={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Bright Mode'}
             style={{
               display: 'inline-flex',
               alignItems: 'center',
               justifyContent: 'center',
-              width: '32px',
-              height: '32px',
+              width: '34px',
+              height: '34px',
               borderRadius: '8px',
               background: 'var(--bg-surface-subtle)',
               border: '1px solid var(--border-subtle)',
               color: 'var(--text-primary)',
               cursor: 'pointer',
-              fontSize: '0.9rem',
+              fontSize: '0.95rem',
               transition: 'all 0.15s ease',
             }}
             onMouseEnter={(e) => {
@@ -379,7 +300,7 @@ export const Header: React.FC<HeaderProps> = ({
             {theme === 'light' ? '🌙' : '☀️'}
           </button>
 
-          {/* User Profile or Login & Sign In Buttons */}
+          {/* User Profile or Login and Sign In Buttons */}
           {currentUser ? (
             <Link
               href="/profile"
@@ -388,14 +309,14 @@ export const Header: React.FC<HeaderProps> = ({
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '0.4rem',
-                padding: '0.32rem 0.75rem',
+                gap: '0.45rem',
+                padding: '0.36rem 0.85rem',
                 borderRadius: '8px',
-                background: 'var(--bg-surface-subtle)',
-                border: '1px solid var(--border-subtle)',
-                color: 'var(--text-primary)',
-                fontSize: '0.78rem',
-                fontWeight: 600,
+                background: 'var(--brand-pale-blue)',
+                border: '1px solid var(--brand-blue-border)',
+                color: 'var(--brand-primary)',
+                fontSize: '0.8rem',
+                fontWeight: 700,
                 textDecoration: 'none',
                 cursor: 'pointer',
                 transition: 'all 0.15s ease',
@@ -405,64 +326,213 @@ export const Header: React.FC<HeaderProps> = ({
                 e.currentTarget.style.borderColor = 'var(--brand-primary)';
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'var(--border-subtle)';
+                e.currentTarget.style.borderColor = 'var(--brand-blue-border)';
               }}
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
               </svg>
               <span>{currentUser.fullName || currentUser.username}</span>
             </Link>
           ) : (
-            /* Single Unified Sign In Button */
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}>
+              {/* Log In Button */}
+              <button
+                type="button"
+                id="header-login-btn"
+                onClick={() => {
+                  if (onOpenAuth) {
+                    onOpenAuth('login');
+                  } else if (typeof window !== 'undefined') {
+                    window.location.href = '/?auth=login';
+                  }
+                }}
+                title="Log in to your account"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  padding: '0.38rem 0.85rem',
+                  borderRadius: '8px',
+                  background: 'transparent',
+                  border: '1px solid var(--border-subtle)',
+                  color: 'var(--text-primary)',
+                  fontSize: '0.82rem',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease',
+                  whiteSpace: 'nowrap',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--brand-primary)';
+                  e.currentTarget.style.color = 'var(--brand-primary)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = 'var(--border-subtle)';
+                  e.currentTarget.style.color = 'var(--text-primary)';
+                }}
+              >
+                Log In
+              </button>
+
+              {/* Sign In / Sign Up Button */}
+              <button
+                type="button"
+                id="header-signin-btn"
+                onClick={() => {
+                  if (onOpenAuth) {
+                    onOpenAuth('register');
+                  } else if (typeof window !== 'undefined') {
+                    window.location.href = '/?auth=register';
+                  }
+                }}
+                title="Create an account or sign in"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
+                  padding: '0.4rem 0.95rem',
+                  borderRadius: '8px',
+                  background: 'var(--brand-primary)',
+                  border: 'none',
+                  color: '#ffffff',
+                  fontSize: '0.82rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 8px rgba(22, 139, 255, 0.28)',
+                  transition: 'all 0.15s ease',
+                  whiteSpace: 'nowrap',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'var(--brand-primary-hover)';
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(22, 139, 255, 0.38)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'var(--brand-primary)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 2px 8px rgba(22, 139, 255, 0.28)';
+                }}
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+                <span>Sign In</span>
+              </button>
+            </div>
+          )}
+
+          {/* Mobile Menu Hamburger Toggle */}
+          <button
+            type="button"
+            className="mobile-menu-btn"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle Navigation Menu"
+            style={{
+              display: 'none',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '34px',
+              height: '34px',
+              borderRadius: '8px',
+              background: mobileMenuOpen ? 'var(--brand-pale-blue)' : 'var(--bg-surface-subtle)',
+              border: mobileMenuOpen ? '1px solid var(--brand-primary)' : '1px solid var(--border-subtle)',
+              color: mobileMenuOpen ? 'var(--brand-primary)' : 'var(--text-primary)',
+              cursor: 'pointer',
+            }}
+          >
+            {mobileMenuOpen ? '✕' : '☰'}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile Drawer Menu */}
+      {mobileMenuOpen && (
+        <div
+          className="mobile-drawer"
+          style={{
+            borderTop: '1px solid var(--border-subtle)',
+            backgroundColor: 'var(--bg-surface)',
+            padding: '0.75rem 1.25rem 1rem 1.25rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.5rem',
+          }}
+        >
+          {onTabChange ? (
             <button
               type="button"
-              id="header-signin-btn"
               onClick={() => {
-                if (onOpenAuth) {
-                  onOpenAuth('register');
-                } else if (typeof window !== 'undefined') {
-                  window.location.href = '/?auth=register';
-                }
+                onTabChange('speed');
+                setMobileMenuOpen(false);
               }}
-              title="Sign In / Register an account"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.4rem',
-                padding: '0.36rem 0.85rem',
-                borderRadius: '8px',
-                background: 'linear-gradient(135deg, #0284c7 0%, #38bdf8 100%)',
-                border: 'none',
-                color: '#ffffff',
-                fontSize: '0.8rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-                boxShadow: '0 2px 8px rgba(2, 132, 199, 0.25)',
-                transition: 'all 0.15s ease',
-                whiteSpace: 'nowrap',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.opacity = '0.92';
-                e.currentTarget.style.transform = 'translateY(-1px)';
-                e.currentTarget.style.boxShadow = '0 4px 12px rgba(2, 132, 199, 0.35)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.opacity = '1';
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = '0 2px 8px rgba(2, 132, 199, 0.25)';
-              }}
+              style={getNavStyle('speed')}
             >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-              <span>Sign In</span>
+              <span>⚡ Speed Test</span>
+            </button>
+          ) : (
+            <Link
+              href="/"
+              onClick={() => setMobileMenuOpen(false)}
+              style={getNavStyle('speed')}
+            >
+              <span>⚡ Speed Test</span>
+            </Link>
+          )}
+
+          {onTabChange ? (
+            <button
+              type="button"
+              onClick={() => {
+                onTabChange('curriculum');
+                setMobileMenuOpen(false);
+              }}
+              style={getNavStyle('curriculum')}
+            >
+              <span>🎓 Academy</span>
+            </button>
+          ) : (
+            <Link
+              href="/academy"
+              onClick={() => setMobileMenuOpen(false)}
+              style={getNavStyle('curriculum')}
+            >
+              <span>🎓 Academy</span>
+            </Link>
+          )}
+
+          <Link
+            href="/multiplayer"
+            onClick={() => setMobileMenuOpen(false)}
+            style={getNavStyle('multiplayer')}
+          >
+            <span>🏁 Multiplayer</span>
+          </Link>
+
+          <Link
+            href="/profile"
+            onClick={() => setMobileMenuOpen(false)}
+            style={getNavStyle('profile')}
+          >
+            <span>👤 Profile</span>
+          </Link>
+
+          {(hasResult || activeTab === 'results') && (
+            <button
+              type="button"
+              onClick={() => {
+                if (onTabChange) onTabChange('results');
+                else window.location.href = '/#results';
+                setMobileMenuOpen(false);
+              }}
+              style={getNavStyle('results')}
+            >
+              <span>📊 Heatmap & Speed</span>
             </button>
           )}
         </div>
-      </div>
+      )}
     </header>
   );
 };

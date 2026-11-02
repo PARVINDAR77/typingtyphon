@@ -95,7 +95,7 @@ export default function NotFound() {
                 transition: 'background 0.2s ease',
               }}
             >
-              ⚡ Instant 60s Typing Test
+              ⚡ Instant 15s Typing Test
             </Link>
 
             <Link

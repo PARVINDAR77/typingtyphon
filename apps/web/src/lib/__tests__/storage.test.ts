@@ -6,6 +6,8 @@ import {
   getGuestStats,
   saveGuestLessonAttempt,
   getGuestCurriculumProgress,
+  getPreferredDuration,
+  savePreferredDuration,
 } from '../storage';
 import { EngineResult } from '@typingtyphon/contracts';
 
@@ -262,7 +264,26 @@ describe('Guest Storage Unit Tests', () => {
     expect(stats['k'].totalAttempts).toBe(12);
     expect(stats['k'].correctCount).toBe(12);
   });
+  it('should default preferred duration to 15 seconds when unconfigured', () => {
+    expect(getPreferredDuration()).toBe(15);
+  });
+
+  it('should persist and retrieve custom duration preferences (15, 30, 60, 120)', () => {
+    savePreferredDuration(30);
+    expect(getPreferredDuration()).toBe(30);
+
+    savePreferredDuration(120);
+    expect(getPreferredDuration()).toBe(120);
+
+    savePreferredDuration(15);
+    expect(getPreferredDuration()).toBe(15);
+  });
+
+  it('should fallback to 15 seconds if storage contains an invalid duration', () => {
+    (global as any).localStorage.setItem('typingtyphon_preferred_duration', '999');
+    expect(getPreferredDuration()).toBe(15);
+
+    (global as any).localStorage.setItem('typingtyphon_preferred_duration', 'invalid');
+    expect(getPreferredDuration()).toBe(15);
+  });
 });
-
-
-

@@ -172,7 +172,7 @@ export default function ProfilePage() {
       {/* Top Sticky Navigation with Active 'Profile' tab */}
       <Header
         activeTab="profile"
-        duration={60}
+        duration={15}
         onDurationChange={() => {}}
         guestTestCount={sessions.length}
         onRestart={() => router.push('/')}

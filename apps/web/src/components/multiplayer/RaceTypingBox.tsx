@@ -48,7 +48,7 @@ export const RaceTypingBox: React.FC<RaceTypingBoxProps> = ({
         minHeight: '140px',
         background: 'var(--bg-card)',
         backdropFilter: 'blur(16px)',
-        border: '1px solid var(--border-subtle)',
+        border: '1.5px solid var(--border-blue)',
         borderRadius: '1rem',
         padding: '1.25rem 1.75rem',
         boxShadow: 'var(--shadow-card)',

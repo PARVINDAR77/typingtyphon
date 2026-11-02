@@ -19,10 +19,10 @@ export const Footer: React.FC = () => {
         position: 'relative',
       }}
     >
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.3), rgba(99, 102, 241, 0.3), transparent)' }} />
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, var(--brand-primary), var(--brand-indigo), transparent)' }} />
       <div
         style={{
-          maxWidth: '1280px',
+          maxWidth: '1440px',
           margin: '0 auto',
           display: 'flex',
           flexDirection: 'column',
@@ -42,29 +42,29 @@ export const Footer: React.FC = () => {
             <Link
               href="/"
               style={{
-                fontWeight: 800,
-                letterSpacing: '0.06em',
-                fontFamily: 'var(--font-mono)',
+                fontWeight: 900,
+                letterSpacing: '-0.01em',
+                fontFamily: 'var(--font-sans)',
                 textDecoration: 'none',
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '0.4rem',
-                fontSize: '0.9rem',
+                gap: '0.45rem',
+                fontSize: '0.95rem',
                 color: 'var(--text-primary)',
               }}
             >
               <span
                 style={{
-                  width: '20px',
-                  height: '20px',
-                  borderRadius: '5px',
-                  background: 'linear-gradient(135deg, #0ea5e9 0%, #6366f1 100%)',
+                  width: '22px',
+                  height: '22px',
+                  borderRadius: '6px',
+                  background: 'var(--brand-gradient)',
                   display: 'inline-flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '0.7rem',
+                  fontSize: '0.72rem',
                   color: '#ffffff',
-                  boxShadow: '0 0 8px rgba(14, 165, 233, 0.4)',
+                  boxShadow: '0 2px 6px rgba(22, 139, 255, 0.35)',
                 }}
               >
                 ⚡
@@ -72,7 +72,7 @@ export const Footer: React.FC = () => {
               <span>TYPING TYPHON</span>
             </Link>
             <span style={{ color: 'var(--border-subtle)' }}>•</span>
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Next-Gen Touch-Typing Engine & Benchmark</span>
+            <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)' }}>Type Better. Go Further.</span>
           </div>
 
           <nav aria-label="Footer Navigation" style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap', fontSize: '0.8rem' }}>

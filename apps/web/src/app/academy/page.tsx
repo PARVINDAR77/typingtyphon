@@ -135,7 +135,7 @@ export default function AcademyPage() {
       {/* Shared Global Header */}
       <Header
         activeTab="curriculum"
-        duration={60}
+        duration={15}
         onDurationChange={() => {}}
         guestTestCount={passedLessonsCount}
         onRestart={() => setRestartCounter((c) => c + 1)}

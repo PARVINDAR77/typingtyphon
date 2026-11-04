@@ -564,7 +564,7 @@ export function getKeyPerformanceBreakdown(analytics?: Record<string, KeyMetricA
 }
 
 const USER_PROFILE_STORAGE_KEY = 'typingtyphon_active_user_profile';
-const DURATION_STORAGE_KEY = 'typingtyphon_preferred_duration';
+const DURATION_STORAGE_KEY = 'typingtyphon_preferred_duration_v2';
 
 /**
  * Save user's preferred typing test duration to local storage.

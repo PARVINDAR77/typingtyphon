@@ -280,10 +280,10 @@ describe('Guest Storage Unit Tests', () => {
   });
 
   it('should fallback to 15 seconds if storage contains an invalid duration', () => {
-    (global as any).localStorage.setItem('typingtyphon_preferred_duration', '999');
+    (global as any).localStorage.setItem('typingtyphon_preferred_duration_v2', '999');
     expect(getPreferredDuration()).toBe(15);
 
-    (global as any).localStorage.setItem('typingtyphon_preferred_duration', 'invalid');
+    (global as any).localStorage.setItem('typingtyphon_preferred_duration_v2', 'invalid');
     expect(getPreferredDuration()).toBe(15);
   });
 });

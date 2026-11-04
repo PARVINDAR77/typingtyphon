@@ -64,7 +64,7 @@ export class TypingEngine {
 
   constructor(wordStrings: string[], config: EngineConfig) {
     this.config = {
-      durationSeconds: config.durationSeconds || 60,
+      durationSeconds: config.durationSeconds || 15,
       mode: config.mode || 'words',
       backspaceMode: config.backspaceMode || 'standard',
       confidenceMode: config.confidenceMode || false,

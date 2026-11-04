@@ -18,6 +18,10 @@ async function bootstrap() {
     'http://127.0.0.1:3000',
     'http://localhost:3100',
     'http://127.0.0.1:3100',
+    'http://typingtyphon.emperorsmartsolutions.com',
+    'https://typingtyphon.emperorsmartsolutions.com',
+    'http://www.typingtyphon.emperorsmartsolutions.com',
+    'https://www.typingtyphon.emperorsmartsolutions.com',
   ];
 
   const allowedOrigins = Array.from(new Set([...defaultOrigins, ...explicitOrigins]));
@@ -37,7 +41,10 @@ async function bootstrap() {
       }
 
       // Allow frontend running on ports 3000 or 3100 on any IP or domain
-      if (/^https?:\/\/.*:(3000|3100)$/.test(normalizedOrigin)) {
+      if (
+        /^https?:\/\/.*:(3000|3100)$/.test(normalizedOrigin) ||
+        /^https?:\/\/(.*\.)?emperorsmartsolutions\.com(:\d+)?$/.test(normalizedOrigin)
+      ) {
         return callback(null, true);
       }
 

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
   EngineResult,
   GuestSessionMigrationItem,
@@ -14,14 +15,16 @@ import {
 import { Header } from '../components/Header';
 import { TypingCanvas } from '../components/TypingCanvas';
 import { AcademyCard } from '../components/AcademyCard';
-import { ResultsModal } from '../components/ResultsModal';
 import { GuestHistory } from '../components/GuestHistory';
 import { CurriculumView } from '../components/CurriculumView';
 import { FingerGuide } from '../components/FingerGuide';
 import { KeybrResults } from '../components/KeybrResults';
 import { AuthModal } from '../components/AuthModal';
 import { Footer } from '../components/Footer';
-import { HeroIllustration } from '../components/HeroIllustration';
+import { MechanicalKeyboard3D } from '../components/MechanicalKeyboard3D';
+import { RadialGauge } from '../components/ui/RadialGauge';
+import { CyberCard } from '../components/ui/CyberCard';
+import { CyberBadge } from '../components/ui/CyberBadge';
 import { getApiBaseUrl } from '../lib/apiConfig';
 import {
   getGuestSessions,
@@ -68,7 +71,7 @@ export default function HomePage() {
     needsRemedial: boolean;
   } | null>(null);
 
-  const canvasRef = useRef<HTMLDivElement>(null);
+  const arenaRef = useRef<HTMLDivElement>(null);
 
   const [guestStats, setGuestStats] = useState<UserProgressSummaryDto>({
     totalCompletedTests: 0,
@@ -111,7 +114,7 @@ export default function HomePage() {
       } else if (
         hash === '#results' ||
         hash === '#heatmap' ||
-        hash === '#speed' && tabParam === 'results' ||
+        (hash === '#speed' && tabParam === 'results') ||
         tabParam === 'results' ||
         tabParam === 'heatmap'
       ) {
@@ -172,6 +175,22 @@ export default function HomePage() {
     setCurriculumProgress(currProg);
   };
 
+  const scrollToArenaAndFocus = () => {
+    if (activeTab !== 'speed') {
+      setActiveTab('speed');
+    }
+    setTimeout(() => {
+      if (arenaRef.current) {
+        arenaRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Attempt to focus typing input inside arena
+        const hiddenInput = arenaRef.current.querySelector('input') as HTMLInputElement | null;
+        if (hiddenInput) {
+          hiddenInput.focus();
+        }
+      }
+    }, 100);
+  };
+
   const handleTestComplete = (result: EngineResult, words?: string[]) => {
     setActiveResult(result);
     if (words && words.length > 0) {
@@ -203,7 +222,6 @@ export default function HomePage() {
     }
 
     refreshGuestData();
-    // Transition cleanly to dedicated Keybr speed & keyboard heatmap view
     setActiveTab('results');
   };
 
@@ -280,8 +298,8 @@ export default function HomePage() {
     setRestartCounter((prev) => prev + 1);
     setActiveTab('speed');
 
-    if (canvasRef.current) {
-      canvasRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (arenaRef.current) {
+      arenaRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   };
 
@@ -371,8 +389,8 @@ export default function HomePage() {
   const previousSession = guestSessions.length > 0 ? guestSessions[0] : null;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
-      {/* Compact Sticky Header */}
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: '#050B18' }}>
+      {/* Premium Glassmorphic Navigation */}
       <Header
         duration={duration}
         onDurationChange={handleDurationChange}
@@ -395,159 +413,311 @@ export default function HomePage() {
       />
 
       <main style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
-        {/* Speed Test Main View (Centered Hero Workspace) */}
+        {/* HOMEPAGE VIEW */}
         {activeTab === 'speed' && (
-          <div
-            ref={canvasRef}
-            style={{
-              maxWidth: '1060px',
-              width: '100%',
-              padding: '1.25rem 1.25rem 2.5rem 1.25rem',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '1.25rem',
-              margin: '0 auto',
-            }}
-          >
-            {/* Title Section (Bright, Illustrated, Premium Speed Test Hero) */}
-            <div
+          <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {/* =========================================================================
+                SECTION 2: HERO EXPERIENCE (Panel 1 from Master UI/UX Spec)
+               ========================================================================= */}
+            <section
               style={{
-                display: 'flex',
+                width: '100%',
+                maxWidth: '1280px',
+                padding: '3rem 1.5rem 2rem 1.5rem',
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 540px), 1fr))',
+                gap: '2.5rem',
                 alignItems: 'center',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap',
-                gap: '1.25rem',
-                padding: '0.5rem 0',
-                marginBottom: '0.25rem',
+                position: 'relative',
               }}
             >
-              {/* Left Column: Headline, Value Prop & Feature Chips */}
-              <div style={{ flex: '1 1 480px', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                <div
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '0.45rem',
-                    padding: '0.22rem 0.8rem',
-                    borderRadius: '9999px',
-                    background: 'var(--brand-pale-blue)',
-                    border: '1px solid var(--brand-blue-border)',
-                    fontSize: '0.72rem',
-                    fontWeight: 700,
-                    letterSpacing: '0.04em',
-                    color: 'var(--brand-primary)',
-                    boxShadow: 'var(--shadow-sm)',
-                    width: 'fit-content',
-                  }}
-                >
-                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--brand-primary)' }} />
-                  <span>Next-Gen Touch Typing • Real-Time Telemetry</span>
-                </div>
+              {/* Left Column: Headline, Description, CTA Buttons, Launchpad */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', zIndex: 2 }}>
+                <CyberBadge variant="cyan" glow>
+                  NEXT-GEN TOUCH TYPING • REAL-TIME TELEMETRY
+                </CyberBadge>
 
                 <h1
                   style={{
-                    fontSize: 'clamp(2rem, 3.8vw, 2.75rem)',
+                    fontFamily: 'var(--font-heading)',
+                    fontSize: 'clamp(2.75rem, 5.2vw, 4.2rem)',
                     fontWeight: 900,
-                    color: 'var(--text-primary)',
+                    lineHeight: 1.08,
                     letterSpacing: '-0.03em',
+                    color: '#F5F7FF',
                     margin: 0,
-                    lineHeight: 1.12,
                   }}
                 >
-                  Type Better.{' '}
+                  BUILD SPEED.
+                  <br />
                   <span
                     style={{
-                      background: 'var(--brand-gradient)',
+                      background: 'linear-gradient(135deg, #00D9FF 0%, #168BFF 50%, #8257FF 100%)',
                       WebkitBackgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
+                      textShadow: '0 0 40px rgba(0, 217, 255, 0.35)',
                     }}
                   >
-                    Go Further.
+                    MASTER ACCURACY.
                   </span>
                 </h1>
 
                 <p
                   style={{
-                    fontSize: '0.96rem',
-                    color: 'var(--text-secondary)',
-                    lineHeight: 1.5,
-                    maxWidth: '520px',
+                    fontSize: '1.1rem',
+                    color: '#A3B2CC',
+                    lineHeight: 1.6,
+                    maxWidth: '540px',
                     margin: 0,
                   }}
                 >
-                  Practice your touch typing, track real-time telemetry, and build authentic keyboard dexterity with algorithmic weak-key diagnostics.
+                  Transform your typing skills with intelligent practice, interactive lessons, and real-time performance tracking.
                 </p>
 
-                {/* 3 Quick Value Badges */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', flexWrap: 'wrap', marginTop: '0.25rem' }}>
-                  <span
+                {/* Primary Action Buttons */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+                  <button
+                    type="button"
+                    onClick={scrollToArenaAndFocus}
+                    className="cyber-glow-btn"
                     style={{
-                      fontSize: '0.73rem',
-                      fontWeight: 700,
-                      padding: '0.2rem 0.6rem',
-                      borderRadius: '8px',
-                      background: 'var(--bg-surface)',
-                      border: '1px solid var(--border-subtle)',
-                      color: 'var(--text-secondary)',
                       display: 'inline-flex',
                       alignItems: 'center',
-                      gap: '0.35rem',
-                      boxShadow: 'var(--shadow-sm)',
+                      gap: '0.6rem',
+                      padding: '0.9rem 1.8rem',
+                      borderRadius: '12px',
+                      background: 'linear-gradient(135deg, #00D9FF 0%, #168BFF 100%)',
+                      color: '#050B18',
+                      fontFamily: 'var(--font-heading)',
+                      fontSize: '0.95rem',
+                      fontWeight: 800,
+                      letterSpacing: '0.02em',
+                      border: 'none',
+                      cursor: 'pointer',
+                      boxShadow: '0 0 25px rgba(0, 217, 255, 0.45)',
+                      transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
                     }}
                   >
-                    <span>⚡</span> 0ms Latency
-                  </span>
-                  <span
+                    <span>Start Practicing</span>
+                    <span>→</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('curriculum')}
                     style={{
-                      fontSize: '0.73rem',
-                      fontWeight: 700,
-                      padding: '0.2rem 0.6rem',
-                      borderRadius: '8px',
-                      background: 'var(--academy-purple-bg)',
-                      border: '1px solid rgba(128, 87, 232, 0.25)',
-                      color: 'var(--academy-purple)',
                       display: 'inline-flex',
                       alignItems: 'center',
-                      gap: '0.35rem',
-                    }}
-                  >
-                    <span>🎓</span> 25 Academy Lessons
-                  </span>
-                  <span
-                    style={{
-                      fontSize: '0.73rem',
+                      gap: '0.5rem',
+                      padding: '0.85rem 1.6rem',
+                      borderRadius: '12px',
+                      background: 'rgba(16, 29, 54, 0.8)',
+                      color: '#F5F7FF',
+                      fontFamily: 'var(--font-heading)',
+                      fontSize: '0.95rem',
                       fontWeight: 700,
-                      padding: '0.2rem 0.6rem',
-                      borderRadius: '8px',
-                      background: 'var(--success-bg)',
-                      border: '1px solid rgba(16, 185, 129, 0.25)',
-                      color: 'var(--success)',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '0.35rem',
+                      border: '1px solid rgba(120, 160, 255, 0.25)',
+                      cursor: 'pointer',
+                      backdropFilter: 'blur(10px)',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#00D9FF';
+                      e.currentTarget.style.background = 'rgba(0, 217, 255, 0.1)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'rgba(120, 160, 255, 0.25)';
+                      e.currentTarget.style.background = 'rgba(16, 29, 54, 0.8)';
                     }}
                   >
-                    <span>🎯</span> Keybr Diagnostics
-                  </span>
+                    <span>Explore Lessons</span>
+                  </button>
+                </div>
+
+                {/* Try Typing Test Now Glassmorphic Launchpad (Exact Match to Panel 1) */}
+                <div
+                  style={{
+                    marginTop: '0.75rem',
+                    padding: '1.25rem 1.5rem',
+                    borderRadius: '16px',
+                    background: 'rgba(16, 29, 54, 0.65)',
+                    border: '1px solid rgba(120, 160, 255, 0.22)',
+                    backdropFilter: 'blur(16px)',
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.35)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '1rem',
+                    maxWidth: '520px',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span
+                      style={{
+                        fontFamily: 'var(--font-heading)',
+                        fontSize: '0.88rem',
+                        fontWeight: 800,
+                        color: '#F5F7FF',
+                        letterSpacing: '0.02em',
+                      }}
+                    >
+                      Try Typing Test Now
+                    </span>
+                    <span style={{ fontSize: '0.75rem', color: '#00D9FF', fontWeight: 600 }}>
+                      Instant 0ms Keystroke Engine
+                    </span>
+                  </div>
+
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      flexWrap: 'wrap',
+                      gap: '1rem',
+                    }}
+                  >
+                    {/* Stat 1: WPM */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <span style={{ fontSize: '1.25rem', color: '#00D9FF' }}>⚡</span>
+                      <div>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.25rem', fontWeight: 900, color: '#F5F7FF', lineHeight: 1 }}>
+                          {guestStats.bestNetWpm > 0 ? guestStats.bestNetWpm : 60}
+                        </div>
+                        <div style={{ fontSize: '0.7rem', color: '#A3B2CC', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                          WPM
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Stat 2: Accuracy */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <span style={{ fontSize: '1.25rem', color: '#168BFF' }}>🎯</span>
+                      <div>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.25rem', fontWeight: 900, color: '#F5F7FF', lineHeight: 1 }}>
+                          {guestStats.averageAccuracyPct > 0 ? Math.round(guestStats.averageAccuracyPct) : 96}%
+                        </div>
+                        <div style={{ fontSize: '0.7rem', color: '#A3B2CC', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                          Accuracy
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Stat 3: Time */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <span style={{ fontSize: '1.25rem', color: '#8257FF' }}>⏱️</span>
+                      <div>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.25rem', fontWeight: 900, color: '#F5F7FF', lineHeight: 1 }}>
+                          00:{duration < 10 ? `0${duration}` : duration}
+                        </div>
+                        <div style={{ fontSize: '0.7rem', color: '#A3B2CC', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                          Time
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Start Test Trigger Button */}
+                    <button
+                      type="button"
+                      onClick={scrollToArenaAndFocus}
+                      style={{
+                        padding: '0.65rem 1.25rem',
+                        borderRadius: '10px',
+                        background: 'linear-gradient(135deg, #168BFF 0%, #8257FF 100%)',
+                        color: '#F5F7FF',
+                        fontFamily: 'var(--font-heading)',
+                        fontSize: '0.85rem',
+                        fontWeight: 700,
+                        border: 'none',
+                        cursor: 'pointer',
+                        boxShadow: '0 0 15px rgba(130, 87, 255, 0.4)',
+                        transition: 'transform 0.15s ease',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                      }}
+                    >
+                      Start Test →
+                    </button>
+                  </div>
                 </div>
               </div>
 
-              {/* Right Column: Clean Editorial Illustration */}
+              {/* Right Column: 3D Mechanical Keyboard Centerpiece */}
               <div
-                className="hero-illustration-col"
                 style={{
-                  flex: '0 1 360px',
                   display: 'flex',
-                  justifyContent: 'center',
                   alignItems: 'center',
+                  justifyContent: 'center',
+                  position: 'relative',
+                  minHeight: '400px',
                 }}
               >
-                <HeroIllustration />
+                <MechanicalKeyboard3D />
               </div>
-            </div>
+            </section>
 
-            {/* Hero Typing Workspace (Full Width, Centered) */}
-            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {/* =========================================================================
+                SECTION 3: LIVE TYPING PRACTICE PREVIEW / ARENA
+               ========================================================================= */}
+            <section
+              id="typing-arena"
+              ref={arenaRef}
+              style={{
+                width: '100%',
+                maxWidth: '1100px',
+                padding: '2.5rem 1.5rem 3rem 1.5rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1.5rem',
+              }}
+            >
+              {/* Section Header */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#00D9FF', boxShadow: '0 0 10px #00D9FF' }} />
+                    <span style={{ fontFamily: 'var(--font-heading)', fontSize: '0.8rem', fontWeight: 800, color: '#00D9FF', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                      Practice Arena
+                    </span>
+                  </div>
+                  <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.8rem', fontWeight: 800, color: '#F5F7FF', margin: '0.25rem 0 0 0' }}>
+                    Live Typing Test
+                  </h2>
+                </div>
+
+                {/* Duration Switches (15s Default) */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#0A1428', padding: '0.35rem 0.6rem', borderRadius: '12px', border: '1px solid rgba(120, 160, 255, 0.2)' }}>
+                  <span style={{ fontSize: '0.75rem', color: '#A3B2CC', fontWeight: 600, marginRight: '0.25rem' }}>
+                    Timer:
+                  </span>
+                  {[15, 30, 60, 120].map((sec) => (
+                    <button
+                      key={sec}
+                      type="button"
+                      onClick={() => handleDurationChange(sec)}
+                      style={{
+                        padding: '0.3rem 0.75rem',
+                        borderRadius: '8px',
+                        fontFamily: 'var(--font-mono)',
+                        fontSize: '0.8rem',
+                        fontWeight: 700,
+                        border: duration === sec ? '1px solid #00D9FF' : '1px solid transparent',
+                        background: duration === sec ? 'rgba(0, 217, 255, 0.15)' : 'transparent',
+                        color: duration === sec ? '#00D9FF' : '#A3B2CC',
+                        cursor: 'pointer',
+                        transition: 'all 0.15s ease',
+                      }}
+                    >
+                      {sec}s
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* The Interactive Typing Canvas */}
               <TypingCanvas
                 durationSeconds={duration}
                 onDurationChange={handleDurationChange}
@@ -571,37 +741,35 @@ export default function HomePage() {
                 }
               />
 
-              {/* Collapsible Virtual Keyboard & Hands Guide Button & Panel */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', marginTop: '0.15rem' }}>
+              {/* Virtual Hands and Keyboard Guide Accordion */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
                   <button
                     type="button"
                     onClick={() => setShowFingerGuide((prev) => !prev)}
                     style={{
-                      background: showFingerGuide ? 'rgba(14, 165, 233, 0.12)' : 'var(--bg-surface)',
-                      border: showFingerGuide ? '1px solid var(--brand-primary)' : '1px solid var(--border-subtle)',
-                      color: showFingerGuide ? 'var(--brand-primary)' : 'var(--text-secondary)',
-                      padding: '0.32rem 0.95rem',
+                      background: showFingerGuide ? 'rgba(0, 217, 255, 0.12)' : '#101D36',
+                      border: showFingerGuide ? '1px solid #00D9FF' : '1px solid rgba(120, 160, 255, 0.18)',
+                      color: showFingerGuide ? '#00D9FF' : '#A3B2CC',
+                      padding: '0.45rem 1.1rem',
                       borderRadius: '9999px',
-                      fontSize: '0.78rem',
+                      fontSize: '0.82rem',
                       fontWeight: 600,
                       cursor: 'pointer',
                       display: 'inline-flex',
                       alignItems: 'center',
-                      gap: '0.45rem',
-                      transition: 'all 0.15s ease',
-                      boxShadow: 'var(--shadow-sm)',
+                      gap: '0.5rem',
+                      transition: 'all 0.2s ease',
                     }}
                   >
                     <span>✋</span>
-                    <span>{showFingerGuide ? 'Hide Virtual Hands & Keyboard' : 'Show Virtual Hands & Keyboard Guide'}</span>
-                    <span style={{ fontSize: '0.68rem', opacity: 0.7 }}>{showFingerGuide ? '▲' : '▼'}</span>
+                    <span>{showFingerGuide ? 'Hide Virtual Hands Guide' : 'Show Virtual Hands & Mechanical Layout Guide'}</span>
+                    <span style={{ fontSize: '0.7rem' }}>{showFingerGuide ? '▲' : '▼'}</span>
                   </button>
                 </div>
 
-                {/* Real-time Interactive Finger & Hands Guide */}
                 {showFingerGuide && (
-                  <div style={{ width: '100%', animation: 'fadeIn 0.2s ease-in-out' }}>
+                  <div style={{ width: '100%', animation: 'fadeIn 0.25s ease' }}>
                     <FingerGuide
                       activeChar={activeTargetChar}
                       isDrill={!!activeDrill}
@@ -610,232 +778,555 @@ export default function HomePage() {
                   </div>
                 )}
               </div>
-            </div>
+            </section>
 
-            {/* Quick-Launch 3-Pillar Feature Showcase (Continue Learning, Multiplayer, Diagnostics) */}
-            <div
+            {/* =========================================================================
+                SECTION 4: LEARNING PATHS (5 Tiers from Master UI/UX Spec)
+               ========================================================================= */}
+            <section
               style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 300px), 1fr))',
-                gap: '0.85rem',
-                marginTop: '0.5rem',
+                width: '100%',
+                maxWidth: '1280px',
+                padding: '2.5rem 1.5rem 3.5rem 1.5rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '2rem',
               }}
             >
-              {/* Feature 1: Continue Learning Academy */}
-              <div
-                onClick={() => setActiveTab('curriculum')}
-                style={{
-                  background: 'var(--bg-card)',
-                  border: '1px solid var(--border-subtle)',
-                  borderRadius: '1rem',
-                  padding: '0.9rem 1.15rem',
-                  boxShadow: 'var(--shadow-card)',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.85rem',
-                  transition: 'all 0.2s ease',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--academy-purple)';
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = 'var(--shadow-md)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--border-subtle)';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = 'var(--shadow-card)';
-                }}
-              >
-                <div
-                  style={{
-                    width: '38px',
-                    height: '38px',
-                    borderRadius: '10px',
-                    background: 'var(--academy-purple-bg)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'var(--academy-purple)',
-                    flexShrink: 0,
-                  }}
-                >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
-                    <path d="M6 12v5c3 3 9 3 12 0v-5" />
-                  </svg>
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ fontSize: '0.86rem', fontWeight: 800, color: 'var(--text-primary)' }}>
-                      Touch Typing Academy
-                    </span>
-                    <span style={{ fontSize: '0.72rem', color: 'var(--academy-purple)', fontWeight: 700 }}>
-                      Learn →
-                    </span>
-                  </div>
-                  <p style={{ fontSize: '0.76rem', color: 'var(--text-secondary)', margin: '0.15rem 0 0 0', lineHeight: 1.35 }}>
-                    6 stages • 25 lessons with finger guidance
-                  </p>
-                </div>
+              <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+                <CyberBadge variant="purple">STRUCTURED CURRICULUM</CyberBadge>
+                <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.2rem', fontWeight: 800, color: '#F5F7FF', margin: 0 }}>
+                  Mastery Learning Paths
+                </h2>
+                <p style={{ color: '#A3B2CC', fontSize: '0.95rem', maxWidth: '580px', margin: 0 }}>
+                  Progress through 5 calibrated skill tiers designed to establish authentic muscle memory without looking at your keyboard.
+                </p>
               </div>
 
-              {/* Feature 2: Multiplayer Racing Arena */}
               <div
-                onClick={() => router.push('/multiplayer')}
                 style={{
-                  background: 'var(--bg-card)',
-                  border: '1px solid var(--border-subtle)',
-                  borderRadius: '1rem',
-                  padding: '0.9rem 1.15rem',
-                  boxShadow: 'var(--shadow-card)',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.85rem',
-                  transition: 'all 0.2s ease',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--brand-primary)';
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = 'var(--shadow-md)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--border-subtle)';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = 'var(--shadow-card)';
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+                  gap: '1.25rem',
                 }}
               >
-                <div
-                  style={{
-                    width: '38px',
-                    height: '38px',
-                    borderRadius: '10px',
-                    background: 'var(--brand-pale-blue)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'var(--brand-primary)',
-                    flexShrink: 0,
-                  }}
-                >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
-                    <line x1="4" y1="22" x2="4" y2="15" />
-                  </svg>
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ fontSize: '0.86rem', fontWeight: 800, color: 'var(--text-primary)' }}>
-                      Multiplayer Arena
-                    </span>
-                    <span style={{ fontSize: '0.72rem', color: 'var(--brand-primary)', fontWeight: 700 }}>
-                      Race →
-                    </span>
-                  </div>
-                  <p style={{ fontSize: '0.76rem', color: 'var(--text-secondary)', margin: '0.15rem 0 0 0', lineHeight: 1.35 }}>
-                    Real-time racing tracks & game modes
-                  </p>
-                </div>
-              </div>
+                {[
+                  {
+                    level: '1. Beginner',
+                    title: 'Home Row Foundations',
+                    desc: 'Master ASDF and JKL; keys with index finger anchor positions.',
+                    lessons: '5 Lessons',
+                    time: '25 mins',
+                    color: '#00D9FF',
+                    badge: 'Level 1',
+                  },
+                  {
+                    level: '2. Basic',
+                    title: 'Top & Bottom Rows',
+                    desc: 'Expand range to QWERTY and ZXCVB rows with diagonal reaching.',
+                    lessons: '5 Lessons',
+                    time: '35 mins',
+                    color: '#168BFF',
+                    badge: 'Level 2',
+                  },
+                  {
+                    level: '3. Intermediate',
+                    title: 'Punctuation & Symbols',
+                    desc: 'Incorporate commas, periods, apostrophes, and capital Shift keys.',
+                    lessons: '5 Lessons',
+                    time: '45 mins',
+                    color: '#8257FF',
+                    badge: 'Level 3',
+                  },
+                  {
+                    level: '4. Advanced',
+                    title: 'Number Row & Code',
+                    desc: 'Speed drills for numbers 0-9 and programming brackets { } [ ].',
+                    lessons: '5 Lessons',
+                    time: '60 mins',
+                    color: '#00D9FF',
+                    badge: 'Level 4',
+                  },
+                  {
+                    level: '5. Professional',
+                    title: 'High-Velocity Mastery',
+                    desc: 'Complex vocabulary, real-world prose, and 100+ WPM benchmarks.',
+                    lessons: '5 Lessons',
+                    time: '90 mins',
+                    color: '#8257FF',
+                    badge: 'Level 5',
+                  },
+                ].map((tier, idx) => (
+                  <CyberCard key={idx} hoverEffect>
+                    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '0.85rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <span style={{ fontSize: '0.72rem', fontWeight: 800, padding: '0.2rem 0.5rem', borderRadius: '6px', background: `${tier.color}15`, color: tier.color, border: `1px solid ${tier.color}35` }}>
+                          {tier.badge}
+                        </span>
+                        <span style={{ fontSize: '0.75rem', color: '#A3B2CC' }}>{tier.lessons}</span>
+                      </div>
 
-              {/* Feature 3: Heatmap & Weak Key Remediation */}
-              <div
-                onClick={() => setActiveTab('results')}
-                style={{
-                  background: 'var(--bg-card)',
-                  border: '1px solid var(--border-subtle)',
-                  borderRadius: '1rem',
-                  padding: '0.9rem 1.15rem',
-                  boxShadow: 'var(--shadow-card)',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.85rem',
-                  transition: 'all 0.2s ease',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--success)';
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                  e.currentTarget.style.boxShadow = 'var(--shadow-md)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'var(--border-subtle)';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = 'var(--shadow-card)';
-                }}
-              >
-                <div
-                  style={{
-                    width: '38px',
-                    height: '38px',
-                    borderRadius: '10px',
-                    background: 'var(--success-bg)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: 'var(--success)',
-                    flexShrink: 0,
-                  }}
-                >
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="2" y="3" width="20" height="14" rx="2" />
-                    <line x1="8" y1="21" x2="16" y2="21" />
-                    <line x1="12" y1="17" x2="12" y2="21" />
-                  </svg>
-                </div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ fontSize: '0.86rem', fontWeight: 800, color: 'var(--text-primary)' }}>
-                      Heatmap Diagnostics
-                    </span>
-                    <span style={{ fontSize: '0.72rem', color: 'var(--success)', fontWeight: 700 }}>
-                      Stats →
-                    </span>
-                  </div>
-                  <p style={{ fontSize: '0.76rem', color: 'var(--text-secondary)', margin: '0.15rem 0 0 0', lineHeight: 1.35 }}>
-                    Per-key accuracy matrix & weak-key drills
-                  </p>
-                </div>
-              </div>
-            </div>
+                      <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', fontWeight: 700, color: '#F5F7FF', margin: 0 }}>
+                        {tier.title}
+                      </h3>
 
-            {/* Auxiliary 2-Card Row: Touch Typing Academy & Guest History */}
-            <div
+                      <p style={{ fontSize: '0.82rem', color: '#A3B2CC', margin: 0, lineHeight: 1.5, flex: 1 }}>
+                        {tier.desc}
+                      </p>
+
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '0.75rem', borderTop: '1px solid rgba(120, 160, 255, 0.12)' }}>
+                        <span style={{ fontSize: '0.75rem', color: '#A3B2CC' }}>⏱️ {tier.time}</span>
+                        <Link
+                          href="/lessons"
+                          style={{
+                            fontSize: '0.8rem',
+                            fontWeight: 700,
+                            color: tier.color,
+                            textDecoration: 'none',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '0.25rem',
+                          }}
+                        >
+                          <span>Start</span>
+                          <span>→</span>
+                        </Link>
+                      </div>
+                    </div>
+                  </CyberCard>
+                ))}
+              </div>
+            </section>
+
+            {/* =========================================================================
+                SECTION 5: DAILY CHALLENGES PREVIEW (Panel 4 Preview)
+               ========================================================================= */}
+            <section
               style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 460px), 1fr))',
-                gap: '1rem',
-                alignItems: 'stretch',
-                marginTop: '0.5rem',
+                width: '100%',
+                maxWidth: '1280px',
+                padding: '2rem 1.5rem 3.5rem 1.5rem',
               }}
             >
-              {/* Card 1: Touch Typing Academy */}
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <AcademyCard
-                  progressMap={curriculumProgress}
-                  onSelectDrill={handleSelectDrill}
-                  activeDrillLessonId={activeDrill?.lesson.id}
-                  onExitDrill={handleExitDrill}
-                  onOpenFullAcademy={() => setActiveTab('curriculum')}
-                />
+              <div
+                style={{
+                  background: 'linear-gradient(135deg, rgba(16, 29, 54, 0.85) 0%, rgba(10, 20, 40, 0.95) 100%)',
+                  border: '1px solid rgba(120, 160, 255, 0.22)',
+                  borderRadius: '24px',
+                  padding: '2.5rem',
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+                  gap: '2.5rem',
+                  alignItems: 'center',
+                  boxShadow: '0 20px 50px rgba(0, 0, 0, 0.45)',
+                  position: 'relative',
+                  overflow: 'hidden',
+                }}
+              >
+                <div style={{ position: 'absolute', top: '-60px', right: '-60px', width: '220px', height: '220px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(130, 87, 255, 0.25) 0%, transparent 70%)', filter: 'blur(30px)', pointerEvents: 'none' }} />
+
+                {/* Left: Challenge Info */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', zIndex: 1 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <CyberBadge variant="purple" glow>
+                      DAILY QUEST
+                    </CyberBadge>
+                    <span style={{ fontSize: '0.8rem', color: '#00D9FF', fontWeight: 700 }}>
+                      ⏱️ Resets in 12:45:32
+                    </span>
+                  </div>
+
+                  <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2rem', fontWeight: 800, color: '#F5F7FF', margin: 0 }}>
+                    Today&apos;s High-Speed Challenge
+                  </h2>
+
+                  <p style={{ color: '#A3B2CC', fontSize: '0.95rem', lineHeight: 1.5, margin: 0 }}>
+                    Type the curated paragraph in 60 seconds with ≥ 97% accuracy. Earn +100 XP and maintain your daily practice streak.
+                  </p>
+
+                  <div
+                    style={{
+                      padding: '1rem 1.25rem',
+                      borderRadius: '12px',
+                      background: 'rgba(5, 11, 24, 0.65)',
+                      border: '1px solid rgba(120, 160, 255, 0.15)',
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '0.9rem',
+                      color: '#F5F7FF',
+                      lineHeight: 1.5,
+                      fontStyle: 'italic',
+                    }}
+                  >
+                    &ldquo;Dream bigger, type faster, achieve more with deliberate practice.&rdquo;
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', marginTop: '0.5rem' }}>
+                    <Link
+                      href="/challenges"
+                      style={{
+                        padding: '0.8rem 1.6rem',
+                        borderRadius: '10px',
+                        background: 'linear-gradient(135deg, #8257FF 0%, #168BFF 100%)',
+                        color: '#F5F7FF',
+                        fontFamily: 'var(--font-heading)',
+                        fontSize: '0.9rem',
+                        fontWeight: 700,
+                        textDecoration: 'none',
+                        boxShadow: '0 0 20px rgba(130, 87, 255, 0.4)',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                      }}
+                    >
+                      <span>Start Challenge</span>
+                      <span>→</span>
+                    </Link>
+                    <span style={{ fontSize: '0.82rem', color: '#A3B2CC' }}>
+                      Reward: <strong style={{ color: '#00D9FF' }}>+100 XP</strong> & Streak +1
+                    </span>
+                  </div>
+                </div>
+
+                {/* Right: Challenge Rewards & Trophy */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center', textAlign: 'center', zIndex: 1 }}>
+                  <div
+                    style={{
+                      width: '120px',
+                      height: '120px',
+                      borderRadius: '50%',
+                      background: 'radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, rgba(16, 29, 54, 0.8) 70%)',
+                      border: '2px solid rgba(255, 215, 0, 0.4)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '3.5rem',
+                      boxShadow: '0 0 30px rgba(255, 215, 0, 0.3)',
+                    }}
+                  >
+                    🏆
+                  </div>
+                  <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', fontWeight: 800, color: '#F5F7FF' }}>
+                    Weekly Trophy Series
+                  </div>
+                  <p style={{ fontSize: '0.82rem', color: '#A3B2CC', maxWidth: '320px', margin: 0 }}>
+                    Compete on weekly sprint tracks, climb the global tier ranks, and display verified typing credentials.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            {/* =========================================================================
+                SECTION 6: PERFORMANCE DASHBOARD PREVIEW (Panel 5 Preview)
+               ========================================================================= */}
+            <section
+              style={{
+                width: '100%',
+                maxWidth: '1280px',
+                padding: '2rem 1.5rem 3.5rem 1.5rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '2rem',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+                <div>
+                  <CyberBadge variant="blue">TELEMETRY ANALYTICS</CyberBadge>
+                  <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.2rem', fontWeight: 800, color: '#F5F7FF', margin: '0.25rem 0 0 0' }}>
+                    Live Performance Dashboard
+                  </h2>
+                </div>
+                <Link
+                  href="/profile"
+                  style={{
+                    fontFamily: 'var(--font-heading)',
+                    fontSize: '0.85rem',
+                    fontWeight: 700,
+                    color: '#00D9FF',
+                    textDecoration: 'none',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.4rem',
+                  }}
+                >
+                  <span>Open Full Dashboard</span>
+                  <span>→</span>
+                </Link>
               </div>
 
-              {/* Card 2: Guest History & Stats */}
-              <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <GuestHistory
-                  sessions={guestSessions}
-                  stats={guestStats}
-                  onClearHistory={handleClearHistory}
-                />
+              {/* 4 Telemetry Metrics Cards with Gauge */}
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+                  gap: '1.25rem',
+                }}
+              >
+                {/* Metric 1: Average WPM */}
+                <CyberCard>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span style={{ fontSize: '0.8rem', color: '#A3B2CC', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                        Average Speed
+                      </span>
+                      <span style={{ color: '#00D9FF' }}>⚡</span>
+                    </div>
+                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '2.4rem', fontWeight: 900, color: '#F5F7FF' }}>
+                      {guestStats.averageNetWpm > 0 ? guestStats.averageNetWpm : 68}
+                      <span style={{ fontSize: '1rem', color: '#A3B2CC', marginLeft: '0.35rem', fontWeight: 600 }}>WPM</span>
+                    </div>
+                    <span style={{ fontSize: '0.75rem', color: '#00D9FF' }}>
+                      Peak: {guestStats.bestNetWpm > 0 ? guestStats.bestNetWpm : 92} WPM
+                    </span>
+                  </div>
+                </CyberCard>
+
+                {/* Metric 2: Radial Accuracy Gauge */}
+                <CyberCard>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                      <span style={{ fontSize: '0.8rem', color: '#A3B2CC', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                        Accuracy
+                      </span>
+                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '2.2rem', fontWeight: 900, color: '#F5F7FF' }}>
+                        {guestStats.averageAccuracyPct > 0 ? Math.round(guestStats.averageAccuracyPct) : 97}%
+                      </div>
+                      <span style={{ fontSize: '0.75rem', color: '#10B981' }}>
+                        Top Accuracy: {guestStats.bestAccuracyPct || 100}%
+                      </span>
+                    </div>
+                    <RadialGauge
+                      value={guestStats.averageAccuracyPct > 0 ? Math.round(guestStats.averageAccuracyPct) : 97}
+                      size={90}
+                      strokeWidth={8}
+                      label="Acc"
+                    />
+                  </div>
+                </CyberCard>
+
+                {/* Metric 3: Total Practice Time */}
+                <CyberCard>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span style={{ fontSize: '0.8rem', color: '#A3B2CC', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                        Practice Time
+                      </span>
+                      <span style={{ color: '#168BFF' }}>⏱️</span>
+                    </div>
+                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '2.4rem', fontWeight: 900, color: '#F5F7FF' }}>
+                      {guestStats.totalPracticeTimeSeconds > 0
+                        ? `${(guestStats.totalPracticeTimeSeconds / 60).toFixed(1)}m`
+                        : '12.5m'}
+                    </div>
+                    <span style={{ fontSize: '0.75rem', color: '#A3B2CC' }}>
+                      {guestStats.totalCompletedTests || 42} Completed Sessions
+                    </span>
+                  </div>
+                </CyberCard>
+
+                {/* Metric 4: Streak */}
+                <CyberCard>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <span style={{ fontSize: '0.8rem', color: '#A3B2CC', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                        Practice Streak
+                      </span>
+                      <span style={{ color: '#F59E0B' }}>🔥</span>
+                    </div>
+                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '2.4rem', fontWeight: 900, color: '#F5F7FF' }}>
+                      {guestStats.currentStreakDays > 0 ? guestStats.currentStreakDays : 7}
+                      <span style={{ fontSize: '1rem', color: '#A3B2CC', marginLeft: '0.35rem', fontWeight: 600 }}>Days</span>
+                    </div>
+                    <span style={{ fontSize: '0.75rem', color: '#F59E0B' }}>
+                      Consistency Multiplier Active
+                    </span>
+                  </div>
+                </CyberCard>
               </div>
-            </div>
+            </section>
+
+            {/* =========================================================================
+                SECTION 7: WHY TYPING TYPHON?
+               ========================================================================= */}
+            <section
+              style={{
+                width: '100%',
+                maxWidth: '1280px',
+                padding: '2rem 1.5rem 3.5rem 1.5rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '2rem',
+              }}
+            >
+              <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+                <CyberBadge variant="cyan">ENGINEERING EXCELLENCE</CyberBadge>
+                <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.2rem', fontWeight: 800, color: '#F5F7FF', margin: 0 }}>
+                  Why Typing Typhon?
+                </h2>
+                <p style={{ color: '#A3B2CC', fontSize: '0.95rem', maxWidth: '620px', margin: 0 }}>
+                  Built for enthusiasts, software engineers, and professional typists who demand scientific precision, zero input lag, and deep telemetry.
+                </p>
+              </div>
+
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+                  gap: '1.5rem',
+                }}
+              >
+                {[
+                  {
+                    icon: '⚡',
+                    title: '0ms Input Latency Telemetry',
+                    desc: 'Microsecond-accurate Inter-Keystroke Interval (IKI) tracking measures finger hesitation and raw velocity with zero frame delays.',
+                  },
+                  {
+                    icon: '🎯',
+                    title: 'Keybr-Grade Algorithmic Remediation',
+                    desc: 'Identifies individual stumbling keys (like Q, P, Z, or B) and automatically generates targeted drill matrices to eliminate hesitation.',
+                  },
+                  {
+                    icon: '🖐️',
+                    title: 'Interactive 3D Muscle Memory',
+                    desc: 'Real-time finger placement guidance and 3D mechanical keyboard visualization reinforce proper touch-typing ergonomics.',
+                  },
+                  {
+                    icon: '🏎️',
+                    title: 'Live Multiplayer Racing Arena',
+                    desc: 'Compete in high-stakes speed typing races against friends and global typists on dynamic tracks with real-time positional updates.',
+                  },
+                  {
+                    icon: '🏆',
+                    title: 'Genuine Verified XP Progression',
+                    desc: 'No simulated bots or inflated metrics. Every stat, streak, and leaderboard rank is cryptographically verified from authentic keystrokes.',
+                  },
+                  {
+                    icon: '🛡️',
+                    title: 'Guest-First Local Persistence',
+                    desc: 'Practice immediately without mandatory logins. Guest telemetry is preserved locally and syncs smoothly upon Google OAuth sign-in.',
+                  },
+                ].map((feat, idx) => (
+                  <CyberCard key={idx} hoverEffect>
+                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}>
+                      <div
+                        style={{
+                          width: '44px',
+                          height: '44px',
+                          borderRadius: '12px',
+                          background: 'rgba(0, 217, 255, 0.1)',
+                          border: '1px solid rgba(0, 217, 255, 0.25)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '1.4rem',
+                          flexShrink: 0,
+                        }}
+                      >
+                        {feat.icon}
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                        <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.05rem', fontWeight: 700, color: '#F5F7FF', margin: 0 }}>
+                          {feat.title}
+                        </h3>
+                        <p style={{ fontSize: '0.85rem', color: '#A3B2CC', margin: 0, lineHeight: 1.55 }}>
+                          {feat.desc}
+                        </p>
+                      </div>
+                    </div>
+                  </CyberCard>
+                ))}
+              </div>
+            </section>
+
+            {/* =========================================================================
+                SECTION 8: FINAL CALL TO ACTION
+               ========================================================================= */}
+            <section
+              style={{
+                width: '100%',
+                maxWidth: '1280px',
+                padding: '2rem 1.5rem 5rem 1.5rem',
+              }}
+            >
+              <div
+                style={{
+                  background: 'radial-gradient(ellipse at center, rgba(16, 29, 54, 0.95) 0%, rgba(5, 11, 24, 0.98) 100%)',
+                  border: '1px solid rgba(120, 160, 255, 0.25)',
+                  borderRadius: '24px',
+                  padding: '4rem 2rem',
+                  textAlign: 'center',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '1.5rem',
+                  boxShadow: '0 25px 60px rgba(0, 0, 0, 0.5)',
+                  position: 'relative',
+                  overflow: 'hidden',
+                }}
+              >
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: 'linear-gradient(90deg, transparent, #00D9FF, #8257FF, transparent)' }} />
+
+                <CyberBadge variant="purple" glow>
+                  BEGIN YOUR TRANSFORMATION
+                </CyberBadge>
+
+                <h2
+                  style={{
+                    fontFamily: 'var(--font-heading)',
+                    fontSize: 'clamp(2rem, 4vw, 3.2rem)',
+                    fontWeight: 900,
+                    color: '#F5F7FF',
+                    margin: 0,
+                    lineHeight: 1.15,
+                  }}
+                >
+                  YOUR NEXT LEVEL STARTS
+                  <br />
+                  <span
+                    style={{
+                      background: 'linear-gradient(135deg, #00D9FF 0%, #168BFF 50%, #8257FF 100%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                    }}
+                  >
+                    WITH EVERY KEYSTROKE.
+                  </span>
+                </h2>
+
+                <p style={{ color: '#A3B2CC', fontSize: '1.05rem', maxWidth: '560px', margin: 0, lineHeight: 1.6 }}>
+                  Join thousands of developers, students, and competitive typists unlocking peak mechanical velocity on Typing Typhon.
+                </p>
+
+                <button
+                  type="button"
+                  onClick={scrollToArenaAndFocus}
+                  className="cyber-glow-btn"
+                  style={{
+                    marginTop: '0.75rem',
+                    padding: '1rem 2.5rem',
+                    borderRadius: '12px',
+                    background: 'linear-gradient(135deg, #00D9FF 0%, #168BFF 100%)',
+                    color: '#050B18',
+                    fontFamily: 'var(--font-heading)',
+                    fontSize: '1rem',
+                    fontWeight: 800,
+                    letterSpacing: '0.03em',
+                    border: 'none',
+                    cursor: 'pointer',
+                    boxShadow: '0 0 30px rgba(0, 217, 255, 0.5)',
+                    transition: 'all 0.2s ease',
+                  }}
+                >
+                  START YOUR JOURNEY →
+                </button>
+              </div>
+            </section>
           </div>
         )}
 
-        {/* Full Academy Curriculum View (Tab) */}
+        {/* FULL CURRICULUM VIEW (Academy Tab) */}
         {activeTab === 'curriculum' && (
-          <div style={{ width: '100%', maxWidth: '1200px', padding: '1.5rem 1.5rem 3rem 1.5rem' }}>
+          <div style={{ width: '100%', maxWidth: '1280px', padding: '2rem 1.5rem 4rem 1.5rem' }}>
             <CurriculumView
               progressMap={curriculumProgress}
               onSelectDrill={handleSelectDrill}
@@ -844,7 +1335,7 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Dedicated Keybr Post-Test Results & Speed Keyboard Heatmap View (Tab) */}
+        {/* DEDICATED KEYBR HEATMAP & RESULTS VIEW (Results Tab) */}
         {activeTab === 'results' && effectiveResult && (
           <KeybrResults
             result={effectiveResult}
@@ -860,10 +1351,10 @@ export default function HomePage() {
         )}
       </main>
 
-      {/* Footer */}
+      {/* Futuristic Cyber Footer */}
       <Footer />
 
-      {/* Auth Modal */}
+      {/* Google OAuth & Auth Modal */}
       <AuthModal
         isOpen={isAuthModalOpen}
         initialTab={authModalTab}

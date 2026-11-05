@@ -1,266 +1,452 @@
-import React from 'react';
-import type { Metadata } from 'next';
-import Link from 'next/link';
-import { PracticeWidget } from '@/components/PracticeWidget';
-import { Footer } from '@/components/Footer';
+'use client';
 
-export const metadata: Metadata = {
-  title: 'Free Online Typing Speed Test & WPM Practice',
-  description:
-    'Test your typing speed and accuracy with our free online typing test. Instant WPM calculations, zero registration, and multiple test durations (15s, 30s, 60s, 120s).',
-  alternates: {
-    canonical: '/practice',
-  },
-  openGraph: {
-    title: 'Free Online Typing Speed Test & WPM Practice | Typing Typhon',
-    description: 'Instant WPM evaluation, real-time typing accuracy tracking, and 100% free practice.',
-    type: 'website',
-  },
-};
+import React, { useState, useEffect, useRef } from 'react';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
+import { RadialGauge } from '@/components/ui/RadialGauge';
+import { CyberKeyboardDeck } from '@/components/ui/CyberKeyboardDeck';
+import { CyberCard } from '@/components/ui/CyberCard';
+import { TypingEngine, TypingEngineState } from '@/engine/TypingEngine';
+import { generateTestWords } from '@/lib/wordLists';
+import {
+  getPreferredDuration,
+  savePreferredDuration,
+  getGuestStats,
+  saveGuestSession,
+} from '@/lib/storage';
+import { EngineResult, UserProgressSummaryDto } from '@typingtyphon/contracts';
+
+type PracticeMode = 'time' | 'words' | 'quotes' | 'custom' | 'code';
 
 export default function PracticePage() {
-  const faqSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: [
-      {
-        '@type': 'Question',
-        name: 'How is Words Per Minute (WPM) calculated in Typing Typhon?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Typing Typhon calculates WPM using the international standard formula: one "word" is standardized as 5 keystrokes. Net WPM is computed as ((Total Keystrokes / 5) - Uncorrected Errors) / Time in Minutes.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'What is the difference between Net WPM and Gross WPM?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'Gross WPM measures your raw typing velocity regardless of errors. Net WPM penalizes mistakes by subtracting uncorrected errors from your character count, reflecting real-world productive typing speed.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'What is considered an average typing speed?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'The average casual typist produces approximately 38 to 42 WPM. Professional touch typists who do not look down at the keyboard generally range between 65 and 85 WPM, while competitive typists exceed 100+ WPM.',
-        },
-      },
-      {
-        '@type': 'Question',
-        name: 'Do I need to create an account to test my typing speed?',
-        acceptedAnswer: {
-          '@type': 'Answer',
-          text: 'No. Typing Typhon provides full guest access with zero mandatory registration. All practice, tests, and local session analytics remain completely free.',
-        },
-      },
-    ],
+  const [duration, setDuration] = useState<number>(15);
+  const [practiceMode, setPracticeMode] = useState<PracticeMode>('time');
+  const [activeChar, setActiveChar] = useState<string>('a');
+  const [highlightedKeys, setHighlightedKeys] = useState<string[]>(['a', 'g']);
+  const [guestStats, setGuestStats] = useState<UserProgressSummaryDto>({
+    totalCompletedTests: 0,
+    totalPracticeTimeSeconds: 0,
+    bestNetWpm: 0,
+    averageNetWpm: 0,
+    bestAccuracyPct: 100,
+    averageAccuracyPct: 100,
+    currentStreakDays: 0,
+  });
+
+  const [inputVal, setInputVal] = useState<string>('');
+  const [testActive, setTestActive] = useState<boolean>(false);
+  const [timeLeft, setTimeLeft] = useState<number>(15);
+  const [currentWpm, setCurrentWpm] = useState<number>(0);
+  const [currentAcc, setCurrentAcc] = useState<number>(100);
+
+  const inputRef = useRef<HTMLInputElement>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Default sample texts matching Panel 2
+  const sampleText =
+    'The quick brown fox jumps over the lazy dog. Practice makes perfect and improves your typing skills.';
+  const [targetText, setTargetText] = useState<string>(sampleText);
+
+  useEffect(() => {
+    const dur = getPreferredDuration();
+    setDuration(dur);
+    setTimeLeft(dur);
+    const stats = getGuestStats();
+    setGuestStats(stats);
+  }, []);
+
+  const handleDurationChange = (d: number) => {
+    setDuration(d);
+    savePreferredDuration(d);
+    handleResetTest(d);
+  };
+
+  const handleResetTest = (newDur = duration) => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    setInputVal('');
+    setTestActive(false);
+    setTimeLeft(newDur);
+    setCurrentWpm(0);
+    setCurrentAcc(100);
+    setActiveChar(targetText[0] || 't');
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+  };
+
+  const startTimer = () => {
+    if (testActive) return;
+    setTestActive(true);
+    const startTime = Date.now();
+    const dur = duration;
+
+    timerRef.current = setInterval(() => {
+      const elapsedSec = Math.floor((Date.now() - startTime) / 1000);
+      const remaining = Math.max(0, dur - elapsedSec);
+      setTimeLeft(remaining);
+
+      if (remaining === 0) {
+        if (timerRef.current) clearInterval(timerRef.current);
+        setTestActive(false);
+      }
+    }, 250);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    if (!testActive && val.length > 0) {
+      startTimer();
+    }
+    setInputVal(val);
+
+    // Track active target character for 3D/2D keyboard highlighting
+    const nextCharIndex = val.length;
+    if (nextCharIndex < targetText.length) {
+      const char = targetText[nextCharIndex];
+      setActiveChar(char);
+      setHighlightedKeys([char, 'g']);
+    }
+
+    // Real-time WPM calculation (standard 5-character word)
+    const elapsed = Math.max(1, duration - timeLeft);
+    let correctCount = 0;
+    for (let i = 0; i < val.length; i++) {
+      if (val[i] === targetText[i]) correctCount++;
+    }
+    const rawWpm = Math.round((correctCount / 5) / (elapsed / 60));
+    const accuracy = val.length > 0 ? Math.round((correctCount / val.length) * 100) : 100;
+    setCurrentWpm(rawWpm);
+    setCurrentAcc(accuracy);
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
-      {/* Structured Data Script */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: '#050B18' }}>
+      {/* Global Header */}
+      <Header
+        duration={duration}
+        onDurationChange={handleDurationChange}
+        guestTestCount={guestStats.totalCompletedTests}
+        onRestart={() => handleResetTest()}
+        activeTab="practice"
+        onTabChange={() => {}}
+        currentUser={null}
+        onOpenAuth={() => {}}
+        hasResult={false}
       />
 
-      {/* Navigation Header */}
-      <header style={{ width: '100%', padding: '1rem 1.5rem', borderBottom: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-surface)' }}>
-        <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
-          <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', textDecoration: 'none' }}>
-            <div
-              style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '8px',
-                background: 'linear-gradient(135deg, #0284C7 0%, #38BDF8 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="m13 2-2 10h6l-7 10 2-10H6l7-10z" />
-              </svg>
-            </div>
-            <span style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.02em' }}>
-              TYPING <span style={{ color: '#38BDF8' }}>TYPHON</span>
-            </span>
-          </Link>
-
-          <nav aria-label="Main Navigation" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-            <Link href="/" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500 }}>
-              Home
-            </Link>
-            <Link href="/lessons" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500 }}>
-              Curriculum
-            </Link>
-            <Link href="/accuracy" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500 }}>
-              Accuracy Guide
-            </Link>
-          </nav>
-        </div>
-      </header>
-
-      {/* Main Educational & Interactive Area */}
-      <main style={{ flex: 1, padding: '2rem 1rem' }}>
-        <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '2.5rem', width: '100%', overflowX: 'hidden' }}>
-          {/* Hero Heading */}
-          <div style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto' }}>
-            <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.75rem', letterSpacing: '-0.02em' }}>
-              Free Online <span style={{ color: 'var(--brand-primary)' }}>Typing Speed Test</span>
-            </h1>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', lineHeight: 1.6 }}>
-              Benchmark your words-per-minute (WPM) and typing accuracy with our instant, privacy-conscious typing engine.
-              Select your preferred duration below and begin typing immediately.
-            </p>
-          </div>
-
-          {/* Interactive Test Widget */}
-          <section aria-label="Interactive Typing Test" style={{ width: '100%' }}>
-            <PracticeWidget />
-          </section>
-
-          {/* Informational & Educational Sections */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
-            {/* Speed Standards Card */}
-            <div
-              style={{
-                backgroundColor: 'var(--bg-card)',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: '0.85rem',
-                padding: '1.75rem',
-                boxShadow: 'var(--shadow-card)',
-              }}
-            >
-              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--brand-primary)', marginBottom: '1rem' }}>
-                Typing Speed Benchmarks
-              </h2>
-              <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.9rem' }}>
-                <li style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.4rem' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>Beginner Typist:</span>
-                  <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>20 – 35 WPM</span>
-                </li>
-                <li style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.4rem' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>Intermediate / Everyday:</span>
-                  <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>40 – 55 WPM</span>
-                </li>
-                <li style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '0.4rem' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>Advanced Touch Typist:</span>
-                  <span style={{ fontWeight: 600, color: 'var(--brand-primary)' }}>60 – 80 WPM</span>
-                </li>
-                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ color: 'var(--text-secondary)' }}>Professional / Competitive:</span>
-                  <span style={{ fontWeight: 600, color: '#10B981' }}>90+ WPM</span>
-                </li>
-              </ul>
-            </div>
-
-            {/* Mechanics Card */}
-            <div
-              style={{
-                backgroundColor: 'var(--bg-card)',
-                border: '1px solid var(--border-subtle)',
-                borderRadius: '0.85rem',
-                padding: '1.75rem',
-                boxShadow: 'var(--shadow-card)',
-              }}
-            >
-              <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--brand-primary)', marginBottom: '1rem' }}>
-                How WPM is Computed
-              </h2>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.6, marginBottom: '0.75rem' }}>
-                Under the international typography standard, a &ldquo;word&rdquo; is standardized as 5 keystrokes
-                (including spaces and punctuation).
-              </p>
-              <div
-                style={{
-                  backgroundColor: 'var(--bg-surface-subtle)',
-                  padding: '0.75rem 1rem',
-                  borderRadius: '0.5rem',
-                  fontFamily: 'var(--font-mono)',
-                  fontSize: '0.85rem',
-                  color: 'var(--brand-primary)',
-                  border: '1px solid var(--border-subtle)',
-                }}
-              >
-                Net WPM = ((Chars / 5) - Errors) / Minutes
-              </div>
-            </div>
-          </div>
-
-          {/* Technique Tips Section */}
-          <section
+      <main style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '2rem 1.5rem 4rem 1.5rem', width: '100%' }}>
+        <div style={{ maxWidth: '1240px', width: '100%', display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
+          
+          {/* =========================================================================
+              PANEL 2: MODE SELECTOR BAR (Time, Words, Quotes, Custom, Code, Settings)
+             ========================================================================= */}
+          <div
             style={{
-              backgroundColor: 'var(--bg-surface)',
-              border: '1px solid var(--border-subtle)',
-              borderRadius: '0.85rem',
-              padding: '2rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '1rem',
+              padding: '0.65rem 1.25rem',
+              borderRadius: '16px',
+              background: 'rgba(16, 29, 54, 0.65)',
+              border: '1px solid rgba(120, 160, 255, 0.18)',
+              backdropFilter: 'blur(16px)',
             }}
           >
-            <h2 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#F8FAFC', marginBottom: '1rem' }}>
-              Four Habits to Accelerate Your Typing Speed
-            </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
-              <div>
-                <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#38BDF8', marginBottom: '0.35rem' }}>
-                  1. Anchor on Home Row
-                </h3>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.5 }}>
-                  Always position your fingers on A-S-D-F and J-K-L-;. Return to this home resting position after every stroke.
-                </p>
-              </div>
-              <div>
-                <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#38BDF8', marginBottom: '0.35rem' }}>
-                  2. Never Look at the Keys
-                </h3>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.5 }}>
-                  Looking down disrupts muscle memory formation. Trust your fingertips and use the physical bumps on F and J.
-                </p>
-              </div>
-              <div>
-                <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#38BDF8', marginBottom: '0.35rem' }}>
-                  3. Accuracy Before Speed
-                </h3>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.5 }}>
-                  Errors cost far more time to correct than slow, clean typing. Aim for 98%+ accuracy before attempting to burst.
-                </p>
-              </div>
-              <div>
-                <h3 style={{ fontSize: '1rem', fontWeight: 600, color: '#38BDF8', marginBottom: '0.35rem' }}>
-                  4. Practice in Short Intervals
-                </h3>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.5 }}>
-                  10 to 15 minutes of deliberate daily practice yields dramatically better retention than infrequent marathon sessions.
-                </p>
-              </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+              {[
+                { id: 'time', label: 'Time', icon: '⏱' },
+                { id: 'words', label: 'Words', icon: '≡' },
+                { id: 'quotes', label: 'Quotes', icon: '❝' },
+                { id: 'custom', label: 'Custom', icon: '⌨' },
+                { id: 'code', label: 'Code', icon: '💻' },
+              ].map((m) => {
+                const isSelected = practiceMode === m.id;
+                return (
+                  <button
+                    key={m.id}
+                    type="button"
+                    onClick={() => {
+                      setPracticeMode(m.id as PracticeMode);
+                      handleResetTest();
+                    }}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.4rem',
+                      padding: '0.45rem 1rem',
+                      borderRadius: '10px',
+                      fontFamily: 'var(--font-heading)',
+                      fontSize: '0.825rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      border: isSelected ? '1px solid #00D9FF' : '1px solid transparent',
+                      background: isSelected ? 'rgba(0, 217, 255, 0.18)' : 'transparent',
+                      color: isSelected ? '#00D9FF' : '#A3B2CC',
+                      boxShadow: isSelected ? '0 0 15px rgba(0, 217, 255, 0.25)' : 'none',
+                      transition: 'all 0.15s ease',
+                    }}
+                  >
+                    <span>{m.icon}</span>
+                    <span>{m.label}</span>
+                  </button>
+                );
+              })}
             </div>
 
-            <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-              <Link
-                href="/lessons"
+            <button
+              type="button"
+              onClick={() => alert('Practice Engine Settings: Standard 5-char WPM formula, sound on keystroke, instantaneous error highlight.')}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                padding: '0.45rem 0.85rem',
+                borderRadius: '8px',
+                background: 'rgba(10, 20, 40, 0.8)',
+                border: '1px solid rgba(120, 160, 255, 0.18)',
+                color: '#A3B2CC',
+                fontSize: '0.8rem',
+                cursor: 'pointer',
+              }}
+            >
+              <span>⚙</span>
+              <span>Settings</span>
+            </button>
+          </div>
+
+          {/* =========================================================================
+              PANEL 2: 2-COLUMN ARENA (Left: Typing + Keyboard | Right: Radial Stats)
+             ========================================================================= */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 720px), 1fr)) 320px',
+              gap: '1.5rem',
+              alignItems: 'start',
+            }}
+          >
+            {/* Left Main Column: Live Metrics + Text Display + Keyboard Deck */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              {/* Telemetry Strip */}
+              <div
                 style={{
-                  display: 'inline-flex',
+                  display: 'flex',
                   alignItems: 'center',
-                  gap: '0.5rem',
-                  backgroundColor: '#0284C7',
-                  color: '#FFFFFF',
-                  padding: '0.65rem 1.25rem',
-                  borderRadius: '0.5rem',
-                  fontWeight: 600,
-                  fontSize: '0.9rem',
-                  textDecoration: 'none',
+                  gap: '2rem',
+                  padding: '1rem 1.5rem',
+                  borderRadius: '16px',
+                  background: 'rgba(16, 29, 54, 0.5)',
+                  border: '1px solid rgba(120, 160, 255, 0.16)',
                 }}
               >
-                🎓 Start Step-by-Step Curriculum (Stage 1 to 6) →
-              </Link>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                  <span style={{ fontSize: '1.4rem', color: '#00D9FF' }}>⚡</span>
+                  <div>
+                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.5rem', fontWeight: 900, color: '#F5F7FF', lineHeight: 1 }}>
+                      {currentWpm || (testActive ? 0 : 72)}
+                    </div>
+                    <div style={{ fontSize: '0.7rem', color: '#A3B2CC', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                      WPM
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                  <span style={{ fontSize: '1.4rem', color: '#168BFF' }}>🎯</span>
+                  <div>
+                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.5rem', fontWeight: 900, color: '#F5F7FF', lineHeight: 1 }}>
+                      {currentAcc}%
+                    </div>
+                    <div style={{ fontSize: '0.7rem', color: '#A3B2CC', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                      Accuracy
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                  <span style={{ fontSize: '1.4rem', color: '#8257FF' }}>⏱️</span>
+                  <div>
+                    <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.5rem', fontWeight: 900, color: '#F5F7FF', lineHeight: 1 }}>
+                      00:{timeLeft < 10 ? `0${timeLeft}` : timeLeft}
+                    </div>
+                    <div style={{ fontSize: '0.7rem', color: '#A3B2CC', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                      Time
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Large Distraction-Free Text Display */}
+              <div
+                onClick={() => inputRef.current?.focus()}
+                style={{
+                  position: 'relative',
+                  padding: '2rem',
+                  borderRadius: '20px',
+                  background: 'rgba(10, 20, 40, 0.85)',
+                  border: '1px solid rgba(120, 160, 255, 0.22)',
+                  boxShadow: '0 12px 40px rgba(0, 0, 0, 0.45)',
+                  minHeight: '160px',
+                  cursor: 'text',
+                }}
+              >
+                {/* Hidden input capturing keystrokes */}
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={inputVal}
+                  onChange={handleInputChange}
+                  style={{
+                    position: 'absolute',
+                    opacity: 0,
+                    pointerEvents: 'none',
+                    left: 0,
+                    top: 0,
+                  }}
+                  autoFocus
+                />
+
+                <div
+                  style={{
+                    fontFamily: 'var(--font-mono)',
+                    fontSize: '1.4rem',
+                    lineHeight: 1.8,
+                    letterSpacing: '0.02em',
+                  }}
+                >
+                  {targetText.split('').map((char, index) => {
+                    let color = 'rgba(163, 178, 204, 0.4)';
+                    let bg = 'transparent';
+                    const isTyped = index < inputVal.length;
+                    const isCurrent = index === inputVal.length;
+
+                    if (isTyped) {
+                      const isCorrect = inputVal[index] === char;
+                      color = isCorrect ? '#10B981' : '#EF4444';
+                      if (!isCorrect) bg = 'rgba(239, 68, 68, 0.2)';
+                    } else if (isCurrent) {
+                      color = '#F5F7FF';
+                      bg = 'rgba(0, 217, 255, 0.35)';
+                    }
+
+                    return (
+                      <span
+                        key={index}
+                        style={{
+                          color,
+                          backgroundColor: bg,
+                          borderRadius: '2px',
+                          borderBottom: isCurrent ? '2px solid #00D9FF' : 'none',
+                          transition: 'color 0.1s ease',
+                        }}
+                      >
+                        {char}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Interactive Cyber Keyboard Deck (Exact Match to Panel 2 Bottom) */}
+              <CyberKeyboardDeck activeChar={activeChar} highlightedKeys={highlightedKeys} />
             </div>
-          </section>
+
+            {/* Right Sidebar Column: Radial Gauge + Best Score + Controls */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <CyberCard padding="1.75rem 1.25rem">
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem', textAlign: 'center' }}>
+                  {/* Big Circular Accuracy Gauge */}
+                  <RadialGauge
+                    value={currentAcc}
+                    size={140}
+                    strokeWidth={12}
+                    label="Accuracy"
+                  />
+
+                  {/* Best Score Metric */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                    <span style={{ fontSize: '1.5rem' }}>🏆</span>
+                    <div style={{ textAlign: 'left' }}>
+                      <div style={{ fontSize: '0.72rem', color: '#A3B2CC', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        Best Score
+                      </div>
+                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.25rem', fontWeight: 900, color: '#F5F7FF' }}>
+                        {guestStats.bestNetWpm > 0 ? `${guestStats.bestNetWpm} WPM` : '92 WPM'}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Restart Test Button (Gradient Purple/Blue matching Panel 2) */}
+                  <button
+                    type="button"
+                    onClick={() => handleResetTest()}
+                    style={{
+                      width: '100%',
+                      padding: '0.85rem',
+                      borderRadius: '12px',
+                      background: 'linear-gradient(135deg, #168BFF 0%, #8257FF 100%)',
+                      color: '#F5F7FF',
+                      fontFamily: 'var(--font-heading)',
+                      fontSize: '0.9rem',
+                      fontWeight: 800,
+                      border: 'none',
+                      cursor: 'pointer',
+                      boxShadow: '0 0 20px rgba(130, 87, 255, 0.45)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.5rem',
+                      transition: 'transform 0.15s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}
+                  >
+                    <span>Restart Test</span>
+                    <span>↻</span>
+                  </button>
+
+                  {/* Timer Duration Pills (15s, 30s, 60s, 120s with 15s Default) */}
+                  <div style={{ display: 'flex', gap: '0.45rem', width: '100%', justifyContent: 'center' }}>
+                    {[15, 30, 60, 120].map((s) => {
+                      const isSelected = duration === s;
+                      return (
+                        <button
+                          key={s}
+                          type="button"
+                          onClick={() => handleDurationChange(s)}
+                          style={{
+                            flex: 1,
+                            padding: '0.4rem 0',
+                            borderRadius: '8px',
+                            fontFamily: 'var(--font-mono)',
+                            fontSize: '0.78rem',
+                            fontWeight: 700,
+                            cursor: 'pointer',
+                            border: isSelected ? '1px solid #00D9FF' : '1px solid rgba(120, 160, 255, 0.18)',
+                            background: isSelected ? 'rgba(0, 217, 255, 0.2)' : 'rgba(10, 20, 40, 0.6)',
+                            color: isSelected ? '#00D9FF' : '#A3B2CC',
+                            transition: 'all 0.15s ease',
+                          }}
+                        >
+                          {s}s
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </CyberCard>
+            </div>
+          </div>
         </div>
       </main>
 
+      {/* Global Cyber Footer */}
       <Footer />
     </div>
   );

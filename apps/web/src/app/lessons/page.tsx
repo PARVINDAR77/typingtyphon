@@ -1,271 +1,360 @@
-import React from 'react';
-import type { Metadata } from 'next';
-import Link from 'next/link';
-import { Footer } from '@/components/Footer';
+'use client';
 
-export const metadata: Metadata = {
-  title: 'Touch Typing Lessons & Structured 6-Stage Curriculum',
-  description:
-    'Master touch typing step-by-step with Typing Typhon’s free 6-stage curriculum. Learn home row, top row, bottom row, numbers, and symbols without looking at the keyboard.',
-  alternates: {
-    canonical: '/lessons',
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Header } from '@/components/Header';
+import { Footer } from '@/components/Footer';
+import { CyberCard } from '@/components/ui/CyberCard';
+import { CyberBadge } from '@/components/ui/CyberBadge';
+
+interface LessonTier {
+  id: string;
+  name: string;
+  subtitle: string;
+  stageNumber: number;
+  featuredTitle: string;
+  featuredDesc: string;
+  progress: string;
+  lessons: {
+    id: string;
+    num: string;
+    title: string;
+    keys: string;
+    goal: string;
+    duration: string;
+  }[];
+}
+
+const LESSON_TIERS: LessonTier[] = [
+  {
+    id: 'beginner',
+    name: 'Beginner',
+    subtitle: 'Start with basics',
+    stageNumber: 1,
+    featuredTitle: '1. Introduction to Keyboard',
+    featuredDesc: 'Learn about keyboard layout, finger positioning, and home row index anchors.',
+    progress: '0/5 lessons',
+    lessons: [
+      { id: 'b1', num: '1.1', title: 'Home Row Resting Position', keys: 'F, J, D, K', goal: '≥ 95% Acc, 15 WPM', duration: '5 min' },
+      { id: 'b2', num: '1.2', title: 'Outer Home Row Reach', keys: 'S, L, A, ;', goal: '≥ 95% Acc, 18 WPM', duration: '6 min' },
+      { id: 'b3', num: '1.3', title: 'Inner Index Extensions', keys: 'G, H', goal: '≥ 95% Acc, 20 WPM', duration: '5 min' },
+      { id: 'b4', num: '1.4', title: 'Home Row Word Fluency', keys: 'as, df, jk, l;', goal: '≥ 96% Acc, 22 WPM', duration: '7 min' },
+      { id: 'b5', num: '1.5', title: 'Beginner Stage Benchmark', keys: 'Full Home Row', goal: '≥ 97% Acc, 25 WPM', duration: '10 min' },
+    ],
   },
-  openGraph: {
-    title: 'Touch Typing Lessons & 6-Stage Curriculum | Typing Typhon',
-    description: 'Learn touch typing from scratch. 6 structured stages, 25 progressive lessons, and targeted remedial drills.',
-    type: 'website',
+  {
+    id: 'basic',
+    name: 'Basic',
+    subtitle: 'Build confidence',
+    stageNumber: 2,
+    featuredTitle: '2. Top Row Reaching',
+    featuredDesc: 'Ascend to the top QWERTY row without lifting your wrist or losing anchor positioning.',
+    progress: '0/5 lessons',
+    lessons: [
+      { id: 'ba1', num: '2.1', title: 'Index Fingers Top Reach', keys: 'R, U', goal: '≥ 95% Acc, 22 WPM', duration: '5 min' },
+      { id: 'ba2', num: '2.2', title: 'Middle Fingers Top Reach', keys: 'E, I', goal: '≥ 95% Acc, 25 WPM', duration: '6 min' },
+      { id: 'ba3', num: '2.3', title: 'Ring & Pinky Top Reach', keys: 'W, O, Q, P', goal: '≥ 94% Acc, 25 WPM', duration: '8 min' },
+      { id: 'ba4', num: '2.4', title: 'Top & Home Transitions', keys: 'Mixed Rows', goal: '≥ 96% Acc, 28 WPM', duration: '7 min' },
+      { id: 'ba5', num: '2.5', title: 'Common Word Combinations', keys: 'the, out, you, are', goal: '≥ 97% Acc, 30 WPM', duration: '10 min' },
+    ],
   },
-};
+  {
+    id: 'intermediate',
+    name: 'Intermediate',
+    subtitle: 'Improve speed',
+    stageNumber: 3,
+    featuredTitle: '3. Bottom Row & Punctuation',
+    featuredDesc: 'Curled finger tucks for bottom row letters alongside comma and period pacing.',
+    progress: '0/5 lessons',
+    lessons: [
+      { id: 'i1', num: '3.1', title: 'Index Bottom Row Reaches', keys: 'V, M, B, N', goal: '≥ 95% Acc, 30 WPM', duration: '6 min' },
+      { id: 'i2', num: '3.2', title: 'Middle & Ring Bottom Reaches', keys: 'C, X, , .', goal: '≥ 95% Acc, 32 WPM', duration: '7 min' },
+      { id: 'i3', num: '3.3', title: 'Pinky Bottom Reach', keys: 'Z, /', goal: '≥ 94% Acc, 32 WPM', duration: '6 min' },
+      { id: 'i4', num: '3.4', title: 'Tri-Row Word Mastery', keys: 'All 3 Letter Rows', goal: '≥ 96% Acc, 35 WPM', duration: '8 min' },
+      { id: 'i5', num: '3.5', title: 'Punctuation Flow Drills', keys: 'Full sentences', goal: '≥ 97% Acc, 40 WPM', duration: '10 min' },
+    ],
+  },
+  {
+    id: 'advanced',
+    name: 'Advanced',
+    subtitle: 'Master typing',
+    stageNumber: 4,
+    featuredTitle: '4. Number Row & Capitalization',
+    featuredDesc: 'Opposite-hand Shift key discipline and number row extensions with zero visual lookups.',
+    progress: '0/5 lessons',
+    lessons: [
+      { id: 'a1', num: '4.1', title: 'Opposite Shift Discipline', keys: 'Left & Right Shift', goal: '≥ 96% Acc, 40 WPM', duration: '8 min' },
+      { id: 'a2', num: '4.2', title: 'Number Row Left Hand', keys: '1, 2, 3, 4, 5', goal: '≥ 95% Acc, 35 WPM', duration: '8 min' },
+      { id: 'a3', num: '4.3', title: 'Number Row Right Hand', keys: '6, 7, 8, 9, 0', goal: '≥ 95% Acc, 35 WPM', duration: '8 min' },
+      { id: 'a4', num: '4.4', title: 'Numbers in Real Sentences', keys: 'Dates, Stats, Numbers', goal: '≥ 96% Acc, 42 WPM', duration: '10 min' },
+      { id: 'a5', num: '4.5', title: 'Advanced Speed Certification', keys: 'Complex Prose', goal: '≥ 97% Acc, 50 WPM', duration: '12 min' },
+    ],
+  },
+  {
+    id: 'professional',
+    name: 'Professional',
+    subtitle: 'Reach the expert level',
+    stageNumber: 5,
+    featuredTitle: '5. Programming Symbols & Velocity',
+    featuredDesc: 'Synthesize programming brackets { }, quotes, and sustained 80+ WPM velocity.',
+    progress: '0/5 lessons',
+    lessons: [
+      { id: 'p1', num: '5.1', title: 'Brackets & Curly Braces', keys: '{}, [], ()', goal: '≥ 95% Acc, 45 WPM', duration: '8 min' },
+      { id: 'p2', num: '5.2', title: 'Programming Operators', keys: '=, +, -, *, /, %, <, >', goal: '≥ 95% Acc, 45 WPM', duration: '8 min' },
+      { id: 'p3', num: '5.3', title: 'Code Syntax Sprint', keys: 'JavaScript / Python', goal: '≥ 96% Acc, 55 WPM', duration: '10 min' },
+      { id: 'p4', num: '5.4', title: 'Endurance Paragraph Sprint', keys: 'Continuous Prose', goal: '≥ 97% Acc, 70 WPM', duration: '12 min' },
+      { id: 'p5', num: '5.5', title: 'Grandmaster 100+ WPM Track', keys: 'Full Keyboard Mastery', goal: '≥ 98% Acc, 80 WPM', duration: '15 min' },
+    ],
+  },
+];
 
 export default function LessonsPage() {
-  const courseSchema = {
-    '@context': 'https://schema.org',
-    '@type': 'Course',
-    name: 'Typing Typhon Touch Typing Academy',
-    description: 'A comprehensive, systematic 6-stage curriculum designed to build touch typing muscle memory from home row to numbers and symbols.',
-    provider: {
-      '@type': 'Organization',
-      name: 'Typing Typhon',
-    },
-    hasCourseInstance: {
-      '@type': 'CourseInstance',
-      courseMode: 'online',
-      courseWorkload: 'PT15M',
-    },
-  };
+  const router = useRouter();
+  const [activeTierId, setActiveTierId] = useState<string>('beginner');
 
-  const stages = [
-    {
-      stage: 1,
-      title: 'Home Row Mastery',
-      keys: 'A S D F J K L ; G H',
-      description: 'Establish the foundational home anchor. Learn resting positions, tactile indexing notches on F & J, and inner lateral index reaches for G & H.',
-      lessonsCount: 4,
-    },
-    {
-      stage: 2,
-      title: 'Top Row Expansion',
-      keys: 'E I R U T Y W O Q P',
-      description: 'Ascend upward from the home row without shifting your wrist position. Train upward vertical and diagonal finger extensions.',
-      lessonsCount: 5,
-    },
-    {
-      stage: 3,
-      title: 'Bottom Row Foundations',
-      keys: 'V M C , X . Z / B N',
-      description: 'Descend to the bottom keyboard row with precise curled finger tucks, mastering comma, period, and slash punctuation alongside letters.',
-      lessonsCount: 4,
-    },
-    {
-      stage: 4,
-      title: 'Shift & Capitalization',
-      keys: 'Left Shift, Right Shift, Proper Capitalization',
-      description: 'Master opposite-hand shift discipline: use the right pinky for left-hand letters and the left pinky for right-hand letters to maintain typing balance.',
-      lessonsCount: 4,
-    },
-    {
-      stage: 5,
-      title: 'Numbers & Symbols',
-      keys: '1 2 3 4 5 6 7 8 9 0 ! @ # $ % ^ & * ( )',
-      description: 'Conquer the number row and standard mathematical and programming symbols without looking away from your screen.',
-      lessonsCount: 4,
-    },
-    {
-      stage: 6,
-      title: 'Advanced Speed & Fluency',
-      keys: 'Quotes, Dashes, Brackets, Extended Paragraphs',
-      description: 'Synthesize all rows and symbols with complex English vocabulary, paragraph-length drills, and sustained speed pacing.',
-      lessonsCount: 4,
-    },
-  ];
+  const selectedTier = LESSON_TIERS.find((t) => t.id === activeTierId) || LESSON_TIERS[0];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: 'var(--bg-primary)' }}>
-      {/* Structured Schema */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(courseSchema) }}
-      />
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', backgroundColor: '#050B18' }}>
+      {/* Top Header */}
+      <Header activeTab="curriculum" />
 
-      {/* Header */}
-      <header style={{ width: '100%', padding: '1rem 1.5rem', borderBottom: '1px solid var(--border-subtle)', backgroundColor: 'var(--bg-surface)' }}>
-        <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
-          <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', textDecoration: 'none' }}>
-            <div
-              style={{
-                width: '32px',
-                height: '32px',
-                borderRadius: '8px',
-                background: 'linear-gradient(135deg, #0284C7 0%, #38BDF8 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="m13 2-2 10h6l-7 10 2-10H6l7-10z" />
-              </svg>
-            </div>
-            <span style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '0.02em' }}>
-              TYPING <span style={{ color: '#38BDF8' }}>TYPHON</span>
-            </span>
-          </Link>
-          <nav aria-label="Main Navigation" style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-            <Link href="/" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500 }}>
-              Home
-            </Link>
-            <Link href="/practice" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500 }}>
-              Speed Test
-            </Link>
-            <Link href="/academy" style={{ color: '#38BDF8', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 700 }}>
-              🎓 Academy
-            </Link>
-            <Link href="/accuracy" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '0.875rem', fontWeight: 500 }}>
-              Accuracy Guide
-            </Link>
-          </nav>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main style={{ flex: 1, padding: '3rem 1.5rem' }}>
-        <div style={{ maxWidth: '1000px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
-          {/* Header Title */}
-          <div style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto' }}>
-            <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '0.75rem', letterSpacing: '-0.02em' }}>
-              Structured <span style={{ color: 'var(--brand-primary)' }}>Touch Typing Curriculum</span>
-            </h1>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '1.05rem', lineHeight: 1.6 }}>
-              Learning to touch type means training your fingers to navigate the keyboard purely by muscle memory.
-              Our 6-stage progressive curriculum introduces keys sequentially with dedicated intro, word, and sentence drills.
-            </p>
-          </div>
-
-          {/* Primary Action Button */}
-          <div style={{ textAlign: 'center' }}>
-            <Link
-              href="/academy"
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.5rem',
-                backgroundColor: '#0284C7',
-                color: '#FFFFFF',
-                padding: '0.85rem 1.75rem',
-                borderRadius: '0.75rem',
-                fontWeight: 700,
-                fontSize: '1rem',
-                textDecoration: 'none',
-                boxShadow: '0 4px 14px rgba(2, 132, 199, 0.4)',
-              }}
-            >
-              🎓 Open Interactive Academy & Begin Stage 1 →
-            </Link>
-          </div>
-
-          {/* Finger Placement Map Section */}
-          <section
+      <main style={{ flex: 1, padding: '2.5rem 1.5rem 4rem 1.5rem', maxWidth: '1280px', width: '100%', margin: '0 auto' }}>
+        {/* Title Section */}
+        <div style={{ marginBottom: '2rem' }}>
+          <CyberBadge variant="cyan">ACADEMY CURRICULUM</CyberBadge>
+          <h1
             style={{
-              backgroundColor: 'var(--bg-surface)',
-              border: '1px solid var(--border-subtle)',
-              borderRadius: '1rem',
-              padding: '2rem',
+              fontFamily: 'var(--font-heading)',
+              fontSize: 'clamp(2rem, 3.8vw, 2.75rem)',
+              fontWeight: 900,
+              color: '#F5F7FF',
+              margin: '0.4rem 0 0.2rem 0',
+              letterSpacing: '-0.02em',
             }}
           >
-            <h2 style={{ fontSize: '1.35rem', fontWeight: 700, color: '#38BDF8', marginBottom: '1rem' }}>
-              Standard QWERTY Finger Alignment
-            </h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.925rem', lineHeight: 1.6, marginBottom: '1.5rem' }}>
-              Every finger on each hand has a dedicated zone of responsibility. Your fingers should always return
-              to their <strong>Home Row</strong> resting position between keystrokes.
-            </p>
+            Typing Lessons
+          </h1>
+          <p style={{ color: '#A3B2CC', fontSize: '1rem', margin: 0 }}>
+            Learn step by step and build your skills with calibrated muscle-memory drills.
+          </p>
+        </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem' }}>
-              <div style={{ backgroundColor: 'var(--bg-card)', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid var(--border-subtle)', boxShadow: 'var(--shadow-card)' }}>
-                <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.65rem' }}>
-                  Left Hand Responsibilities
-                </h3>
-                <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                  <li><strong style={{ color: 'var(--brand-primary)' }}>Pinky:</strong> 1, Q, A (Home), Z, Left Shift, Tab</li>
-                  <li><strong style={{ color: 'var(--brand-primary)' }}>Ring:</strong> 2, W, S (Home), X</li>
-                  <li><strong style={{ color: 'var(--brand-primary)' }}>Middle:</strong> 3, E, D (Home), C</li>
-                  <li><strong style={{ color: 'var(--brand-primary)' }}>Index:</strong> 4, 5, R, T, F (Home Anchor), G, V, B</li>
-                  <li><strong style={{ color: 'var(--brand-primary)' }}>Thumb:</strong> Spacebar</li>
-                </ul>
-              </div>
-
-              <div style={{ backgroundColor: 'var(--bg-card)', padding: '1.25rem', borderRadius: '0.75rem', border: '1px solid var(--border-subtle)', boxShadow: 'var(--shadow-card)' }}>
-                <h3 style={{ fontSize: '1.05rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.65rem' }}>
-                  Right Hand Responsibilities
-                </h3>
-                <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                  <li><strong style={{ color: 'var(--brand-primary)' }}>Index:</strong> 6, 7, Y, U, J (Home Anchor), H, N, M</li>
-                  <li><strong style={{ color: 'var(--brand-primary)' }}>Middle:</strong> 8, I, K (Home), , (Comma)</li>
-                  <li><strong style={{ color: 'var(--brand-primary)' }}>Ring:</strong> 9, O, L (Home), . (Period)</li>
-                  <li><strong style={{ color: 'var(--brand-primary)' }}>Pinky:</strong> 0, P, ; (Home), /, Enter, Right Shift</li>
-                  <li><strong style={{ color: 'var(--brand-primary)' }}>Thumb:</strong> Spacebar</li>
-                </ul>
-              </div>
-            </div>
-          </section>
-
-          {/* Curriculum Stages Grid */}
-          <section>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '1.25rem' }}>
-              The 6 Curriculum Stages
-            </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(290px, 1fr))', gap: '1.25rem' }}>
-              {stages.map((stg) => (
-                <div
-                  key={stg.stage}
+        {/* 2-Column Layout matching Panel 3 */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '280px 1fr',
+            gap: '2rem',
+            alignItems: 'start',
+          }}
+          className="lessons-grid-layout"
+        >
+          {/* Left Sidebar: 5 Progression Tiers */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            {LESSON_TIERS.map((tier) => {
+              const isSelected = tier.id === activeTierId;
+              return (
+                <button
+                  key={tier.id}
+                  type="button"
+                  onClick={() => setActiveTierId(tier.id)}
                   style={{
-                    backgroundColor: 'var(--bg-card)',
-                    border: '1px solid var(--border-subtle)',
-                    borderRadius: '0.85rem',
-                    padding: '1.5rem',
                     display: 'flex',
-                    flexDirection: 'column',
-                    gap: '0.75rem',
-                    boxShadow: 'var(--shadow-card)',
+                    alignItems: 'center',
+                    gap: '1rem',
+                    padding: '1rem 1.25rem',
+                    borderRadius: '14px',
+                    background: isSelected
+                      ? 'linear-gradient(135deg, rgba(0, 217, 255, 0.18) 0%, rgba(22, 139, 255, 0.2) 100%)'
+                      : 'rgba(16, 29, 54, 0.65)',
+                    border: isSelected ? '1px solid #00D9FF' : '1px solid rgba(120, 160, 255, 0.18)',
+                    boxShadow: isSelected ? '0 0 20px rgba(0, 217, 255, 0.3)' : 'none',
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--brand-primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                      Stage {stg.stage}
-                    </span>
-                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', backgroundColor: 'var(--bg-surface-subtle)', border: '1px solid var(--border-subtle)', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>
-                      {stg.lessonsCount} Lessons
-                    </span>
-                  </div>
-
-                  <h3 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--text-primary)' }}>
-                    {stg.title}
-                  </h3>
-
                   <div
                     style={{
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: '0.825rem',
-                      color: 'var(--brand-primary)',
-                      backgroundColor: 'var(--bg-surface-subtle)',
-                      padding: '0.4rem 0.65rem',
-                      borderRadius: '0.4rem',
-                      border: '1px solid var(--border-subtle)',
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '10px',
+                      background: isSelected ? 'linear-gradient(135deg, #00D9FF 0%, #168BFF 100%)' : '#0A1428',
+                      color: isSelected ? '#050B18' : '#00D9FF',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontFamily: 'var(--font-heading)',
+                      fontWeight: 900,
+                      fontSize: '0.9rem',
                     }}
                   >
-                    Target: {stg.keys}
+                    {tier.stageNumber}
                   </div>
+                  <div>
+                    <div style={{ fontFamily: 'var(--font-heading)', fontSize: '0.95rem', fontWeight: 800, color: isSelected ? '#00D9FF' : '#F5F7FF' }}>
+                      {tier.name}
+                    </div>
+                    <div style={{ fontSize: '0.75rem', color: '#A3B2CC' }}>
+                      {tier.subtitle}
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
 
-                  <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.5, flex: 1 }}>
-                    {stg.description}
-                  </p>
+          {/* Right Main Stage Card matching Panel 3 */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            {/* Featured Lesson Highlight Box */}
+            <div
+              style={{
+                borderRadius: '20px',
+                background: 'linear-gradient(135deg, rgba(16, 29, 54, 0.95) 0%, rgba(10, 20, 40, 0.95) 100%)',
+                border: '1px solid rgba(120, 160, 255, 0.22)',
+                padding: '2rem',
+                display: 'grid',
+                gridTemplateColumns: '1fr 240px',
+                gap: '2rem',
+                alignItems: 'center',
+                boxShadow: '0 12px 35px rgba(0, 0, 0, 0.45)',
+              }}
+            >
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <CyberBadge variant="cyan">{selectedTier.progress}</CyberBadge>
+                  <span style={{ fontSize: '0.8rem', color: '#A3B2CC' }}>Estimated: 25 mins</span>
                 </div>
+
+                <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.75rem', fontWeight: 800, color: '#F5F7FF', margin: 0 }}>
+                  {selectedTier.featuredTitle}
+                </h2>
+
+                <p style={{ color: '#A3B2CC', fontSize: '0.92rem', lineHeight: 1.6, margin: 0 }}>
+                  {selectedTier.featuredDesc}
+                </p>
+
+                <div style={{ marginTop: '0.5rem' }}>
+                  <button
+                    type="button"
+                    onClick={() => router.push('/?tab=curriculum')}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      padding: '0.8rem 1.6rem',
+                      borderRadius: '10px',
+                      background: 'linear-gradient(135deg, #00D9FF 0%, #168BFF 100%)',
+                      color: '#050B18',
+                      fontFamily: 'var(--font-heading)',
+                      fontSize: '0.9rem',
+                      fontWeight: 800,
+                      border: 'none',
+                      cursor: 'pointer',
+                      boxShadow: '0 0 20px rgba(0, 217, 255, 0.4)',
+                    }}
+                  >
+                    <span>Start Lesson</span>
+                    <span>→</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Graphic: 3D/Isometric Key Zone Map */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '1rem',
+                  borderRadius: '14px',
+                  background: 'rgba(5, 11, 24, 0.75)',
+                  border: '1px solid rgba(120, 160, 255, 0.15)',
+                }}
+              >
+                <svg viewBox="0 0 200 120" style={{ width: '100%', height: 'auto' }}>
+                  <rect x="10" y="10" width="180" height="100" rx="8" fill="#101D36" stroke="#00D9FF" strokeWidth="1.5" />
+                  {/* Left hand home keys */}
+                  <rect x="25" y="45" width="20" height="20" rx="3" fill="#8257FF" />
+                  <rect x="50" y="45" width="20" height="20" rx="3" fill="#8257FF" />
+                  <rect x="75" y="45" width="20" height="20" rx="3" fill="#00D9FF" />
+                  {/* Right hand home keys */}
+                  <rect x="105" y="45" width="20" height="20" rx="3" fill="#00D9FF" />
+                  <rect x="130" y="45" width="20" height="20" rx="3" fill="#168BFF" />
+                  <rect x="155" y="45" width="20" height="20" rx="3" fill="#168BFF" />
+                  {/* Spacebar */}
+                  <rect x="55" y="75" width="90" height="16" rx="3" fill="#10B981" />
+                </svg>
+              </div>
+            </div>
+
+            {/* List of 5 Lessons inside this Tier */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+              <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', fontWeight: 800, color: '#F5F7FF', margin: 0 }}>
+                Curriculum Lessons ({selectedTier.name})
+              </h3>
+
+              {selectedTier.lessons.map((lesson) => (
+                <CyberCard key={lesson.id} padding="1rem 1.25rem">
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      <div
+                        style={{
+                          width: '32px',
+                          height: '32px',
+                          borderRadius: '8px',
+                          background: 'rgba(0, 217, 255, 0.12)',
+                          color: '#00D9FF',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontFamily: 'var(--font-mono)',
+                          fontWeight: 700,
+                          fontSize: '0.8rem',
+                        }}
+                      >
+                        {lesson.num}
+                      </div>
+                      <div>
+                        <div style={{ fontFamily: 'var(--font-heading)', fontSize: '0.95rem', fontWeight: 700, color: '#F5F7FF' }}>
+                          {lesson.title}
+                        </div>
+                        <div style={{ fontSize: '0.78rem', color: '#A3B2CC' }}>
+                          Target Keys: <span style={{ color: '#00D9FF', fontFamily: 'var(--font-mono)' }}>{lesson.keys}</span> • Benchmark: {lesson.goal}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      <span style={{ fontSize: '0.75rem', color: '#A3B2CC' }}>⏱️ {lesson.duration}</span>
+                      <button
+                        type="button"
+                        onClick={() => router.push('/?tab=curriculum')}
+                        style={{
+                          padding: '0.4rem 0.9rem',
+                          borderRadius: '8px',
+                          background: 'rgba(0, 217, 255, 0.15)',
+                          border: '1px solid rgba(0, 217, 255, 0.35)',
+                          color: '#00D9FF',
+                          fontSize: '0.8rem',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        Practice →
+                      </button>
+                    </div>
+                  </div>
+                </CyberCard>
               ))}
             </div>
-          </section>
+          </div>
         </div>
       </main>
 
+      {/* Global Footer */}
       <Footer />
     </div>
   );

@@ -26,6 +26,7 @@ import { RadialGauge } from '../components/ui/RadialGauge';
 import { CyberCard } from '../components/ui/CyberCard';
 import { CyberBadge } from '../components/ui/CyberBadge';
 import { MasteryLearningPaths } from '../components/home/MasteryLearningPaths';
+import { DailyChallengeShowcase } from '../components/home/DailyChallengeShowcase';
 import { getApiBaseUrl } from '../lib/apiConfig';
 import {
   getGuestSessions,
@@ -787,121 +788,9 @@ export default function HomePage() {
             <MasteryLearningPaths />
 
             {/* =========================================================================
-                SECTION 5: DAILY CHALLENGES PREVIEW (Panel 4 Preview)
+                SECTION 5: DAILY CHALLENGES & WEEKLY TOURNAMENT (Master Spec Panel 4)
                ========================================================================= */}
-            <section
-              style={{
-                width: '100%',
-                maxWidth: '1280px',
-                padding: '2rem 1.5rem 3.5rem 1.5rem',
-              }}
-            >
-              <div
-                style={{
-                  background: 'linear-gradient(135deg, rgba(16, 29, 54, 0.85) 0%, rgba(10, 20, 40, 0.95) 100%)',
-                  border: '1px solid rgba(120, 160, 255, 0.22)',
-                  borderRadius: '24px',
-                  padding: '2.5rem',
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                  gap: '2.5rem',
-                  alignItems: 'center',
-                  boxShadow: '0 20px 50px rgba(0, 0, 0, 0.45)',
-                  position: 'relative',
-                  overflow: 'hidden',
-                }}
-              >
-                <div style={{ position: 'absolute', top: '-60px', right: '-60px', width: '220px', height: '220px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(130, 87, 255, 0.25) 0%, transparent 70%)', filter: 'blur(30px)', pointerEvents: 'none' }} />
-
-                {/* Left: Challenge Info */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', zIndex: 1 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <CyberBadge variant="purple" glow>
-                      DAILY QUEST
-                    </CyberBadge>
-                    <span style={{ fontSize: '0.8rem', color: '#00D9FF', fontWeight: 700 }}>
-                      ⏱️ Resets in 12:45:32
-                    </span>
-                  </div>
-
-                  <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2rem', fontWeight: 800, color: '#F5F7FF', margin: 0 }}>
-                    Today&apos;s High-Speed Challenge
-                  </h2>
-
-                  <p style={{ color: '#A3B2CC', fontSize: '0.95rem', lineHeight: 1.5, margin: 0 }}>
-                    Type the curated paragraph in 60 seconds with ≥ 97% accuracy. Earn +100 XP and maintain your daily practice streak.
-                  </p>
-
-                  <div
-                    style={{
-                      padding: '1rem 1.25rem',
-                      borderRadius: '12px',
-                      background: 'rgba(5, 11, 24, 0.65)',
-                      border: '1px solid rgba(120, 160, 255, 0.15)',
-                      fontFamily: 'var(--font-mono)',
-                      fontSize: '0.9rem',
-                      color: '#F5F7FF',
-                      lineHeight: 1.5,
-                      fontStyle: 'italic',
-                    }}
-                  >
-                    &ldquo;Dream bigger, type faster, achieve more with deliberate practice.&rdquo;
-                  </div>
-
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', marginTop: '0.5rem' }}>
-                    <Link
-                      href="/challenges"
-                      style={{
-                        padding: '0.8rem 1.6rem',
-                        borderRadius: '10px',
-                        background: 'linear-gradient(135deg, #8257FF 0%, #168BFF 100%)',
-                        color: '#F5F7FF',
-                        fontFamily: 'var(--font-heading)',
-                        fontSize: '0.9rem',
-                        fontWeight: 700,
-                        textDecoration: 'none',
-                        boxShadow: '0 0 20px rgba(130, 87, 255, 0.4)',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '0.5rem',
-                      }}
-                    >
-                      <span>Start Challenge</span>
-                      <span>→</span>
-                    </Link>
-                    <span style={{ fontSize: '0.82rem', color: '#A3B2CC' }}>
-                      Reward: <strong style={{ color: '#00D9FF' }}>+100 XP</strong> & Streak +1
-                    </span>
-                  </div>
-                </div>
-
-                {/* Right: Challenge Rewards & Trophy */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'center', textAlign: 'center', zIndex: 1 }}>
-                  <div
-                    style={{
-                      width: '120px',
-                      height: '120px',
-                      borderRadius: '50%',
-                      background: 'radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, rgba(16, 29, 54, 0.8) 70%)',
-                      border: '2px solid rgba(255, 215, 0, 0.4)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '3.5rem',
-                      boxShadow: '0 0 30px rgba(255, 215, 0, 0.3)',
-                    }}
-                  >
-                    🏆
-                  </div>
-                  <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', fontWeight: 800, color: '#F5F7FF' }}>
-                    Weekly Trophy Series
-                  </div>
-                  <p style={{ fontSize: '0.82rem', color: '#A3B2CC', maxWidth: '320px', margin: 0 }}>
-                    Compete on weekly sprint tracks, climb the global tier ranks, and display verified typing credentials.
-                  </p>
-                </div>
-              </div>
-            </section>
+            <DailyChallengeShowcase />
 
             {/* =========================================================================
                 SECTION 6: PERFORMANCE DASHBOARD PREVIEW (Panel 5 Preview)

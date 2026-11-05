@@ -759,6 +759,65 @@ kbd {
   }
 }
 
+@keyframes trophyLevitate {
+  0%, 100% {
+    transform: translateY(0);
+    filter: drop-shadow(0 15px 25px rgba(245, 158, 11, 0.45));
+  }
+  50% {
+    transform: translateY(-8px);
+    filter: drop-shadow(0 25px 35px rgba(245, 158, 11, 0.65));
+  }
+}
+
+@keyframes ringRotateClockwise {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ringRotateCounter {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+@keyframes flamePulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.6));
+  }
+  50% {
+    transform: scale(1.18);
+    filter: drop-shadow(0 0 16px rgba(239, 68, 68, 0.9));
+  }
+}
+
+@keyframes cursorBlink {
+  0%, 49% {
+    opacity: 1;
+  }
+  50%, 100% {
+    opacity: 0;
+  }
+}
+
+@keyframes goldGlowPulse {
+  0%, 100% {
+    box-shadow: 0 0 25px rgba(245, 158, 11, 0.35), inset 0 0 20px rgba(245, 158, 11, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 50px rgba(245, 158, 11, 0.65), inset 0 0 35px rgba(245, 158, 11, 0.3);
+  }
+}
+
+
 
 
 

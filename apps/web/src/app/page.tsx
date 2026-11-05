@@ -787,18 +787,40 @@ export default function HomePage() {
               style={{
                 width: '100%',
                 maxWidth: '1280px',
-                padding: '2.5rem 1.5rem 3.5rem 1.5rem',
+                padding: '3rem 1.5rem 4rem 1.5rem',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '2rem',
+                gap: '2.5rem',
               }}
             >
-              <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
-                <CyberBadge variant="purple">STRUCTURED CURRICULUM</CyberBadge>
-                <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '2.2rem', fontWeight: 800, color: '#F5F7FF', margin: 0 }}>
-                  Mastery Learning Paths
+              <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem' }}>
+                <CyberBadge variant="purple" glow>
+                  STRUCTURED CURRICULUM • 5 CALIBRATED TIERS
+                </CyberBadge>
+                <h2
+                  style={{
+                    fontFamily: 'var(--font-heading)',
+                    fontSize: 'clamp(2.2rem, 4vw, 3rem)',
+                    fontWeight: 900,
+                    color: '#F5F7FF',
+                    margin: 0,
+                    letterSpacing: '-0.02em',
+                    lineHeight: 1.15,
+                  }}
+                >
+                  Mastery{' '}
+                  <span
+                    style={{
+                      background: 'linear-gradient(135deg, #00D9FF 0%, #168BFF 50%, #8257FF 100%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                      textShadow: '0 0 35px rgba(0, 217, 255, 0.35)',
+                    }}
+                  >
+                    Learning Paths
+                  </span>
                 </h2>
-                <p style={{ color: '#A3B2CC', fontSize: '0.95rem', maxWidth: '580px', margin: 0 }}>
+                <p style={{ color: '#A3B2CC', fontSize: '1.02rem', maxWidth: '620px', margin: 0, lineHeight: 1.6 }}>
                   Progress through 5 calibrated skill tiers designed to establish authentic muscle memory without looking at your keyboard.
                 </p>
               </div>
@@ -806,94 +828,194 @@ export default function HomePage() {
               <div
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-                  gap: '1.25rem',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 225px), 1fr))',
+                  gap: '1.4rem',
                 }}
               >
                 {[
                   {
-                    level: '1. Beginner',
+                    level: 'LEVEL 01',
+                    tierName: 'Beginner',
                     title: 'Home Row Foundations',
-                    desc: 'Master ASDF and JKL; keys with index finger anchor positions.',
+                    desc: 'Master ASDF and JKL; keys with tactile index finger anchor positioning.',
+                    keys: ['A', 'S', 'D', 'F', 'J', 'K', 'L', ';'],
                     lessons: '5 Lessons',
                     time: '25 mins',
                     color: '#00D9FF',
-                    badge: 'Level 1',
+                    glow: 'rgba(0, 217, 255, 0.35)',
+                    grad: 'linear-gradient(90deg, #00D9FF, #168BFF)',
+                    icon: '🎯',
+                    percent: 0,
                   },
                   {
-                    level: '2. Basic',
+                    level: 'LEVEL 02',
+                    tierName: 'Basic',
                     title: 'Top & Bottom Rows',
                     desc: 'Expand range to QWERTY and ZXCVB rows with diagonal reaching.',
+                    keys: ['Q', 'W', 'E', 'R', 'T', 'Z', 'X', 'C'],
                     lessons: '5 Lessons',
                     time: '35 mins',
                     color: '#168BFF',
-                    badge: 'Level 2',
+                    glow: 'rgba(22, 139, 255, 0.35)',
+                    grad: 'linear-gradient(90deg, #168BFF, #6366F1)',
+                    icon: '🚀',
+                    percent: 0,
                   },
                   {
-                    level: '3. Intermediate',
-                    title: 'Punctuation & Symbols',
-                    desc: 'Incorporate commas, periods, apostrophes, and capital Shift keys.',
+                    level: 'LEVEL 03',
+                    tierName: 'Intermediate',
+                    title: 'Punctuation & Shift',
+                    desc: 'Incorporate commas, periods, apostrophes, and opposite-hand Shift keys.',
+                    keys: [',', '.', "'", '?', 'Shift', 'Caps'],
                     lessons: '5 Lessons',
                     time: '45 mins',
-                    color: '#8257FF',
-                    badge: 'Level 3',
+                    color: '#6366F1',
+                    glow: 'rgba(99, 102, 241, 0.35)',
+                    grad: 'linear-gradient(90deg, #6366F1, #8257FF)',
+                    icon: '⚡',
+                    percent: 0,
                   },
                   {
-                    level: '4. Advanced',
+                    level: 'LEVEL 04',
+                    tierName: 'Advanced',
                     title: 'Number Row & Code',
                     desc: 'Speed drills for numbers 0-9 and programming brackets { } [ ].',
+                    keys: ['0-9', '{ }', '[ ]', '< >', '= +'],
                     lessons: '5 Lessons',
                     time: '60 mins',
-                    color: '#00D9FF',
-                    badge: 'Level 4',
+                    color: '#8257FF',
+                    glow: 'rgba(130, 87, 255, 0.35)',
+                    grad: 'linear-gradient(90deg, #8257FF, #C084FC)',
+                    icon: '💻',
+                    percent: 0,
                   },
                   {
-                    level: '5. Professional',
+                    level: 'LEVEL 05',
+                    tierName: 'Professional',
                     title: 'High-Velocity Mastery',
                     desc: 'Complex vocabulary, real-world prose, and 100+ WPM benchmarks.',
+                    keys: ['100+ WPM', 'Prose', 'Zero Error'],
                     lessons: '5 Lessons',
                     time: '90 mins',
-                    color: '#8257FF',
-                    badge: 'Level 5',
+                    color: '#F59E0B',
+                    glow: 'rgba(245, 158, 11, 0.35)',
+                    grad: 'linear-gradient(90deg, #F59E0B, #FBBF24)',
+                    icon: '👑',
+                    percent: 0,
                   },
                 ].map((tier, idx) => (
-                  <CyberCard key={idx} hoverEffect>
-                    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: '0.85rem' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <span style={{ fontSize: '0.72rem', fontWeight: 800, padding: '0.2rem 0.5rem', borderRadius: '6px', background: `${tier.color}15`, color: tier.color, border: `1px solid ${tier.color}35` }}>
-                          {tier.badge}
-                        </span>
-                        <span style={{ fontSize: '0.75rem', color: '#A3B2CC' }}>{tier.lessons}</span>
+                  <div
+                    key={idx}
+                    className="learning-path-card"
+                    style={{
+                      '--card-accent-color': tier.color,
+                      '--card-glow-color': tier.glow,
+                      '--card-accent-grad': tier.grad,
+                    } as React.CSSProperties}
+                    onClick={() => router.push('/lessons')}
+                  >
+                    {/* Top Row: Icon Pod + Level Badge */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <div
+                        className="tier-icon-pod"
+                        style={{
+                          background: `${tier.color}18`,
+                          border: `1px solid ${tier.color}45`,
+                          boxShadow: `0 0 16px ${tier.color}25`,
+                        }}
+                      >
+                        <span>{tier.icon}</span>
                       </div>
-
-                      <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.1rem', fontWeight: 700, color: '#F5F7FF', margin: 0 }}>
-                        {tier.title}
-                      </h3>
-
-                      <p style={{ fontSize: '0.82rem', color: '#A3B2CC', margin: 0, lineHeight: 1.5, flex: 1 }}>
-                        {tier.desc}
-                      </p>
-
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '0.75rem', borderTop: '1px solid rgba(120, 160, 255, 0.12)' }}>
-                        <span style={{ fontSize: '0.75rem', color: '#A3B2CC' }}>⏱️ {tier.time}</span>
-                        <Link
-                          href="/lessons"
-                          style={{
-                            fontSize: '0.8rem',
-                            fontWeight: 700,
-                            color: tier.color,
-                            textDecoration: 'none',
-                            display: 'inline-flex',
-                            alignItems: 'center',
-                            gap: '0.25rem',
-                          }}
-                        >
-                          <span>Start</span>
-                          <span>→</span>
-                        </Link>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.15rem' }}>
+                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', fontWeight: 800, color: tier.color, letterSpacing: '0.06em' }}>
+                          {tier.level}
+                        </span>
+                        <span style={{ fontSize: '0.74rem', color: '#A3B2CC', fontWeight: 600 }}>
+                          {tier.tierName}
+                        </span>
                       </div>
                     </div>
-                  </CyberCard>
+
+                    {/* Title & Description */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', flex: 1 }}>
+                      <h3
+                        style={{
+                          fontFamily: 'var(--font-heading)',
+                          fontSize: '1.15rem',
+                          fontWeight: 800,
+                          color: '#F5F7FF',
+                          margin: 0,
+                          lineHeight: 1.3,
+                        }}
+                      >
+                        {tier.title}
+                      </h3>
+                      <p style={{ fontSize: '0.825rem', color: '#A3B2CC', margin: 0, lineHeight: 1.55 }}>
+                        {tier.desc}
+                      </p>
+                    </div>
+
+                    {/* Key Chips Preview Matrix */}
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', margin: '0.2rem 0' }}>
+                      {tier.keys.map((k, kIdx) => (
+                        <span key={kIdx} className="tier-key-chip">
+                          {k}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Progress Track */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: '#A3B2CC' }}>
+                        <span>Progress</span>
+                        <span style={{ color: tier.color, fontWeight: 700 }}>{tier.percent}% Complete</span>
+                      </div>
+                      <div style={{ width: '100%', height: '5px', borderRadius: '9999px', background: 'rgba(5, 11, 24, 0.6)', overflow: 'hidden' }}>
+                        <div
+                          style={{
+                            width: `${tier.percent}%`,
+                            height: '100%',
+                            background: tier.grad,
+                            borderRadius: '9999px',
+                            transition: 'width 0.4s ease',
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Card Footer: Time, Lessons & Action Button */}
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        paddingTop: '0.85rem',
+                        borderTop: '1px solid rgba(120, 160, 255, 0.12)',
+                      }}
+                    >
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '0.74rem', color: '#A3B2CC' }}>⏱️ {tier.time}</span>
+                        <span style={{ fontSize: '0.7rem', color: 'rgba(163, 178, 204, 0.7)' }}>{tier.lessons}</span>
+                      </div>
+
+                      <div
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.4rem',
+                          fontFamily: 'var(--font-heading)',
+                          fontSize: '0.82rem',
+                          fontWeight: 800,
+                          color: tier.color,
+                        }}
+                      >
+                        <span>Start</span>
+                        <span className="tier-arrow" style={{ transition: 'transform 0.2s ease', display: 'inline-block' }}>
+                          →
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 ))}
               </div>
             </section>

@@ -603,3 +603,4 @@ export const DailyChallengeShowcase: React.FC = () => {
     </section>
   );
 };
+

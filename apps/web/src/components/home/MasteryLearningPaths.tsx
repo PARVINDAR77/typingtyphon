@@ -914,13 +914,14 @@ export const MasteryLearningPaths: React.FC = () => {
         </div>
       )}
 
-      {/* 4. VIEW MODE B: 5-TIER OVERVIEW CARDS (Premium Glassmorphic Cyber Cards) */}
+      {/* 4. VIEW MODE B: 5-TIER OVERVIEW CARDS (Premium Glassmorphic Cyber Matrix) */}
       {viewMode === 'grid' && (
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 225px), 1fr))',
-            gap: '1.4rem',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 340px), 1fr))',
+            gap: '1.75rem',
+            width: '100%',
           }}
         >
           {TIERS.map((tier, idx) => {
@@ -928,124 +929,289 @@ export const MasteryLearningPaths: React.FC = () => {
             return (
               <div
                 key={tier.id}
-                className="learning-path-card"
                 style={{
-                  '--card-accent-color': tier.color,
-                  '--card-glow-color': tier.glowColor,
-                  '--card-accent-grad': tier.accentGrad,
-                  border: isSelected ? `1.5px solid ${tier.color}` : undefined,
-                  boxShadow: isSelected ? `0 16px 40px -8px ${tier.glowColor}` : undefined,
-                } as React.CSSProperties}
-                onClick={() => {
-                  setSelectedIdx(idx);
-                  setViewMode('console');
+                  position: 'relative',
+                  borderRadius: '24px',
+                  background: 'linear-gradient(145deg, rgba(16, 29, 54, 0.92) 0%, rgba(10, 20, 40, 0.98) 100%)',
+                  border: isSelected ? `2px solid ${tier.color}` : '1.5px solid rgba(120, 160, 255, 0.16)',
+                  padding: 'clamp(1.5rem, 2.5vw, 2rem)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '1.25rem',
+                  transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
+                  overflow: 'hidden',
+                  boxShadow: isSelected
+                    ? `0 20px 50px -10px ${tier.glowColor}, inset 0 0 20px ${tier.color}15`
+                    : '0 10px 30px rgba(0, 0, 0, 0.45)',
+                  cursor: 'pointer',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-8px)';
+                  e.currentTarget.style.borderColor = tier.color;
+                  e.currentTarget.style.boxShadow = `0 20px 50px -10px ${tier.glowColor}, inset 0 0 20px ${tier.color}18`;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.borderColor = isSelected ? tier.color : 'rgba(120, 160, 255, 0.16)';
+                  e.currentTarget.style.boxShadow = isSelected
+                    ? `0 20px 50px -10px ${tier.glowColor}, inset 0 0 20px ${tier.color}15`
+                    : '0 10px 30px rgba(0, 0, 0, 0.45)';
                 }}
               >
-                {/* Top Row: Icon Pod + Level Badge */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                {/* Top Glowing Laser Strip */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: '3px',
+                    background: tier.accentGrad,
+                    boxShadow: `0 0 16px ${tier.color}`,
+                    opacity: isSelected ? 1 : 0.6,
+                    transition: 'opacity 0.3s ease',
+                  }}
+                />
+
+                {/* Top Header Row: Holographic Medallion & Level Badges */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.9rem' }}>
+                    <div
+                      style={{
+                        width: '52px',
+                        height: '52px',
+                        borderRadius: '16px',
+                        background: `linear-gradient(135deg, ${tier.color}25 0%, rgba(16, 29, 54, 0.8) 100%)`,
+                        border: `1.5px solid ${tier.color}50`,
+                        boxShadow: `0 0 20px ${tier.color}35`,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '1.6rem',
+                        flexShrink: 0,
+                        transition: 'transform 0.3s ease',
+                      }}
+                    >
+                      {tier.icon}
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
+                      <span
+                        style={{
+                          fontFamily: 'var(--font-mono)',
+                          fontSize: '0.72rem',
+                          fontWeight: 900,
+                          color: tier.color,
+                          letterSpacing: '0.06em',
+                        }}
+                      >
+                        {tier.levelNumber}
+                      </span>
+                      <span
+                        style={{
+                          fontFamily: 'var(--font-heading)',
+                          fontSize: '1.15rem',
+                          fontWeight: 900,
+                          color: '#F5F7FF',
+                          lineHeight: 1.2,
+                        }}
+                      >
+                        {tier.name}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Speed Benchmark Pill */}
                   <div
-                    className="tier-icon-pod"
                     style={{
-                      background: `${tier.color}18`,
-                      border: `1px solid ${tier.color}45`,
-                      boxShadow: `0 0 16px ${tier.color}25`,
+                      fontFamily: 'var(--font-mono)',
+                      fontSize: '0.76rem',
+                      fontWeight: 800,
+                      color: tier.color,
+                      background: `${tier.color}15`,
+                      border: `1px solid ${tier.color}40`,
+                      padding: '0.3rem 0.65rem',
+                      borderRadius: '8px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
+                      boxShadow: `0 0 12px ${tier.glowColor}`,
                     }}
                   >
-                    <span>{tier.icon}</span>
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.15rem' }}>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', fontWeight: 800, color: tier.color, letterSpacing: '0.06em' }}>
-                      {tier.levelNumber}
-                    </span>
-                    <span style={{ fontSize: '0.74rem', color: '#A3B2CC', fontWeight: 600 }}>
-                      {tier.name}
-                    </span>
+                    <span>⚡ {tier.benchmarkWpm}+ WPM</span>
                   </div>
                 </div>
 
                 {/* Title & Description */}
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', flex: 1 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
                   <h3
                     style={{
                       fontFamily: 'var(--font-heading)',
-                      fontSize: '1.15rem',
+                      fontSize: '1.2rem',
                       fontWeight: 800,
                       color: '#F5F7FF',
                       margin: 0,
                       lineHeight: 1.3,
+                      letterSpacing: '-0.01em',
                     }}
                   >
                     {tier.title}
                   </h3>
-                  <p style={{ fontSize: '0.825rem', color: '#A3B2CC', margin: 0, lineHeight: 1.55 }}>
+                  <p style={{ fontSize: '0.88rem', color: '#A3B2CC', margin: 0, lineHeight: 1.55 }}>
                     {tier.description}
                   </p>
                 </div>
 
-                {/* Key Chips Preview Matrix */}
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', margin: '0.2rem 0' }}>
-                  {tier.activeKeys.slice(0, 7).map((k, kIdx) => (
-                    <span key={kIdx} className="tier-key-chip">
-                      {k.toUpperCase()}
-                    </span>
-                  ))}
-                  {tier.activeKeys.length > 7 && (
-                    <span className="tier-key-chip" style={{ color: tier.color }}>
-                      +{tier.activeKeys.length - 7}
-                    </span>
-                  )}
-                </div>
-
-                {/* Benchmark Goal */}
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    padding: '0.4rem 0.65rem',
-                    borderRadius: '8px',
-                    background: 'rgba(5, 11, 24, 0.5)',
-                    border: '1px solid rgba(120, 160, 255, 0.1)',
-                    fontSize: '0.72rem',
-                  }}
-                >
-                  <span style={{ color: '#A3B2CC' }}>Benchmark</span>
-                  <span style={{ color: tier.color, fontWeight: 700, fontFamily: 'var(--font-mono)' }}>
-                    {tier.benchmarkWpm}+ WPM
+                {/* Tactile 3D Keycap Matrix Preview */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                  <span style={{ fontSize: '0.7rem', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.06em', fontWeight: 700 }}>
+                    Target Keyzone Matrix
                   </span>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', alignItems: 'center' }}>
+                    {tier.activeKeys.slice(0, 8).map((k, kIdx) => (
+                      <div
+                        key={kIdx}
+                        style={{
+                          minWidth: k.length > 2 ? '42px' : '30px',
+                          height: '30px',
+                          borderRadius: '6px',
+                          background: 'linear-gradient(180deg, #1A2642 0%, #0D1628 100%)',
+                          border: `1px solid ${tier.color}45`,
+                          boxShadow: `inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 3px 6px rgba(0, 0, 0, 0.5), 0 0 8px ${tier.color}20`,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontFamily: 'var(--font-mono)',
+                          fontSize: k.length > 2 ? '0.62rem' : '0.74rem',
+                          fontWeight: 800,
+                          color: '#FFFFFF',
+                          padding: '0 0.35rem',
+                          userSelect: 'none',
+                        }}
+                      >
+                        {k.toUpperCase()}
+                      </div>
+                    ))}
+                    {tier.activeKeys.length > 8 && (
+                      <span
+                        style={{
+                          fontSize: '0.75rem',
+                          fontFamily: 'var(--font-mono)',
+                          fontWeight: 800,
+                          color: tier.color,
+                          background: `${tier.color}15`,
+                          padding: '0.25rem 0.5rem',
+                          borderRadius: '6px',
+                          border: `1px solid ${tier.color}35`,
+                        }}
+                      >
+                        +{tier.activeKeys.length - 8} more
+                      </span>
+                    )}
+                  </div>
                 </div>
 
-                {/* Card Footer: Time, Lessons & Action Button */}
+                {/* HUD Telemetry Strip: Passing Criteria & Duration */}
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: '0.65rem',
+                    padding: '0.65rem 0.85rem',
+                    borderRadius: '12px',
+                    background: 'rgba(5, 11, 24, 0.65)',
+                    border: '1px solid rgba(120, 160, 255, 0.12)',
+                    fontSize: '0.76rem',
+                  }}
+                >
+                  <div>
+                    <span style={{ color: '#64748B', display: 'block', fontSize: '0.68rem', textTransform: 'uppercase' }}>Passing Goal</span>
+                    <strong style={{ color: tier.color, fontFamily: 'var(--font-mono)' }}>{tier.passThreshold}</strong>
+                  </div>
+                  <div>
+                    <span style={{ color: '#64748B', display: 'block', fontSize: '0.68rem', textTransform: 'uppercase' }}>Scope</span>
+                    <strong style={{ color: '#F5F7FF' }}>⏱️ {tier.duration} • {tier.lessonsCount} Drills</strong>
+                  </div>
+                </div>
+
+                {/* Action Buttons: Start Lessons or Open in Console */}
                 <div
                   style={{
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    paddingTop: '0.85rem',
+                    gap: '0.75rem',
+                    paddingTop: '0.75rem',
                     borderTop: '1px solid rgba(120, 160, 255, 0.12)',
+                    marginTop: 'auto',
                   }}
                 >
-                  <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <span style={{ fontSize: '0.74rem', color: '#A3B2CC' }}>⏱️ {tier.duration}</span>
-                    <span style={{ fontSize: '0.7rem', color: 'rgba(163, 178, 204, 0.7)' }}>{tier.lessonsCount} Lessons</span>
-                  </div>
-
-                  <div
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedIdx(idx);
+                      setViewMode('console');
+                    }}
                     style={{
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: '0.4rem',
+                      background: 'transparent',
+                      border: '1px solid rgba(120, 160, 255, 0.2)',
+                      padding: '0.65rem 1rem',
+                      borderRadius: '10px',
+                      color: '#A3B2CC',
                       fontFamily: 'var(--font-heading)',
                       fontSize: '0.82rem',
-                      fontWeight: 800,
-                      color: tier.color,
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = '#F5F7FF';
+                      e.currentTarget.style.borderColor = tier.color;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = '#A3B2CC';
+                      e.currentTarget.style.borderColor = 'rgba(120, 160, 255, 0.2)';
                     }}
                   >
-                    <span>Explore</span>
-                    <span className="tier-arrow" style={{ transition: 'transform 0.2s ease', display: 'inline-block' }}>
-                      →
-                    </span>
-                  </div>
+                    <span>⚡ Inspect Console</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      router.push('/lessons');
+                    }}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      background: tier.accentGrad,
+                      color: tier.id === 'professional' ? '#FFFFFF' : '#050B18',
+                      border: 'none',
+                      padding: '0.65rem 1.25rem',
+                      borderRadius: '10px',
+                      fontFamily: 'var(--font-heading)',
+                      fontSize: '0.84rem',
+                      fontWeight: 900,
+                      cursor: 'pointer',
+                      boxShadow: `0 0 18px ${tier.glowColor}`,
+                      transition: 'all 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-2px) scale(1.03)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                    }}
+                  >
+                    <span>Start Tier</span>
+                    <span>→</span>
+                  </button>
                 </div>
               </div>
             );

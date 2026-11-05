@@ -686,4 +686,25 @@ kbd {
   background: rgba(0, 217, 255, 0.08);
 }
 
+@keyframes beaconGlow {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+@keyframes neonLaserSweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+
 

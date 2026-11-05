@@ -359,6 +359,7 @@ export const MasteryLearningPaths: React.FC = () => {
               key={tier.id}
               type="button"
               onClick={() => setSelectedIdx(idx)}
+              onMouseEnter={() => setSelectedIdx(idx)}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -366,41 +367,52 @@ export const MasteryLearningPaths: React.FC = () => {
                 padding: '0.85rem 1.1rem',
                 borderRadius: '14px',
                 background: isSelected
-                  ? `linear-gradient(135deg, ${tier.color}22 0%, rgba(16, 29, 54, 0.95) 100%)`
-                  : 'rgba(5, 11, 24, 0.4)',
-                border: isSelected ? `1.5px solid ${tier.color}` : '1.5px solid rgba(120, 160, 255, 0.1)',
+                  ? `linear-gradient(135deg, ${tier.color}28 0%, rgba(16, 29, 54, 0.98) 100%)`
+                  : 'rgba(5, 11, 24, 0.45)',
+                border: isSelected ? `2px solid ${tier.color}` : '1.5px solid rgba(120, 160, 255, 0.12)',
                 cursor: 'pointer',
-                transition: 'all 0.28s cubic-bezier(0.16, 1, 0.3, 1)',
-                boxShadow: isSelected ? `0 0 24px ${tier.glowColor}` : 'none',
+                transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+                boxShadow: isSelected
+                  ? `0 0 28px ${tier.glowColor}, inset 0 0 16px ${tier.color}25`
+                  : 'none',
+                transform: isSelected ? 'translateY(-4px)' : 'translateY(0)',
                 textAlign: 'left',
                 position: 'relative',
-                overflow: 'hidden',
-              }}
-              onMouseEnter={(e) => {
-                if (!isSelected) {
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
-                  e.currentTarget.style.borderColor = 'rgba(120, 160, 255, 0.35)';
-                  e.currentTarget.style.transform = 'translateY(-2px)';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!isSelected) {
-                  e.currentTarget.style.background = 'rgba(5, 11, 24, 0.4)';
-                  e.currentTarget.style.borderColor = 'rgba(120, 160, 255, 0.1)';
-                  e.currentTarget.style.transform = 'translateY(0)';
-                }
+                overflow: 'visible',
               }}
             >
+              {/* Top Accent Glowing Laser on Active Tab */}
               {isSelected && (
                 <div
                   style={{
                     position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
+                    top: '-1px',
+                    left: '12%',
+                    right: '12%',
                     height: '2.5px',
+                    borderRadius: '9999px',
                     background: tier.accentGrad,
-                    boxShadow: `0 0 12px ${tier.color}`,
+                    boxShadow: `0 0 14px ${tier.color}`,
+                  }}
+                />
+              )}
+
+              {/* Bottom Connecting Pointer Chevron (▼) pointing directly into the opened console */}
+              {isSelected && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: '-8px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    width: 0,
+                    height: 0,
+                    borderLeft: '7px solid transparent',
+                    borderRight: '7px solid transparent',
+                    borderTop: `8px solid ${tier.color}`,
+                    filter: `drop-shadow(0 2px 6px ${tier.glowColor})`,
+                    zIndex: 20,
+                    animation: 'activePointerBounce 1.5s ease-in-out infinite',
                   }}
                 />
               )}
@@ -416,7 +428,7 @@ export const MasteryLearningPaths: React.FC = () => {
                   alignItems: 'center',
                   justifyContent: 'center',
                   fontSize: '1.25rem',
-                  boxShadow: isSelected ? `0 0 16px ${tier.color}` : 'none',
+                  boxShadow: isSelected ? `0 0 18px ${tier.color}` : 'none',
                   transition: 'all 0.25s ease',
                   flexShrink: 0,
                 }}
@@ -424,7 +436,7 @@ export const MasteryLearningPaths: React.FC = () => {
                 {tier.icon}
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0, gap: '0.15rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                   <span
                     style={{
@@ -441,10 +453,12 @@ export const MasteryLearningPaths: React.FC = () => {
                     style={{
                       fontSize: '0.68rem',
                       color: isSelected ? '#F5F7FF' : '#94A3B8',
-                      background: 'rgba(255, 255, 255, 0.08)',
+                      background: isSelected ? `${tier.color}35` : 'rgba(255, 255, 255, 0.08)',
                       padding: '0.1rem 0.35rem',
                       borderRadius: '4px',
                       fontFamily: 'var(--font-mono)',
+                      fontWeight: 700,
+                      transition: 'all 0.2s ease',
                     }}
                   >
                     {tier.benchmarkWpm}+ WPM
@@ -473,10 +487,11 @@ export const MasteryLearningPaths: React.FC = () => {
       {/* 3. VIEW MODE A: FEATURED SHOWCASE LEARNING CONSOLE (Master Art Panel 3 Style) */}
       {viewMode === 'console' && (
         <div
+          key={activeTier.id}
           style={{
             borderRadius: '26px',
             background: 'linear-gradient(135deg, rgba(16, 29, 54, 0.94) 0%, rgba(10, 20, 40, 0.98) 100%)',
-            border: `1.5px solid ${activeTier.color}45`,
+            border: `2px solid ${activeTier.color}55`,
             padding: 'clamp(1.5rem, 3vw, 2.75rem)',
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 480px), 1fr))',
@@ -485,24 +500,34 @@ export const MasteryLearningPaths: React.FC = () => {
             boxShadow: `0 25px 60px -10px rgba(0, 0, 0, 0.6), 0 0 45px -10px ${activeTier.glowColor}`,
             position: 'relative',
             overflow: 'hidden',
-            transition: 'border-color 0.4s ease, box-shadow 0.4s ease',
+            animation: 'consolePanelOpen 0.35s cubic-bezier(0.16, 1, 0.3, 1) both',
+            transition: 'border-color 0.35s ease, box-shadow 0.35s ease',
           }}
         >
           {/* Top glowing laser line matching active tier color */}
           <div
+            key={`laser-${activeTier.id}`}
             style={{
               position: 'absolute',
               top: 0,
               left: 0,
               right: 0,
-              height: '3px',
-              background: `linear-gradient(90deg, transparent, ${activeTier.color}, transparent)`,
+              height: '3.5px',
+              background: `linear-gradient(90deg, transparent 0%, ${activeTier.color} 50%, transparent 100%)`,
               boxShadow: `0 0 24px ${activeTier.color}`,
+              animation: 'neonLaserSweep 0.7s cubic-bezier(0.16, 1, 0.3, 1)',
             }}
           />
 
           {/* LEFT COLUMN: Tier Title, Curriculum Milestones & CTA */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1.25rem',
+              animation: 'consoleSlideFromLeft 0.35s cubic-bezier(0.16, 1, 0.3, 1) both',
+            }}
+          >
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
               <span
                 style={{
@@ -573,7 +598,7 @@ export const MasteryLearningPaths: React.FC = () => {
                 </span>
               </div>
 
-              {activeTier.lessons.map((l) => (
+              {activeTier.lessons.map((l, mIdx) => (
                 <div
                   key={l.id}
                   onClick={() => router.push('/lessons')}
@@ -588,6 +613,8 @@ export const MasteryLearningPaths: React.FC = () => {
                     fontSize: '0.82rem',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
+                    animation: 'drillItemFade 0.3s ease both',
+                    animationDelay: `${mIdx * 0.05}s`,
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.borderColor = activeTier.color;
@@ -740,6 +767,7 @@ export const MasteryLearningPaths: React.FC = () => {
               padding: 'clamp(1.2rem, 2.5vw, 1.8rem)',
               boxShadow: 'inset 0 0 40px rgba(0, 0, 0, 0.6), 0 10px 30px rgba(0, 0, 0, 0.4)',
               position: 'relative',
+              animation: 'consoleSlideFromRight 0.35s cubic-bezier(0.16, 1, 0.3, 1) both',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
